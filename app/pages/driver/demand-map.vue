@@ -8,7 +8,7 @@ useHead({
 })
 
 const demandStops = [
-  { name: 'San Luis Central Terminal', waiting: 320, tone: 'red' },
+  { name: 'Demo Terminal A', waiting: 320, tone: 'red' },
   { name: 'Santo Tomas Stop', waiting: 305, tone: 'red' },
   { name: 'OGC Stop', waiting: 400, tone: 'amber' },
   { name: 'Santos Cooperative', waiting: 220, tone: 'lime' }
@@ -62,6 +62,6 @@ const demandStops = [
       </UCard>
     </div>
 
-    <p class="mt-4 text-xs text-neutral-400">Demand values are simulated until the PAMANA intelligence model is connected.</p>
+    <p class="mt-4 text-xs text-neutral-400">All stop names and demand values on this screen are simulated demo data.</p>
   </div>
 </template>

@@ -15,8 +15,8 @@ const pageRoute = useRoute()
 const router = useRouter()
 
 const form = reactive({
-  origin: 'San Luis, Pampanga',
-  destination: 'City of San Fernando, Pampanga',
+  origin: '',
+  destination: '',
   departure: 'Depart now',
   vehicle: 'All vehicle types'
 })
@@ -51,6 +51,7 @@ interface TripOptionVehicle {
   vehicle_type: string
   vehicle_status: string
   occupancy_level: string | null
+  data_mode: 'REAL' | 'SIMULATED'
   source: string
   location: {
     latitude: number
@@ -69,6 +70,16 @@ interface TripDataQuality {
   occupancy: string
 }
 
+interface RouteVerification {
+  planning_enabled: boolean
+  verification_status: 'AUTHORITATIVE_CURRENT' | 'FIELD_VERIFIED'
+  data_mode: 'REAL'
+  verified_at: string
+  source_name: string
+  source_url: string | null
+  source_reference: string | null
+}
+
 type TripOptionCategory = 'cheapest' | 'fastest' | 'most_reliable'
 
 interface TripOption {
@@ -81,6 +92,7 @@ interface TripOption {
   route_id: string
   route_code: string
   route_name: string
+  route_verification: RouteVerification
   direction: 'outbound' | 'inbound'
   origin: string
   destination: string
@@ -220,6 +232,11 @@ const sourceLabel = (source: string) => {
     crowdsourced: 'Crowdsourced',
     reference: 'Reference estimate',
     simulation: 'Demo data',
+    SIMULATED: 'Simulated',
+    REAL: 'Real operational data',
+    UNAVAILABLE: 'Unavailable',
+    AUTHORITATIVE_CURRENT: 'Authoritative current',
+    FIELD_VERIFIED: 'Field verified',
     fallback: 'Fallback estimate',
     unverified: 'Unverified'
   }
@@ -229,17 +246,19 @@ const sourceLabel = (source: string) => {
 
 const waitLabel = (option: TripOption) => option.wait_source === 'observed' ? 'Predicted wait' : 'Estimated wait'
 
-const isDemoSource = (source: string) => source === 'simulation'
+const isDemoSource = (source: string) => source === 'simulation' || source === 'SIMULATED'
 
 const selectedRouteColor = computed(() => {
   return '#65a30d'
 })
 
-const selectedRouteIsSimulated = computed(() => selectedOption.value?.data_quality.route === 'simulation')
+const selectedRouteIsSimulated = computed(() => selectedOption.value?.data_quality.route === 'SIMULATED_DEMO')
 
 const locationSourceLabel = (source: string) => {
   if (source === 'reference') return 'Reference location'
   if (source === 'simulation') return 'Demo/simulated location'
+  if (source === 'FIELD_VERIFIED') return 'Field-verified location'
+  if (source === 'AUTHORITATIVE_CURRENT') return 'Authoritative current location'
   if (source === 'observed') return 'Observed location'
   return 'Location source not verified'
 }
@@ -323,6 +342,8 @@ function loadLocationsFromQuery() {
   if (destination.trim()) {
     form.destination = destination.trim()
   }
+
+  return Boolean(origin.trim() && destination.trim())
 }
 
 function formatMoney(value: number | null | undefined) {
@@ -395,10 +416,8 @@ async function updateSearchQuery() {
   })
 }
 
-// Called directly by the search button - this performs the API call itself
-// and does not depend on the Dashboard, a prior search result, or
-// sessionStorage. onMounted below calls this the same way on a direct page
-// load, so both navigation flows go through the exact same code path.
+// Called directly by the search button. A direct page load searches only
+// when both locations were supplied in the URL; there is no corridor fallback.
 async function searchRoutes(updateQuery = true) {
   if (!validateSearch()) {
     return
@@ -475,8 +494,9 @@ async function explainRecommendation() {
 }
 
 onMounted(() => {
-  loadLocationsFromQuery()
-  searchRoutes(false)
+  if (loadLocationsFromQuery()) {
+    searchRoutes(false)
+  }
 })
 </script>
 

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { PILOT_CORRIDOR } from '~/utils/constants'
+
 definePageMeta({
   middleware: ['auth', 'lgu']
 })
@@ -25,6 +27,21 @@ interface DashboardSummary {
 }
 
 const dashboard = ref<DashboardSummary | null>(null)
+const selectedRouteDocumentId = ref<string | undefined>()
+
+interface AvailableRoute {
+  documentId: string
+  route_code: string
+  route_name: string
+}
+
+const availableRoutes = ref<AvailableRoute[]>([])
+const routeOptions = computed(() =>
+  availableRoutes.value.map(route => ({
+    label: `${route.route_code} · ${route.route_name}`,
+    value: route.documentId
+  }))
+)
 
 const STATUS_LABEL: Record<string, string> = {
   ADEQUATE: 'Adequate',
@@ -65,7 +82,8 @@ const aiInsight = computed(() => {
   const first = dashboard.value?.recommendations?.[0]
   if (first) return first.message
   if (dashboard.value) return 'No shortages predicted right now — corridor supply looks adequate at every stop.'
-  return 'Loading prediction data…'
+  if (!selectedRouteDocumentId.value) return 'Select a route to load its prediction data.'
+  return 'Prediction data is unavailable for the selected route.'
 })
 
 const previewHour = ref(String(new Date().getHours()))
@@ -75,9 +93,17 @@ const HOUR_OPTIONS = Array.from({ length: 24 }, (_, h) => ({
 }))
 
 async function loadDashboard() {
+  if (!selectedRouteDocumentId.value) {
+    dashboard.value = null
+    return
+  }
+
   try {
     const response = await apiFetch<{ data: DashboardSummary }>('/api/pamana-ai/dashboard-summary', {
-      query: { hour: previewHour.value }
+      query: {
+        route: selectedRouteDocumentId.value,
+        hour: previewHour.value
+      }
     })
     dashboard.value = response.data
   } catch {
@@ -85,7 +111,23 @@ async function loadDashboard() {
   }
 }
 
-watch(previewHour, loadDashboard)
+watch([previewHour, selectedRouteDocumentId], loadDashboard)
+
+async function loadAvailableRoutes() {
+  try {
+    const response = await apiFetch<{ data: AvailableRoute[] }>('/api/routes', {
+      query: {
+        'filters[route_status][$eq]': 'active',
+        sort: 'route_name:asc',
+        'fields[0]': 'route_code',
+        'fields[1]': 'route_name'
+      }
+    })
+    availableRoutes.value = Array.isArray(response.data) ? response.data : []
+  } catch {
+    availableRoutes.value = []
+  }
+}
 
 interface FleetVehicle {
   documentId: string
@@ -138,9 +180,9 @@ function dispatchAlert() {
 }
 
 onMounted(() => {
+  loadAvailableRoutes()
   loadFleet()
   loadActiveVehicleCount()
-  loadDashboard()
 })
 </script>
 
@@ -149,7 +191,7 @@ onMounted(() => {
     <PamanaPageHeader
       title="Command Center"
       role="lgu"
-      subtitle="San Luis → City of San Fernando Corridor · Pampanga LGU Transport Division"
+      :subtitle="`${PILOT_CORRIDOR} · Pampanga LGU Transport Division`"
     />
 
     <div class="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -164,6 +206,13 @@ onMounted(() => {
         <div class="flex items-center justify-between gap-3">
           <h2 class="font-display text-sm font-semibold text-neutral-900">Stop-by-Stop Supply Table</h2>
           <div class="flex items-center gap-2">
+            <USelect
+              v-model="selectedRouteDocumentId"
+              :items="routeOptions"
+              placeholder="Select route"
+              class="w-56"
+              aria-label="Route for prediction dashboard"
+            />
             <USelect v-model="previewHour" :items="HOUR_OPTIONS" class="w-28" />
             <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-teal-100 text-teal-700">
               <UIcon name="i-lucide-map" class="size-4" />

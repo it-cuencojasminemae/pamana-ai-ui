@@ -330,7 +330,7 @@ const performDelete = async () => {
               >
                 <UInput
                   v-model="state.name"
-                  placeholder="e.g. San Luis Public Market"
+                  placeholder="e.g. San Juan loading point"
                   class="w-full"
                 />
               </UFormField>

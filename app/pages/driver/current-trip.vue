@@ -12,15 +12,54 @@ const toast = useToast()
 const occupancy = ref(0)
 const capacity = ref(16)
 
-const stops = [
-  { name: 'San Luis Central Terminal', detail: 'Departed 7:02 AM', state: 'done' },
-  { name: 'Santo Tomas Stop', detail: 'Next · ETA 4 min', state: 'next' },
-  { name: 'OGC Stop', detail: '', state: 'pending' },
-  { name: 'SM City San Fernando', detail: '', state: 'pending' }
-]
+interface RouteStop {
+  documentId: string
+  name: string
+  sequence: number
+  latitude: number | null
+  longitude: number | null
+}
+
+interface ActiveTrip {
+  documentId: string
+  direction: 'outbound' | 'inbound'
+  data_mode: 'REAL' | 'SIMULATED'
+  route?: {
+    documentId: string
+    route_code: string
+    route_name: string
+  }
+  vehicle?: {
+    documentId: string
+    capacity: number | null
+    occupancy_level: string | null
+  }
+}
 
 const activeTripDocumentId = ref<string | null>(null)
 const activeVehicleDocumentId = ref<string | null>(null)
+const activeTrip = ref<ActiveTrip | null>(null)
+const routeStops = ref<RouteStop[]>([])
+
+const orderedStops = computed(() => {
+  const sorted = [...routeStops.value].sort((a, b) => a.sequence - b.sequence)
+  return activeTrip.value?.direction === 'inbound' ? sorted.reverse() : sorted
+})
+
+const displayedStops = computed(() =>
+  orderedStops.value.map((stop, index) => ({
+    ...stop,
+    detail: index === 0 ? 'Starting stop' : '',
+    state: index === 0 ? 'next' : 'pending'
+  }))
+)
+
+const routeLabel = computed(() => {
+  const trip = activeTrip.value
+  if (!trip?.route) return 'Route unavailable'
+  const direction = trip.direction === 'inbound' ? 'Inbound' : 'Outbound'
+  return `${trip.route.route_code} · ${direction}`
+})
 
 const OCCUPANCY_LEVEL_RATIO: Record<string, number> = {
   empty: 0,
@@ -44,19 +83,15 @@ function occupancyLevelFor(current: number, max: number) {
 
 async function loadActiveTrip() {
   try {
-    const response = await apiFetch<{
-      data: Array<{
-        documentId: string
-        vehicle?: { documentId: string; capacity: number | null; occupancy_level: string | null }
-      }>
-    }>('/api/trips', {
+    const response = await apiFetch<{ data: ActiveTrip[] }>('/api/trips', {
       query: {
         'filters[trip_status][$eq]': 'active',
-        populate: 'vehicle'
+        populate: 'vehicle,route'
       }
     })
 
     const trip = response.data[0]
+    activeTrip.value = trip ?? null
     activeTripDocumentId.value = trip?.documentId ?? null
     activeVehicleDocumentId.value = trip?.vehicle?.documentId ?? null
 
@@ -68,9 +103,27 @@ async function loadActiveTrip() {
     if (level) {
       occupancy.value = Math.round(capacity.value * (OCCUPANCY_LEVEL_RATIO[level] ?? 0))
     }
+
+    if (trip?.route?.documentId) {
+      const stopsResponse = await apiFetch<{ data: RouteStop[] }>('/api/route-stops', {
+        query: {
+          'filters[route][documentId][$eq]': trip.route.documentId,
+          sort: 'sequence:asc',
+          'fields[0]': 'name',
+          'fields[1]': 'sequence',
+          'fields[2]': 'latitude',
+          'fields[3]': 'longitude'
+        }
+      })
+      routeStops.value = Array.isArray(stopsResponse.data) ? stopsResponse.data : []
+    } else {
+      routeStops.value = []
+    }
   } catch {
+    activeTrip.value = null
     activeTripDocumentId.value = null
     activeVehicleDocumentId.value = null
+    routeStops.value = []
   }
 }
 
@@ -142,7 +195,7 @@ onMounted(() => {
         label="Live driver navigation"
         height="380px"
         tone="emerald"
-        :route-points="stops"
+        :route-points="orderedStops"
       >
         <div class="pointer-events-none absolute right-4 bottom-4 z-20 glass-solid pill normal-case text-neutral-700">
           <UIcon name="i-lucide-navigation" class="size-3.5 text-emerald-600" />
@@ -153,13 +206,21 @@ onMounted(() => {
       <div class="space-y-4">
         <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
           <div class="flex items-center justify-between gap-2">
-            <h2 class="font-display text-sm font-semibold text-neutral-900">Trip DX-1087-0512</h2>
-            <span class="pill bg-teal-100 text-teal-700">In progress</span>
+            <h2 class="font-display text-sm font-semibold text-neutral-900">
+              {{ activeTripDocumentId ? `Trip ${activeTripDocumentId}` : 'No active trip' }}
+            </h2>
+            <div v-if="activeTripDocumentId" class="flex items-center gap-2">
+              <span
+                class="pill"
+                :class="activeTrip?.data_mode === 'SIMULATED' ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'"
+              >{{ activeTrip?.data_mode }}</span>
+              <span class="pill bg-teal-100 text-teal-700">In progress</span>
+            </div>
           </div>
-          <p class="mt-1 text-xs text-neutral-400">Route SL–SF 01 · Southbound</p>
+          <p class="mt-1 text-xs text-neutral-400">{{ routeLabel }}</p>
 
-          <div class="mt-4 space-y-3">
-            <div v-for="stop in stops" :key="stop.name" class="flex items-start gap-2 text-sm">
+          <div v-if="displayedStops.length" class="mt-4 space-y-3">
+            <div v-for="stop in displayedStops" :key="stop.documentId" class="flex items-start gap-2 text-sm">
               <span
                 class="badge-dot mt-1.5 shrink-0"
                 :class="{
@@ -172,6 +233,9 @@ onMounted(() => {
               <span v-if="stop.detail" class="ml-auto text-right text-xs text-neutral-400">{{ stop.detail }}</span>
             </div>
           </div>
+          <p v-else class="mt-4 text-sm text-neutral-500">
+            No stop sequence is available for the active route.
+          </p>
         </UCard>
 
         <UCard class="glass glow-lime rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">

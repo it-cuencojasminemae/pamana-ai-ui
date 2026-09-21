@@ -13,7 +13,7 @@ useHead({
 const { user } = useAuth()
 const toast = useToast()
 
-const fromLocation = ref('San Luis, Pampanga')
+const fromLocation = ref('')
 const toLocation = ref('City of San Fernando, Pampanga')
 const showAllPlaces = ref(false)
 
@@ -42,12 +42,6 @@ const allPlaces: Place[] = [
     subtitle: 'University',
     destination: 'Holy Angel University, Angeles City',
     icon: 'i-lucide-graduation-cap'
-  },
-  {
-    name: 'San Luis',
-    subtitle: 'Town Proper',
-    destination: 'San Luis, Pampanga',
-    icon: 'i-lucide-map-pin'
   },
   {
     name: 'Robinsons Starmills',
@@ -167,7 +161,7 @@ const selectPlace = async (place: Place) => {
   await navigateTo({
     path: '/passenger/trip-planner',
     query: {
-      from: fromLocation.value.trim() || 'San Luis, Pampanga',
+      from: fromLocation.value.trim(),
       to: place.destination
     }
   })

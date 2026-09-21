@@ -322,7 +322,7 @@ const onSubmit = async (
               class="size-3.5 text-lime-600"
             />
 
-            San Luis ↔ City of San Fernando pilot corridor
+            Mexico → City of San Fernando pilot · verification in progress
           </div>
         </div>
       </div>

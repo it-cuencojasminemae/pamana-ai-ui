@@ -4,7 +4,7 @@ export const PAMANA_FULL_NAME =
   'Pampanga AI-powered Mobility Access and Navigation Assistant'
 
 export const PILOT_CORRIDOR =
-  'San Luis ↔ City of San Fernando'
+  'Mexico → City of San Fernando · verification in progress'
 
 export const PAMANA_ROLES = {
   PASSENGER: 'Passenger',

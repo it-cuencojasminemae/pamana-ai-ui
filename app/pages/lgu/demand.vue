@@ -17,7 +17,7 @@ const chart = [
 ]
 
 const observations = [
-  { stop: 'San Luis Central Terminal', slot: '7:00–8:00 AM', observed: 310, predicted: 320, source: 'Sensor' },
+  { stop: 'Demo Terminal A', slot: '7:00–8:00 AM', observed: 310, predicted: 320, source: 'Simulation' },
   { stop: 'Santo Tomas Stop', slot: '7:00–8:00 AM', observed: 295, predicted: 305, source: 'Passenger report' },
   { stop: 'OGC Stop', slot: '7:00–8:00 AM', observed: 410, predicted: 400, source: 'Sensor' }
 ]
@@ -26,6 +26,8 @@ const observations = [
 <template>
   <div>
     <PamanaPageHeader title="Demand Analysis" role="lgu" />
+
+    <p class="mb-5 text-xs text-amber-700">SIMULATED DEMO — stop names and demand observations on this screen are not verified operational data.</p>
 
     <div class="mb-5 grid gap-5 lg:grid-cols-3">
       <UCard class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">

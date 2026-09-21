@@ -13,7 +13,7 @@ const recommendations = ref([
   {
     id: 1,
     confidence: 92,
-    title: 'Dispatch 3 additional jeepneys to San Luis Terminal',
+    title: 'Dispatch 3 additional jeepneys to Demo Terminal A',
     body: "Predicted surge 7:00–8:00 AM based on historical demand and today's passenger reports.",
     status: 'pending'
   },

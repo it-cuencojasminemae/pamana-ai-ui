@@ -12,7 +12,9 @@ const { user } = useAuth()
 const toast = useToast()
 const online = ref(true)
 const startingTrip = ref(false)
+const loadingRoutes = ref(false)
 const startDirection = ref<'outbound' | 'inbound'>('outbound')
+const selectedRouteId = ref<number | null>(null)
 
 const firstName = computed(() => user.value?.username?.split(/[._\s-]/)[0] || 'Driver')
 
@@ -25,8 +27,18 @@ const quickActions = [
 
 interface ActiveTrip {
   documentId: string
+  data_mode: 'REAL' | 'SIMULATED'
   route?: { origin: string; destination: string; estimated_travel_time: number | null }
   vehicle?: { capacity: number | null; occupancy_level: string | null }
+}
+
+interface AvailableRoute {
+  id: number
+  documentId: string
+  route_code: string
+  route_name: string
+  origin: string
+  destination: string
 }
 
 const OCCUPANCY_LEVEL_RATIO: Record<string, number> = {
@@ -38,6 +50,26 @@ const OCCUPANCY_LEVEL_RATIO: Record<string, number> = {
 }
 
 const activeTrip = ref<ActiveTrip | null>(null)
+const availableRoutes = ref<AvailableRoute[]>([])
+
+const routeOptions = computed(() =>
+  availableRoutes.value.map(route => ({
+    label: `${route.route_code} · ${route.origin} → ${route.destination}`,
+    value: route.id
+  }))
+)
+
+const selectedRoute = computed(() =>
+  availableRoutes.value.find(route => route.id === selectedRouteId.value) ?? null
+)
+
+const outboundLabel = computed(() =>
+  selectedRoute.value ? `Outbound · to ${selectedRoute.value.destination}` : 'Outbound'
+)
+
+const inboundLabel = computed(() =>
+  selectedRoute.value ? `Inbound · to ${selectedRoute.value.origin}` : 'Inbound'
+)
 
 const tripOrigin = computed(() => activeTrip.value?.route?.origin ?? '—')
 const tripDestination = computed(() => activeTrip.value?.route?.destination ?? '—')
@@ -69,28 +101,45 @@ async function loadActiveTrip() {
   }
 }
 
+async function loadAvailableRoutes() {
+  loadingRoutes.value = true
+
+  try {
+    const response = await apiFetch<{ data: AvailableRoute[] }>('/api/routes', {
+      query: {
+        'filters[route_status][$eq]': 'active',
+        sort: 'route_name:asc',
+        'fields[0]': 'route_code',
+        'fields[1]': 'route_name',
+        'fields[2]': 'origin',
+        'fields[3]': 'destination'
+      }
+    })
+
+    availableRoutes.value = Array.isArray(response.data) ? response.data : []
+  } catch {
+    availableRoutes.value = []
+  } finally {
+    loadingRoutes.value = false
+  }
+}
+
 async function startTrip() {
+  if (!selectedRouteId.value) {
+    toast.add({
+      title: 'Select a route',
+      description: 'Choose the route assigned to your shift before starting a trip.',
+      color: 'warning'
+    })
+    return
+  }
+
   startingTrip.value = true
 
   try {
-    const routesResponse = await apiFetch<{ data: { id: number }[] }>('/api/routes', {
-      query: { 'filters[route_code][$eq]': 'SL-SF-01' }
-    })
-
-    const route = routesResponse.data[0]
-
-    if (!route) {
-      toast.add({
-        title: 'Unable to start trip',
-        description: 'The pilot corridor route could not be found.',
-        color: 'error'
-      })
-      return
-    }
-
     await apiFetch('/api/trips', {
       method: 'POST',
-      body: { data: { route: route.id, direction: startDirection.value } }
+      body: { data: { route: selectedRouteId.value, direction: startDirection.value } }
     })
 
     toast.add({
@@ -113,6 +162,7 @@ async function startTrip() {
 
 onMounted(() => {
   loadActiveTrip()
+  loadAvailableRoutes()
 })
 </script>
 
@@ -141,10 +191,17 @@ onMounted(() => {
       <UCard class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
         <div class="flex items-center justify-between gap-3">
           <h2 class="font-display text-sm font-semibold text-neutral-900">Current Trip</h2>
-          <span
-            class="pill"
-            :class="activeTrip ? 'bg-teal-100 text-teal-700' : 'bg-neutral-100 text-neutral-500'"
-          >{{ activeTrip ? 'Ongoing' : 'No active trip' }}</span>
+          <div class="flex items-center gap-2">
+            <span
+              v-if="activeTrip"
+              class="pill"
+              :class="activeTrip.data_mode === 'SIMULATED' ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'"
+            >{{ activeTrip.data_mode }}</span>
+            <span
+              class="pill"
+              :class="activeTrip ? 'bg-teal-100 text-teal-700' : 'bg-neutral-100 text-neutral-500'"
+            >{{ activeTrip ? 'Ongoing' : 'No active trip' }}</span>
+          </div>
         </div>
 
         <template v-if="activeTrip">
@@ -190,7 +247,20 @@ onMounted(() => {
 
         <template v-else>
           <p class="mt-4 text-sm text-neutral-500">
-            No trip in progress. Pick a direction and start your shift on the San Luis ↔ City of San Fernando corridor.
+            No trip in progress. Select your assigned route and direction to start a shift.
+          </p>
+
+          <USelect
+            v-model="selectedRouteId"
+            :items="routeOptions"
+            placeholder="Select an active route"
+            class="mt-4 w-full"
+            :loading="loadingRoutes"
+            aria-label="Route for this trip"
+          />
+
+          <p v-if="!loadingRoutes && routeOptions.length === 0" class="mt-2 text-xs text-amber-700">
+            No active routes are available. Ask an administrator to configure one.
           </p>
 
           <div class="mt-4 grid grid-cols-2 gap-2">
@@ -200,7 +270,7 @@ onMounted(() => {
               :class="startDirection === 'outbound' ? 'border-lime-500 bg-lime-100 text-lime-700' : 'border-neutral-900/10 text-neutral-500'"
               @click="startDirection = 'outbound'"
             >
-              Outbound · to San Fernando
+              {{ outboundLabel }}
             </button>
             <button
               type="button"
@@ -208,7 +278,7 @@ onMounted(() => {
               :class="startDirection === 'inbound' ? 'border-lime-500 bg-lime-100 text-lime-700' : 'border-neutral-900/10 text-neutral-500'"
               @click="startDirection = 'inbound'"
             >
-              Inbound · to San Luis
+              {{ inboundLabel }}
             </button>
           </div>
 
@@ -218,7 +288,7 @@ onMounted(() => {
             icon="i-lucide-play"
             class="mt-3 rounded-full font-semibold"
             :loading="startingTrip"
-            :disabled="startingTrip"
+            :disabled="startingTrip || !selectedRouteId"
             @click="startTrip"
           >
             Start Trip

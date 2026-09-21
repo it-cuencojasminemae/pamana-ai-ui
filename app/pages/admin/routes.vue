@@ -209,7 +209,7 @@ const performDelete = async () => {
         </h2>
 
         <p class="mt-2 max-w-md text-sm text-neutral-500">
-          Add the San Luis &harr; San Fernando corridor to get started.
+          Add a verified transport corridor to get started.
         </p>
       </div>
 
@@ -226,6 +226,8 @@ const performDelete = async () => {
               <th class="px-6 py-3 font-medium">Base Fare</th>
               <th class="px-6 py-3 font-medium">Est. Time</th>
               <th class="px-6 py-3 font-medium">Status</th>
+              <th class="px-6 py-3 font-medium">Planning</th>
+              <th class="px-6 py-3 font-medium">Verification</th>
               <th class="px-6 py-3 font-medium text-right">Actions</th>
             </tr>
           </thead>
@@ -267,6 +269,20 @@ const performDelete = async () => {
                 >
                   {{ route.route_status }}
                 </UBadge>
+              </td>
+
+              <td class="px-6 py-4">
+                <UBadge
+                  variant="soft"
+                  :class="route.planning_enabled ? '!bg-teal-100 !text-teal-700' : '!bg-neutral-100 !text-neutral-500'"
+                >
+                  {{ route.planning_enabled ? 'Enabled' : 'Disabled' }}
+                </UBadge>
+              </td>
+
+              <td class="px-6 py-4">
+                <p class="text-xs font-medium text-neutral-700">{{ route.verification_status }}</p>
+                <p class="mt-1 text-[10px] text-neutral-400">{{ route.data_mode }}</p>
               </td>
 
               <td class="px-6 py-4">
@@ -325,7 +341,7 @@ const performDelete = async () => {
               >
                 <UInput
                   v-model="state.route_name"
-                  placeholder="e.g. San Luis - San Fernando"
+                  placeholder="e.g. San Juan - SM City Pampanga"
                   class="w-full"
                 />
               </UFormField>
@@ -337,7 +353,7 @@ const performDelete = async () => {
               >
                 <UInput
                   v-model="state.route_code"
-                  placeholder="e.g. SL-SF-01"
+                  placeholder="e.g. MX-SF-01"
                   class="w-full"
                 />
               </UFormField>
@@ -350,7 +366,7 @@ const performDelete = async () => {
                 >
                   <UInput
                     v-model="state.origin"
-                    placeholder="San Luis"
+                    placeholder="San Juan, Mexico"
                     class="w-full"
                   />
                 </UFormField>

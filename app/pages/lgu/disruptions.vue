@@ -19,6 +19,7 @@ interface Disruption {
   severity: string
   starts_at: string
   disruption_status: string
+  data_mode: 'REAL' | 'SIMULATED'
 }
 
 const TYPE_ICONS: Record<string, string> = {
@@ -59,7 +60,8 @@ const disruptions = computed(() =>
       severity: severityLabel,
       tone,
       icon: TYPE_ICONS[item.type] ?? 'i-lucide-triangle-alert',
-      acknowledged: isResolved
+      acknowledged: isResolved,
+      dataMode: item.data_mode === 'REAL' ? 'REAL' : 'SIMULATED'
     }
   })
 )
@@ -144,6 +146,12 @@ onMounted(() => {
                   }"
                 >
                   {{ item.severity }}
+                </span>
+                <span
+                  class="pill"
+                  :class="item.dataMode === 'SIMULATED' ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'"
+                >
+                  {{ item.dataMode }}
                 </span>
               </div>
               <p class="mt-1 text-xs text-neutral-400">{{ item.detail }}</p>

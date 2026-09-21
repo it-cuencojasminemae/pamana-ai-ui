@@ -24,6 +24,7 @@ interface LiveVehicle {
   documentId: string
   vehicle_number: string
   occupancy_level: string | null
+  data_mode: 'REAL' | 'SIMULATED'
   direction: string
   latitude?: number | string | null
   longitude?: number | string | null
@@ -32,23 +33,7 @@ interface LiveVehicle {
   updated_at?: string | null
 }
 
-const nearbyStops = [
-  {
-    name: 'San Luis Central Terminal',
-    wait: '3 min wait',
-    tone: 'lime'
-  },
-  {
-    name: 'Santo Tomas Stop',
-    wait: '9 min wait',
-    tone: 'amber'
-  },
-  {
-    name: 'OGC Stop',
-    wait: '5 min wait',
-    tone: 'lime'
-  }
-]
+const nearbyStops: Array<{ name: string; wait: string; tone: string }> = []
 
 const OCCUPANCY_LABELS: Record<string, string> = {
   empty: 'Empty',
@@ -85,6 +70,7 @@ const vehicles = computed(() => {
         `Vehicle ${vehicle.vehicle_id}`,
       occupancy,
       occupancyKey,
+      dataMode: vehicle.data_mode === 'REAL' ? 'REAL' : 'SIMULATED',
       direction:
         vehicle.direction === 'inbound'
           ? 'Inbound'
@@ -274,7 +260,7 @@ onBeforeUnmount(() => {
       <div class="space-y-3 lg:col-span-2">
         <PamanaMapPanel
           icon="i-lucide-map"
-          label="San Luis ↔ San Fernando corridor"
+          label="Live transport map"
           height="460px"
           tone="lime"
           :markers="rawVehicles"
@@ -358,6 +344,10 @@ onBeforeUnmount(() => {
                 {{ stop.wait }}
               </span>
             </div>
+
+            <p v-if="nearbyStops.length === 0" class="py-3 text-sm text-neutral-500">
+              Verified nearby stops are not available yet.
+            </p>
           </div>
         </UCard>
 
@@ -429,16 +419,20 @@ onBeforeUnmount(() => {
                 </p>
               </div>
 
-              <span
-                class="pill shrink-0 normal-case"
-                :class="
-                  getOccupancyClasses(
-                    vehicle.occupancyKey
-                  )
-                "
-              >
-                {{ vehicle.occupancy }}
-              </span>
+              <div class="flex shrink-0 flex-col items-end gap-1">
+                <span
+                  class="pill normal-case"
+                  :class="vehicle.dataMode === 'SIMULATED' ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'"
+                >
+                  {{ vehicle.dataMode }}
+                </span>
+                <span
+                  class="pill normal-case"
+                  :class="getOccupancyClasses(vehicle.occupancyKey)"
+                >
+                  {{ vehicle.occupancy }}
+                </span>
+              </div>
             </div>
           </div>
 

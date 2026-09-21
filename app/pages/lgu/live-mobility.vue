@@ -18,6 +18,7 @@ interface LiveVehicle {
   documentId: string
   plate_number: string
   speed: number | null
+  data_mode: 'REAL' | 'SIMULATED'
 }
 
 const rawVehicles = ref<LiveVehicle[]>([])
@@ -26,7 +27,8 @@ const vehicles = computed(() =>
   rawVehicles.value.map(vehicle => ({
     plate: vehicle.plate_number,
     speed: typeof vehicle.speed === 'number' && vehicle.speed > 0 ? `${vehicle.speed} km/h` : 'Stopped',
-    status: typeof vehicle.speed === 'number' && vehicle.speed > 0 ? 'moving' : 'stopped'
+    status: typeof vehicle.speed === 'number' && vehicle.speed > 0 ? 'moving' : 'stopped',
+    dataMode: vehicle.data_mode === 'REAL' ? 'REAL' : 'SIMULATED'
   }))
 )
 
@@ -67,8 +69,8 @@ onUnmounted(() => {
       >
         <template #overlay>
           <div class="absolute left-4 top-4 z-20 flex flex-wrap gap-2">
-            <USelect v-model="cooperative" :items="['All cooperatives', 'San Luis Transport Coop', 'San Fernando Coop']" class="w-48" />
-            <USelect v-model="route" :items="['All routes', 'SL–SF 01', 'SL–SF 04']" class="w-36" />
+            <USelect v-model="cooperative" :items="['All cooperatives']" class="w-48" />
+            <USelect v-model="route" :items="['All routes']" class="w-36" />
           </div>
         </template>
 
@@ -92,7 +94,9 @@ onUnmounted(() => {
               </span>
               {{ vehicle.plate }}
             </span>
-            <span class="text-xs" :class="vehicle.status === 'stopped' ? 'text-amber-600' : 'text-neutral-400'">{{ vehicle.speed }}</span>
+            <span class="text-right text-xs" :class="vehicle.status === 'stopped' ? 'text-amber-600' : 'text-neutral-400'">
+              {{ vehicle.speed }}<br>{{ vehicle.dataMode }}
+            </span>
           </div>
         </div>
       </UCard>
