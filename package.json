@@ -1,0 +1,28 @@
+{
+  "name": "pamana-frontend",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "test:trip-planner-selection-contract": "node scripts/test-trip-planner-selection-contract.cjs"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.126",
+    "@nuxt/ui": "^4.11.0",
+    "leaflet": "^1.9.4",
+    "nuxt": "^4.5.2",
+    "tailwindcss": "^4.3.3",
+    "vue": "^3.5.41",
+    "vue-router": "^5.2.0",
+    "zod": "^4.4.3"
+  },
+  "allowScripts": {
+    "vue-demi@0.14.10": true,
+    "esbuild@0.28.2": true,
+    "esbuild@0.27.7": true
+  }
+}
