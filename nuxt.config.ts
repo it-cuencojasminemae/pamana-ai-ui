@@ -13,7 +13,11 @@ export default defineNuxtConfig({
       demoMode: process.env.NUXT_PUBLIC_DEMO_MODE || 'true',
       // CARTO's browser tile key is intentionally public. Leave it empty to
       // retain the OpenStreetMap fallback rather than embedding a key in Vue.
-      cartoBasemapKey: process.env.NUXT_PUBLIC_CARTO_BASEMAP_KEY || ''
+      cartoBasemapKey: process.env.NUXT_PUBLIC_CARTO_BASEMAP_KEY || '',
+      // Browser-visible Geoapify key: restrict origins/referrers in the provider console.
+      geoapifyApiKey: '',
+      // Optional Geoapify style identifier (not a URL containing a key).
+      geoapifyMapStyle: ''
     }
   }
 })
