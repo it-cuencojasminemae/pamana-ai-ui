@@ -1,5 +1,6 @@
 import type { FeatureCollection, Geometry } from 'geojson'
 import type { GeographicConfig } from './mapConfiguration.ts'
+import type { LocationSearchOptions, SelectedLocation } from '../types/location.ts'
 import { resolveMapConfiguration } from './mapConfiguration.ts'
 
 export type GeographyError = 'MISSING_API_KEY' | 'INVALID_CONFIGURATION' | 'INVALID_INPUT' | 'UNAUTHORIZED' | 'RATE_LIMITED' | 'HTTP_ERROR' | 'NETWORK_ERROR' | 'INVALID_RESPONSE' | 'ABORTED' | 'TIMEOUT'
@@ -7,10 +8,44 @@ export type GeographyResult =
   | { ok: true; source: 'GEOAPIFY'; authority: 'EXTERNAL_GEOGRAPHY'; data: FeatureCollection<Geometry> }
   | { ok: false; error: GeographyError }
 export interface GeographicPoint { latitude: number; longitude: number }
+export type LocationResult =
+  | { ok: true; source: 'GEOAPIFY'; authority: 'EXTERNAL_GEOGRAPHY'; data: SelectedLocation[] }
+  | { ok: false; error: GeographyError }
+export const PAMPANGA_SEARCH_OPTIONS: Readonly<LocationSearchOptions> = {
+  countryCode: 'ph',
+  // Ranking bias only. The Philippine country filter remains broad enough for nearby valid results.
+  bias: { longitude: 120.69, latitude: 15.09 },
+  limit: 6,
+  language: 'en',
+}
 const fail = (error: GeographyError): GeographyResult => ({ ok: false, error })
 const pointValid = (point: GeographicPoint) => point && Number.isFinite(point.latitude) && Number.isFinite(point.longitude)
   && Math.abs(point.latitude) <= 90 && Math.abs(point.longitude) <= 180
 const textValid = (text: string) => typeof text === 'string' && text.trim().length > 0 && text.length <= 500
+const coordinate = (value: unknown) => typeof value === 'number' && Number.isFinite(value) ? value : null
+
+export function normalizeGeoapifyLocations(collection: FeatureCollection<Geometry>): SelectedLocation[] {
+  const seen = new Set<string>()
+  return collection.features.flatMap((feature, index) => {
+    if (feature.geometry?.type !== 'Point') return []
+    const [rawLng, rawLat] = feature.geometry.coordinates
+    const properties = (feature.properties ?? {}) as Record<string, unknown>
+    const lng = coordinate(rawLng) ?? coordinate(properties.lon)
+    const lat = coordinate(rawLat) ?? coordinate(properties.lat)
+    if (lat === null || lng === null || !pointValid({ latitude: lat, longitude: lng })) return []
+    const formatted = typeof properties.formatted === 'string' ? properties.formatted.trim() : ''
+    const addressLine1 = typeof properties.address_line1 === 'string' ? properties.address_line1.trim() : ''
+    const name = typeof properties.name === 'string' ? properties.name.trim() : ''
+    const label = name || addressLine1 || formatted
+    if (!label) return []
+    const placeId = typeof properties.place_id === 'string' && properties.place_id ? properties.place_id : undefined
+    const id = String(placeId ?? feature.id ?? `geoapify-${index}-${lng}-${lat}`)
+    if (seen.has(id)) return []
+    seen.add(id)
+    const category = typeof properties.category === 'string' ? properties.category : undefined
+    return [{ id, label, formattedAddress: formatted || undefined, lat, lng, placeId, category, source: 'GEOAPIFY' as const }]
+  })
+}
 
 /** External geography only. Never calls PAMANA APIs, auth/session helpers or DB. */
 export function createGeoapifyClient(
@@ -48,14 +83,32 @@ export function createGeoapifyClient(
       signal?.removeEventListener('abort', cancel)
     }
   }
-  const search = (path: string, text: string, signal?: AbortSignal) => textValid(text)
-    ? request(path, { text: text.trim(), format: 'geojson', limit: '5' }, signal)
+  const searchParams = (text: string, searchOptions: LocationSearchOptions = {}) => {
+    const limit = Math.min(8, Math.max(1, Math.trunc(searchOptions.limit ?? 5)))
+    const params: Record<string, string> = { text: text.trim(), format: 'geojson', limit: String(limit) }
+    if (searchOptions.countryCode && /^[a-z]{2}$/i.test(searchOptions.countryCode)) params.filter = `countrycode:${searchOptions.countryCode.toLowerCase()}`
+    if (searchOptions.bias && pointValid(searchOptions.bias)) params.bias = `proximity:${searchOptions.bias.longitude},${searchOptions.bias.latitude}`
+    if (searchOptions.language && /^[a-z]{2}$/i.test(searchOptions.language)) params.lang = searchOptions.language.toLowerCase()
+    return params
+  }
+  const search = (path: string, text: string, signal?: AbortSignal, searchOptions: LocationSearchOptions = {}) => textValid(text)
+    ? request(path, searchParams(text, searchOptions), signal)
     : Promise.resolve(fail('INVALID_INPUT'))
+  async function normalizedSearch(path: string, text: string, searchOptions: LocationSearchOptions, signal?: AbortSignal): Promise<LocationResult> {
+    const result = await search(path, text, signal, searchOptions)
+    return result.ok ? { ...result, data: normalizeGeoapifyLocations(result.data) } : result
+  }
   return {
-    autocomplete: (text: string, signal?: AbortSignal) => search('/v1/geocode/autocomplete', text, signal),
-    forwardGeocode: (text: string, signal?: AbortSignal) => search('/v1/geocode/search', text, signal),
+    autocomplete: (text: string, signal?: AbortSignal, searchOptions: LocationSearchOptions = {}) => search('/v1/geocode/autocomplete', text, signal, searchOptions),
+    forwardGeocode: (text: string, signal?: AbortSignal, searchOptions: LocationSearchOptions = {}) => search('/v1/geocode/search', text, signal, searchOptions),
+    autocompleteLocations: (text: string, searchOptions: LocationSearchOptions = PAMPANGA_SEARCH_OPTIONS, signal?: AbortSignal) => normalizedSearch('/v1/geocode/autocomplete', text, searchOptions, signal),
+    forwardGeocodeLocations: (text: string, searchOptions: LocationSearchOptions = PAMPANGA_SEARCH_OPTIONS, signal?: AbortSignal) => normalizedSearch('/v1/geocode/search', text, searchOptions, signal),
     reverseGeocode(point: GeographicPoint, signal?: AbortSignal) {
       return pointValid(point) ? request('/v1/geocode/reverse', { lat: String(point.latitude), lon: String(point.longitude), format: 'geojson' }, signal) : Promise.resolve(fail('INVALID_INPUT'))
+    },
+    async reverseGeocodeLocation(point: GeographicPoint, signal?: AbortSignal): Promise<LocationResult> {
+      const result = await (pointValid(point) ? request('/v1/geocode/reverse', { lat: String(point.latitude), lon: String(point.longitude), format: 'geojson', limit: '1' }, signal) : Promise.resolve(fail('INVALID_INPUT')))
+      return result.ok ? { ...result, data: normalizeGeoapifyLocations(result.data).slice(0, 1) } : result
     },
     searchPlaces(categories: string[], center: GeographicPoint, radiusMeters: number, signal?: AbortSignal) {
       if (!pointValid(center) || !Array.isArray(categories) || !categories.length || categories.some(category => !/^[a-z][a-z0-9_.]+$/.test(category))

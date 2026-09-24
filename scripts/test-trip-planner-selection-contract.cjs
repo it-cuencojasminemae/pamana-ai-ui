@@ -17,7 +17,9 @@ assert.match(page, /options\.value\.find\(option => option\.id === selectedOptio
 assert.match(page, /selectedOption\.value\?\.stops/);
 assert.match(page, /:route-points="selectedOptionStops"/);
 assert.match(page, /:markers="selectedOptionMarkers"/);
-assert.match(page, /:fit-key="selectedOption\?\.id"/);
+assert.match(page, /:nodes="geographicLocationMarkers"/);
+assert.match(page, /:fit-key="mapFitKey"/);
+assert.match(page, /selectedOption\.value\?\.id/);
 
 const fixtures = {
   cheapest: [
@@ -55,5 +57,5 @@ assert.ok(
 );
 
 console.log('ok - selected route stops and markers are derived from selectedOption only');
-console.log('ok - the selected stop list is passed unchanged to the Leaflet panel');
+console.log('ok - selected stops and resolved geographic markers are passed through the provider-neutral panel');
 console.log('ok - selecting the direct fixture excludes the transfer-route stop row');

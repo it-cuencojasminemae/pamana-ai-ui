@@ -1,5 +1,7 @@
 <script setup lang="ts">
 // @ts-nocheck
+import type { SelectedLocation } from '../../types/location'
+import { locationMapFeature } from '../../services/locationPresentation'
 
 definePageMeta({
   middleware: ['auth', 'passenger']
@@ -13,6 +15,7 @@ const { apiFetch } = useApi()
 const toast = useToast()
 const pageRoute = useRoute()
 const router = useRouter()
+const geoapify = useGeoapify()
 
 const form = reactive({
   origin: '',
@@ -20,6 +23,9 @@ const form = reactive({
   departure: 'Depart now',
   vehicle: 'All vehicle types'
 })
+const originLocation = ref<SelectedLocation | null>(null)
+const destinationLocation = ref<SelectedLocation | null>(null)
+let queryLocationAbort: AbortController | null = null
 
 const departureOptions = [
   'Depart now',
@@ -202,6 +208,16 @@ const demoMode = computed(() => String(config.public.demoMode).toLowerCase() !==
 const selectedOption = computed<TripOption | null>(() => {
   return options.value.find(option => option.id === selectedOptionId.value) ?? options.value[0] ?? null
 })
+const geographicLocationMarkers = computed(() => [
+  ...(originLocation.value ? [locationMapFeature(originLocation.value, 'origin')] : []),
+  ...(destinationLocation.value ? [locationMapFeature(destinationLocation.value, 'destination')] : []),
+])
+const mapFitKey = computed(() => [
+  originLocation.value?.id ?? '', destinationLocation.value?.id ?? '', selectedOption.value?.id ?? '',
+].join('|'))
+
+watch(originLocation, value => { form.origin = value?.label ?? form.origin })
+watch(destinationLocation, value => { form.destination = value?.label ?? form.destination })
 
 const fareRange = computed(() => {
   const fares = options.value
@@ -335,6 +351,8 @@ function loadLocationsFromQuery() {
   const origin = getQueryValue(pageRoute.query.from) || getQueryValue(pageRoute.query.origin)
   const destination = getQueryValue(pageRoute.query.to) || getQueryValue(pageRoute.query.destination)
 
+  if (!origin.trim() && !destination.trim()) return false
+
   if (origin.trim()) {
     form.origin = origin.trim()
   }
@@ -343,7 +361,19 @@ function loadLocationsFromQuery() {
     form.destination = destination.trim()
   }
 
-  return Boolean(origin.trim() && destination.trim())
+  queryLocationAbort?.abort()
+  queryLocationAbort = new AbortController()
+  const resolve = async (text: string) => {
+    if (!text.trim()) return null
+    const result = await geoapify.forwardGeocodeLocations(text.trim(), undefined, queryLocationAbort!.signal)
+    return result.ok ? result.data[0] ?? null : null
+  }
+  void Promise.all([resolve(origin), resolve(destination)]).then(([resolvedOrigin, resolvedDestination]) => {
+    if (queryLocationAbort?.signal.aborted) return
+    originLocation.value = resolvedOrigin
+    destinationLocation.value = resolvedDestination
+  })
+  return true
 }
 
 function formatMoney(value: number | null | undefined) {
@@ -386,6 +416,16 @@ function validateSearch() {
     return false
   }
 
+  if (!originLocation.value || !destinationLocation.value) {
+    toast.add({
+      title: 'Select resolved locations',
+      description: 'Choose both places from the suggestions before searching.',
+      color: 'warning'
+    })
+
+    return false
+  }
+
   if (origin.toLowerCase() === destination.toLowerCase()) {
     toast.add({
       title: 'Choose another destination',
@@ -400,10 +440,15 @@ function validateSearch() {
 }
 
 function swapLocations() {
-  const currentOrigin = form.origin
+  const currentOrigin = originLocation.value
+  originLocation.value = destinationLocation.value
+  destinationLocation.value = currentOrigin
+  form.origin = originLocation.value?.label ?? ''
+  form.destination = destinationLocation.value?.label ?? ''
+}
 
-  form.origin = form.destination
-  form.destination = currentOrigin
+function updateLocationText(mode: 'origin' | 'destination', value: string) {
+  form[mode] = value
 }
 
 async function updateSearchQuery() {
@@ -495,9 +540,10 @@ async function explainRecommendation() {
 
 onMounted(() => {
   if (loadLocationsFromQuery()) {
-    searchRoutes(false)
+    // URL/quick-place text is resolving to provider coordinates. Route search remains user initiated.
   }
 })
+onBeforeUnmount(() => queryLocationAbort?.abort())
 </script>
 
 <template>
@@ -542,23 +588,14 @@ onMounted(() => {
             @submit.prevent="searchRoutes(true)"
           >
             <!-- Origin -->
-            <div
-              class="flex items-center gap-2 rounded-2xl border border-neutral-900/10 bg-white/70 px-3 py-1.5 transition focus-within:border-lime-500 focus-within:ring-4 focus-within:ring-lime-300/15"
-            >
-              <UIcon
-                name="i-lucide-circle"
-                class="size-3 shrink-0 text-neutral-500"
-              />
-
-              <UInput
-                v-model="form.origin"
-                aria-label="Trip origin"
-                placeholder="Enter your starting point"
-                autocomplete="off"
-                variant="none"
-                class="planner-input w-full"
-              />
-            </div>
+            <LocationPamanaLocationSearch
+              v-model="originLocation"
+              mode="origin"
+              placeholder="Current location or search a place"
+              :initial-query="form.origin"
+              allow-current-location
+              @text-updated="updateLocationText('origin', $event)"
+            />
 
             <!-- Swap button -->
             <div class="flex items-center justify-center">
@@ -576,23 +613,13 @@ onMounted(() => {
             </div>
 
             <!-- Destination -->
-            <div
-              class="flex items-center gap-2 rounded-2xl border border-lime-400/40 bg-white/70 px-3 py-1.5 transition focus-within:border-lime-500 focus-within:ring-4 focus-within:ring-lime-300/15"
-            >
-              <UIcon
-                name="i-lucide-map-pin"
-                class="size-4 shrink-0 text-lime-600"
-              />
-
-              <UInput
-                v-model="form.destination"
-                aria-label="Trip destination"
-                placeholder="Enter your destination"
-                autocomplete="off"
-                variant="none"
-                class="planner-input w-full"
-              />
-            </div>
+            <LocationPamanaLocationSearch
+              v-model="destinationLocation"
+              mode="destination"
+              placeholder="Search destination"
+              :initial-query="form.destination"
+              @text-updated="updateLocationText('destination', $event)"
+            />
 
             <!-- Preferences -->
             <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
@@ -620,8 +647,8 @@ onMounted(() => {
               :loading="loading"
               :disabled="
                 loading ||
-                !form.origin.trim() ||
-                !form.destination.trim()
+                !originLocation ||
+                !destinationLocation
               "
             >
               {{ loading ? 'Searching…' : 'Search Routes' }}
@@ -886,10 +913,11 @@ onMounted(() => {
           tone="lime"
           :route-points="selectedOptionStops"
           :markers="selectedOptionMarkers"
+          :nodes="geographicLocationMarkers"
           :route-color="selectedRouteColor"
           :route-label="selectedOption ? `${selectedOption.service_name} · Approximate corridor` : 'Approximate corridor'"
           :route-dashed="selectedRouteIsSimulated"
-          :fit-key="selectedOption?.id"
+          :fit-key="mapFitKey"
         >
           <template #overlay>
             <div class="m-3 ml-auto grid w-fit max-w-[calc(100%-1.5rem)] grid-cols-2 gap-x-3 gap-y-1 rounded-2xl border border-white/80 bg-white/80 px-3 py-2 text-[10px] text-neutral-600 shadow-lg shadow-neutral-900/10 backdrop-blur sm:grid-cols-3">

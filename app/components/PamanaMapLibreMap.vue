@@ -166,7 +166,7 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
         <div v-else class="pamana-libre__empty">No transport features to display.<br>Unverified coordinates stay off the map.</div>
         <div v-if="selected" class="pamana-libre__detail" role="status">
           <strong>{{ selected.properties.label }}</strong>
-          <span>{{ MAP_TOKENS[selected.properties.semantic].label }} · {{ selected.properties.dataMode === 'SIMULATED' ? 'Simulated / demo' : selected.properties.verificationStatus || 'Verification not supplied' }}</span>
+          <span>{{ MAP_TOKENS[selected.properties.semantic].label }} · {{ selected.properties.isTransportNode === false ? 'Geographic place selection' : selected.properties.dataMode === 'SIMULATED' ? 'Simulated / demo' : selected.properties.verificationStatus || 'Verification not supplied' }}</span>
         </div>
       </div>
       <div class="pamana-libre__actions">
@@ -174,7 +174,7 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
         <button v-if="choices.length" type="button" class="pamana-libre__button" aria-label="Fit supplied transport features" @click="presentation?.fit">Fit features</button>
       </div>
       <div class="pamana-libre__legend" aria-label="Map legend">
-        <span v-for="semantic in ['passenger', 'pickup', 'stop', 'transfer', 'destination'] as const" :key="semantic"><i :style="{ background: MAP_TOKENS[semantic].color }" />{{ MAP_TOKENS[semantic].label }}</span>
+        <span v-for="semantic in ['passenger', 'origin-location', 'pickup', 'stop', 'transfer', 'destination'] as const" :key="semantic"><i :style="{ background: MAP_TOKENS[semantic].color }" />{{ MAP_TOKENS[semantic].label }}</span>
       </div>
     </template>
   </section>

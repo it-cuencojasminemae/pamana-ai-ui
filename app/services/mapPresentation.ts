@@ -2,6 +2,7 @@ import type { MapPointFeature, MapLineFeature, MapSemantic } from '../types/map.
 
 export const MAP_TOKENS = {
   passenger: { color: '#2563eb', label: 'Your location', glyph: 'person' },
+  'origin-location': { color: '#15803d', label: 'Selected origin', glyph: 'circle' },
   pickup: { color: '#15803d', label: 'Pickup', glyph: 'up' },
   stop: { color: '#7c3aed', label: 'Stop', glyph: 'dot' },
   dropoff: { color: '#0f766e', label: 'Drop-off', glyph: 'down' },
