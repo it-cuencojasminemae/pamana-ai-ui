@@ -45,4 +45,16 @@ The final fix retains the explicit Vite-bundled MapLibre 6 worker in the shared 
 
 Validation passed: frontend Phase 6/7 tests and selection contract; backend Phase 1–5B, planning eligibility, trip-search planning gate and time-slot suites; frontend and backend production builds; missing-key production SSR smoke (including production 404 for this preview); read-only transport-record integrity check. Build output includes dependency deprecation/chunk-size warnings but no build failure. No schema, seed, migration, planning record, geocoding UI, or journey-engine changes were made.
 
+## Manual completion checklist (2026-09-24)
+
+- Refresh returned the map to `READY` with the Geoapify basemap visible.
+- Zoom buttons and pointer-drag panning changed the viewport.
+- After two manual zooms and a pointer pan, `Refresh live vehicles` advanced the synthetic vehicle update and moved only that feature. The route and fixed markers retained the same screen positions, proving that the camera was not reset.
+- A subsequent simulated GPS update also retained the manually selected camera. `My Location` then moved the camera only when explicitly clicked.
+- Narrowing the test container to the mobile width retained the canvas, overlays, controls and attribution.
+- The browser reported a geolocation error/denial while the map stayed in `READY`; the unavailable location only disabled the recenter control until a valid location was supplied.
+- Current-session browser diagnostics contained zero warnings/errors, Geoapify authorization errors or MapLibre errors, and no `apiKey=` text.
+- The development fixture is synthetic and offshore. Phase 7 source contains no San Juan, SM Pampanga or Robinsons coordinates; the only regional coordinate is the documented neutral empty-map presentation center.
+- `PamanaLeafletMap.vue` and the `leaflet` dependency remain present for rollback compatibility.
+
 Database validation uses `test:phase-6-db` read-only; prior seeding/backfill scripts must not be run for this phase. Initial transport-row digest: `77776e1a08d971a39b2718a10a116c7748e452900f26931dfbc90acd0377fdae`. Routes 7, transport nodes 10, variants 2; variant stops, fares and service patterns 0; planning-enabled count 0.

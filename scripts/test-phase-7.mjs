@@ -87,6 +87,9 @@ test('component compiles with client lifecycle, redacted states, cleanup and res
   assert.doesNotMatch(panel, /suppliedLine\(props.routePoints/)
   assert.match(panel, /provider: 'leaflet'/)
   for (const page of ['trip-planner', 'map']) assert.match(read(`app/pages/passenger/${page}.vue`), /provider="maplibre"/)
+  const preview = read('app/pages/dev/map-preview.vue')
+  assert.match(preview, /Refresh live vehicles/)
+  assert.match(preview, /:vehicles="vehicles"/)
   assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
 })
 
