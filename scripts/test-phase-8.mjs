@@ -98,7 +98,7 @@ test('origin and destination are external geographic map markers, never transpor
   const origin = locationMapFeature(base, 'origin')
   const destination = locationMapFeature(base, 'destination')
   assert.equal(origin.properties.semantic, 'origin-location')
-  assert.equal(destination.properties.semantic, 'destination')
+  assert.equal(destination.properties.semantic, 'destination-location')
   for (const marker of [origin, destination]) {
     assert.deepEqual(marker.geometry.coordinates, [120, 15])
     assert.equal(marker.properties.source, 'GEOAPIFY')

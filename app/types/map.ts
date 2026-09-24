@@ -4,13 +4,13 @@ import type { DataMode, VerificationStatus } from './transportation'
 /** Presentation interchange only, NOT a journey response or routing decision model.
  * GeoJSON positions use [longitude, latitude]. Unknown coordinates produce no feature.
  */
-export type MapSemantic = 'passenger' | 'origin-location' | 'pickup' | 'dropoff' | 'stop' | 'transfer' | 'terminal'
+export type MapSemantic = 'passenger' | 'origin-location' | 'destination-location' | 'pickup' | 'dropoff' | 'stop' | 'transfer' | 'terminal'
   | 'vehicle' | 'destination' | 'essential-service' | 'walking-route' | 'transport-route' | 'disruption'
 export interface MapFeatureProperties {
   [key: string]: unknown
   semantic: MapSemantic
   label: string
-  source: 'PAMANA' | 'GEOAPIFY' | 'DEVICE'
+  source: 'PAMANA' | 'PAMANA_TRANSPORT_DB' | 'GEOAPIFY' | 'DEVICE'
   recordId?: string
   legId?: string
   dataMode?: DataMode

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 // @ts-nocheck
+import { sortTransportNodesByGeographicDistance, transportNodeFeatureCollection, transportNodeTypeLabel } from '../../services/transportNodes'
 
 definePageMeta({
   middleware: ['auth', 'passenger']
@@ -11,6 +12,12 @@ useHead({
 
 const { apiFetch } = useApi()
 const { location: userLocation, error: locationError, loading: locationLoading } = useGeolocation()
+const {
+  nodes: pamanaTransportNodes,
+  diagnostics: transportNodeDiagnostics,
+  status: transportNodeStatus,
+  load: loadTransportNodes
+} = useTransportNodes()
 
 const locationStatusLabel = computed(() => {
   if (userLocation.value) return 'Centered on your location'
@@ -33,7 +40,27 @@ interface LiveVehicle {
   updated_at?: string | null
 }
 
-const nearbyStops: Array<{ name: string; wait: string; tone: string }> = []
+const transportNodeFeatures = computed(() => transportNodeFeatureCollection(pamanaTransportNodes.value).features)
+const nearbyStops = computed(() => {
+  if (!userLocation.value) return []
+  return sortTransportNodesByGeographicDistance(pamanaTransportNodes.value, userLocation.value)
+    .slice(0, 5)
+    .map(({ node, distanceKm }) => ({
+      id: node.id,
+      name: node.name,
+      type: transportNodeTypeLabel(node.type),
+      distance: distanceKm < 1 ? `${Math.round(distanceKm * 1000)} m away` : `${distanceKm.toFixed(1)} km away`
+    }))
+})
+
+const transportNodeStatusMessage = computed(() => {
+  if (transportNodeStatus.value === 'loading') return 'Loading verified transport nodes…'
+  if (transportNodeStatus.value === 'unauthorized') return 'Verified transport nodes are unavailable for this account.'
+  if (transportNodeStatus.value === 'error') return 'Verified transport nodes are temporarily unavailable.'
+  if (transportNodeStatus.value === 'ready' && !pamanaTransportNodes.value.length) return 'Verified nearby stops are not available yet.'
+  if (!userLocation.value) return 'Share your location to sort verified stops by geographic distance.'
+  return ''
+})
 
 const OCCUPANCY_LABELS: Record<string, string> = {
   empty: 'Empty',
@@ -168,6 +195,7 @@ function handleVisibilityChange() {
 
 onMounted(() => {
   loadNearbyVehicles()
+  loadTransportNodes()
   startPolling()
 
   document.addEventListener(
@@ -265,6 +293,7 @@ onBeforeUnmount(() => {
           height="460px"
           tone="lime"
           :markers="rawVehicles"
+          :transport-nodes="transportNodeFeatures"
           :user-location="userLocation"
         />
 
@@ -327,29 +356,33 @@ onBeforeUnmount(() => {
           >
             <div
               v-for="stop in nearbyStops"
-              :key="stop.name"
+              :key="stop.id"
               class="flex items-center justify-between gap-3 py-3 first:pt-0 last:pb-0"
             >
-              <span class="text-sm text-neutral-700">
-                {{ stop.name }}
+              <span class="min-w-0 text-sm text-neutral-700">
+                <strong class="block truncate font-semibold">{{ stop.name }}</strong>
+                <span class="block text-xs text-neutral-500">{{ stop.type }}</span>
               </span>
 
               <span
-                class="pill shrink-0 normal-case"
-                :class="
-                  stop.tone === 'amber'
-                    ? 'bg-amber-100 text-amber-700'
-                    : 'bg-lime-300/15 text-lime-700'
-                "
+                class="pill shrink-0 bg-lime-300/15 normal-case text-lime-700"
               >
-                {{ stop.wait }}
+                {{ stop.distance }}
               </span>
             </div>
 
-            <p v-if="nearbyStops.length === 0" class="py-3 text-sm text-neutral-500">
-              Verified nearby stops are not available yet.
+            <p v-if="transportNodeStatusMessage" class="py-3 text-sm text-neutral-500" role="status">
+              {{ transportNodeStatusMessage }}
             </p>
           </div>
+
+          <p v-if="nearbyStops.length" class="mt-3 text-xs leading-relaxed text-neutral-500">
+            Sorted by geographic distance only. This is not a boarding or route recommendation.
+          </p>
+
+          <p v-if="transportNodeDiagnostics.unmapped || transportNodeDiagnostics.malformed" class="mt-2 text-xs leading-relaxed text-amber-700">
+            {{ transportNodeDiagnostics.unmapped + transportNodeDiagnostics.malformed }} transport {{ transportNodeDiagnostics.unmapped + transportNodeDiagnostics.malformed === 1 ? 'record is' : 'records are' }} not mapped because verified coordinates are unavailable.
+          </p>
         </UCard>
 
         <!-- Active vehicles -->

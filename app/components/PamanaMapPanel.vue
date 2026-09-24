@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<{
   tone?: 'lime' | 'emerald' | 'teal' | 'red'
   markers?: Record<string, any>[]
   nodes?: MapPointFeature[]
+  transportNodes?: MapPointFeature[]
   routePoints?: Record<string, any>[]
   userLocation?: { lat: number; lng: number } | null
   routeColor?: string
@@ -24,6 +25,7 @@ const props = withDefaults(defineProps<{
   tone: 'lime',
   markers: () => [],
   nodes: () => [],
+  transportNodes: () => [],
   routePoints: () => [],
   userLocation: null,
   routeColor: '#65a30d',
@@ -59,7 +61,7 @@ watch(() => props.provider, () => { compatibilityMode.value = false; mapFailed.v
       :route-geometry="routeGeometry"
       :fit-key="fitKey"
     />
-    <PamanaMapLibreMap v-else :height="height" :nodes="mapNodes" :lines="mapLines" :user-location="mapUserLocation" :fit-key="fitKey"
+    <PamanaMapLibreMap v-else :height="height" :nodes="mapNodes" :transport-nodes="transportNodes" :lines="mapLines" :user-location="mapUserLocation" :fit-key="fitKey"
       @feature-selected="emit('feature-selected', $event)"
       @map-error="mapFailed = true; emit('map-error', $event)" @map-ready="mapFailed = false; emit('map-ready')" />
     <button v-if="provider === 'maplibre' && (mapFailed || compatibilityMode)" type="button"

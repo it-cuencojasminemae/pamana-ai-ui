@@ -64,8 +64,8 @@ export function createMapPresentation(map: LibreMap, images: (semantic: keyof ty
     for (const layer of presentationLayers()) if (!map.getLayer(layer.id)) map.addLayer(layer)
     highlight()
   }
-  function fit() {
-    const coordinates = features.filter(f => f.properties.semantic !== 'passenger' && f.properties.semantic !== 'vehicle')
+  function fit(additional: MapPointFeature[] = []) {
+    const coordinates = [...features, ...additional].filter(f => f.properties.semantic !== 'passenger' && f.properties.semantic !== 'vehicle')
       .flatMap(f => f.geometry.type === 'Point' ? [f.geometry.coordinates] : f.geometry.coordinates)
     if (!coordinates.length) return
     const lngs = coordinates.map(p => p[0]!), lats = coordinates.map(p => p[1]!)
@@ -74,7 +74,8 @@ export function createMapPresentation(map: LibreMap, images: (semantic: keyof ty
   return {
     sync,
     update(next: Features, id: string | null) { features = next; selected = id; sync() },
-    fitOnIntent(token: unknown, enabled: boolean) { if (policy.shouldFit(token, enabled)) fit() },
+    select(id: string | null) { selected = id; highlight() },
+    fitOnIntent(token: unknown, enabled: boolean, additional: MapPointFeature[] = []) { if (policy.shouldFit(token, enabled)) fit(additional) },
     fit,
   }
 }

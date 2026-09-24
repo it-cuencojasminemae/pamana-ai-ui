@@ -4,6 +4,7 @@ import type { MapPointFeature, MapLineFeature } from '../types/map'
 import { resolveMapConfiguration } from '../services/mapConfiguration'
 import { MAP_TOKENS, renderableFeatures, validPosition } from '../services/mapPresentation'
 import { createMapPresentation, LAYER_IDS } from '../services/mapLibrePresentation'
+import { createTransportNodePresentation, TRANSPORT_NODE_LAYER_IDS } from '../services/transportNodePresentation'
 
 type Status = 'INITIALIZING' | 'READY' | 'MISSING_CONFIG' | 'TILE_ERROR' | 'INITIALIZATION_ERROR'
 const props = withDefaults(defineProps<{
@@ -12,12 +13,13 @@ const props = withDefaults(defineProps<{
   zoom?: number
   userLocation?: { lat: number; lng: number } | null
   nodes?: MapPointFeature[]
+  transportNodes?: MapPointFeature[]
   lines?: MapLineFeature[]
   vehicles?: MapPointFeature[]
   selectedFeatureId?: string | null
   fitToFeatures?: boolean
   fitKey?: string | number | null
-}>(), { height: '420px', zoom: 11, userLocation: null, nodes: () => [], lines: () => [], vehicles: () => [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
+}>(), { height: '420px', zoom: 11, userLocation: null, nodes: () => [], transportNodes: () => [], lines: () => [], vehicles: () => [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
 const emit = defineEmits<{
   'feature-selected': [id: string]
   'map-ready': []
@@ -30,8 +32,15 @@ const status = ref<Status>('INITIALIZING')
 const hasLoaded = ref(false)
 const selection = ref<string | null>(props.selectedFeatureId)
 const features = computed(() => renderableFeatures(props.nodes, props.lines, props.vehicles, props.userLocation))
-const choices = computed(() => features.value.filter(f => f.properties.semantic !== 'passenger'))
-const selected = computed(() => features.value.find(f => f.id === selection.value))
+const transportFeatures = computed(() => renderableFeatures(props.transportNodes, [], [], null) as MapPointFeature[])
+const allFeatures = computed(() => [...features.value, ...transportFeatures.value])
+const choices = computed(() => allFeatures.value.filter(f => f.properties.semantic !== 'passenger'))
+const selected = computed(() => allFeatures.value.find(f => f.id === selection.value))
+const legendSemantics = computed(() => {
+  const visible = new Set(allFeatures.value.filter(feature => feature.geometry.type === 'Point').map(feature => feature.properties.semantic))
+  return ['passenger', 'origin-location', 'destination-location', 'vehicle', 'pickup', 'stop', 'transfer', 'terminal', 'dropoff', 'destination', 'essential-service']
+    .filter(semantic => visible.has(semantic as keyof typeof MAP_TOKENS)) as (keyof typeof MAP_TOKENS)[]
+})
 const userIsValid = computed(() => props.userLocation && validPosition([props.userLocation.lng, props.userLocation.lat]))
 const labels: Record<Status, string> = {
   INITIALIZING: 'Preparing your map…', READY: 'Map ready', MISSING_CONFIG: 'Map unavailable — Geoapify configuration is missing or invalid.',
@@ -39,6 +48,7 @@ const labels: Record<Status, string> = {
 }
 let map: LibreMap | null = null
 let presentation: ReturnType<typeof createMapPresentation> | null = null
+let transportPresentation: ReturnType<typeof createTransportNodePresentation> | null = null
 let resizeObserver: ResizeObserver | null = null
 let timeout: ReturnType<typeof setTimeout> | undefined
 let generation = 0
@@ -52,9 +62,19 @@ function setError(next: Status) {
   if (next === 'TILE_ERROR' || next === 'INITIALIZATION_ERROR') loader.reportRenderFailure(next === 'TILE_ERROR' ? 'TILE_LOAD_FAILED' : 'MAP_INITIALIZATION_FAILED')
   emit('map-error', next) // No provider error object or key-bearing URLs escape.
 }
-function updatePresentation() {
+function updateFeaturePresentation() {
   try {
     presentation?.update(features.value, selection.value)
+    return true
+  } catch {
+    setError('INITIALIZATION_ERROR')
+    return false
+  }
+}
+function updateTransportPresentation() {
+  try {
+    transportPresentation?.update(transportFeatures.value)
+    transportPresentation?.select(selection.value)
     return true
   } catch {
     setError('INITIALIZATION_ERROR')
@@ -68,12 +88,14 @@ function select(id: string) {
 function recenter() {
   if (map && userIsValid.value && props.userLocation) map.easeTo({ center: [props.userLocation.lng, props.userLocation.lat], zoom: Math.max(map.getZoom(), 15), duration: 500 })
 }
+function fitAll() { presentation?.fit(transportFeatures.value) }
 function cleanup() {
   clearTimeout(timeout)
   resizeObserver?.disconnect(); resizeObserver = null
   detach?.(); detach = null
   map?.remove(); map = null
   presentation = null
+  transportPresentation = null
 }
 async function initialize() {
   const current = ++generation
@@ -100,17 +122,18 @@ async function initialize() {
     map.addControl(new lib.AttributionControl({ compact: true }), 'bottom-right')
     map.getCanvas().setAttribute('aria-label', 'PAMANA transport map. Use zoom controls or arrow keys to explore.')
     presentation = createMapPresentation(map)
+    transportPresentation = createTransportNodePresentation(map)
     const onLoad = () => {
       try {
-        if (!updatePresentation()) return
-        presentation?.fitOnIntent(props.fitKey, props.fitToFeatures)
+        if (!updateFeaturePresentation() || !updateTransportPresentation()) return
+        presentation?.fitOnIntent(props.fitKey, props.fitToFeatures, transportFeatures.value)
         clearTimeout(timeout)
         hasLoaded.value = true
         status.value = 'READY'
         emit('map-ready')
       } catch { setError('INITIALIZATION_ERROR') }
     }
-    const onStyle = () => { updatePresentation() }
+    const onStyle = () => { updateFeaturePresentation(); updateTransportPresentation() }
     const onError = () => { clearTimeout(timeout); setError('TILE_ERROR') }
     const onIdle = () => {
       // Successful subsequent tile loads recover without rebuilding or refitting.
@@ -121,7 +144,7 @@ async function initialize() {
     }
     const onClick = (event: MapMouseEvent) => {
       if (!map) return
-      const layers = LAYER_IDS.filter(id => map!.getLayer(id))
+      const layers = [...TRANSPORT_NODE_LAYER_IDS, ...LAYER_IDS].filter(id => map!.getLayer(id))
       if (!layers.length) return
       const hit = map.queryRenderedFeatures(event.point, { layers })[0]
       if (hit?.properties?.featureId) select(String(hit.properties.featureId))
@@ -134,12 +157,14 @@ async function initialize() {
   } catch { cleanup(); setError('INITIALIZATION_ERROR') }
 }
 
-// Polling moves source features only. No fitBounds, jumpTo or map recreation here.
-watch(features, () => updatePresentation(), { deep: true })
+// Vehicle/GPS polling updates only the general feature source. Transport infrastructure has its own lifecycle.
+watch(features, () => updateFeaturePresentation(), { deep: true })
+// Node refreshes call setData on the dedicated source and never move the camera.
+watch(transportFeatures, () => updateTransportPresentation(), { deep: true })
 watch(() => props.selectedFeatureId, value => { selection.value = value })
-watch(selection, () => updatePresentation())
+watch(selection, value => { presentation?.select(value); transportPresentation?.select(value) })
 watch(() => props.fitKey, () => {
-  if (status.value === 'READY') presentation?.fitOnIntent(props.fitKey, props.fitToFeatures)
+  if (status.value === 'READY') presentation?.fitOnIntent(props.fitKey, props.fitToFeatures, transportFeatures.value)
 })
 onMounted(initialize)
 onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
@@ -166,15 +191,21 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
         <div v-else class="pamana-libre__empty">No transport features to display.<br>Unverified coordinates stay off the map.</div>
         <div v-if="selected" class="pamana-libre__detail" role="status">
           <strong>{{ selected.properties.label }}</strong>
-          <span>{{ MAP_TOKENS[selected.properties.semantic].label }} · {{ selected.properties.isTransportNode === false ? 'Geographic place selection' : selected.properties.dataMode === 'SIMULATED' ? 'Simulated / demo' : selected.properties.verificationStatus || 'Verification not supplied' }}</span>
+          <template v-if="selected.properties.isTransportNode === true">
+            <span>{{ selected.properties.nodeTypeLabel }}</span>
+            <span>{{ selected.properties.verificationLabel }} · {{ selected.properties.dataMode }}</span>
+            <span>{{ selected.properties.planningLabel }}</span>
+            <span v-if="selected.properties.sourceSummary">Source: {{ selected.properties.sourceSummary }}</span>
+          </template>
+          <span v-else>{{ MAP_TOKENS[selected.properties.semantic].label }} · {{ selected.properties.isTransportNode === false ? 'Geographic place selection' : selected.properties.dataMode === 'SIMULATED' ? 'Simulated / demo' : selected.properties.verificationStatus || 'Verification not supplied' }}</span>
         </div>
       </div>
       <div class="pamana-libre__actions">
         <button type="button" class="pamana-libre__button" :disabled="!userIsValid" aria-label="Recenter on your location" @click="recenter">◎ My location</button>
-        <button v-if="choices.length" type="button" class="pamana-libre__button" aria-label="Fit supplied transport features" @click="presentation?.fit">Fit features</button>
+        <button v-if="choices.length" type="button" class="pamana-libre__button" aria-label="Fit supplied transport features" @click="fitAll">Fit features</button>
       </div>
-      <div class="pamana-libre__legend" aria-label="Map legend">
-        <span v-for="semantic in ['passenger', 'origin-location', 'pickup', 'stop', 'transfer', 'destination'] as const" :key="semantic"><i :style="{ background: MAP_TOKENS[semantic].color }" />{{ MAP_TOKENS[semantic].label }}</span>
+      <div v-if="legendSemantics.length" class="pamana-libre__legend" aria-label="Map legend">
+        <span v-for="semantic in legendSemantics" :key="semantic"><i :style="{ background: MAP_TOKENS[semantic].color }" />{{ MAP_TOKENS[semantic].label }}</span>
       </div>
     </template>
   </section>

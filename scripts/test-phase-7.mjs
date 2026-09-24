@@ -116,7 +116,8 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
         if (name === 'vue') return Vue
         if (name.endsWith('/mapConfiguration')) return { resolveMapConfiguration }
         if (name.endsWith('/mapPresentation')) return presentationData
-        if (name.endsWith('/mapLibrePresentation')) return { LAYER_IDS: [], createMapPresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') }, fitOnIntent: token => fitTokens.push(token) }) }
+        if (name.endsWith('/mapLibrePresentation')) return { LAYER_IDS: [], createMapPresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') }, fitOnIntent: token => fitTokens.push(token), select() {} }) }
+        if (name.endsWith('/transportNodePresentation')) return { TRANSPORT_NODE_LAYER_IDS: [], createTransportNodePresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') }, select() {} }) }
         throw Error(`Unexpected import: ${name}`)
       },
       ref: Vue.ref, computed: Vue.computed, watch: Vue.watch,
@@ -127,7 +128,7 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
     }
     vm.runInNewContext(compiled, context)
     const scope = Vue.effectScope()
-    const props = Vue.reactive({ height: '420px', zoom: 11, userLocation: null, nodes: [], lines: [], vehicles: [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
+    const props = Vue.reactive({ height: '420px', zoom: 11, userLocation: null, nodes: [], transportNodes: [], lines: [], vehicles: [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
     const setup = scope.run(() => context.exports.default.setup(props, { emit: (...args) => emitted.push(args), expose() {} }))
     assert.equal(instances, 0, 'SSR setup must not initialize map')
     setup.container.value = {}

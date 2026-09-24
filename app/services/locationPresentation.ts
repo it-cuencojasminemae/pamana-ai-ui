@@ -8,7 +8,7 @@ export function locationMapFeature(location: SelectedLocation, mode: 'origin' | 
     id: `selected-${mode}-${location.id}`,
     geometry: { type: 'Point', coordinates: [location.lng, location.lat] },
     properties: {
-      semantic: mode === 'origin' ? 'origin-location' : 'destination',
+      semantic: mode === 'origin' ? 'origin-location' : 'destination-location',
       label: location.label,
       source: location.source === 'GEOAPIFY' ? 'GEOAPIFY' : 'DEVICE',
       recordId: location.id,
