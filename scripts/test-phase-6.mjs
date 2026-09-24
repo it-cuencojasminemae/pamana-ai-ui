@@ -33,7 +33,9 @@ test('dependencies, public configuration allowlist, env placeholders and Leaflet
   assert.match(read('app/components/PamanaLeafletMap.vue'), /onMounted\(async/)
   assert.match(read('app/components/PamanaLeafletMap.vue'), /import\('leaflet'\)/)
   assert.match(read('app/components/PamanaLeafletMap.vue'), /leaflet\/dist\/leaflet.css/)
-  for (const file of ['app/components/PamanaMapPanel.vue', 'app/components/PamanaLeafletMap.vue']) {
+  // Phase 7 evolves the provider-neutral panel; the compatibility renderer stays intact.
+  assert.match(read('app/components/PamanaMapPanel.vue'), /provider\?: 'leaflet' \| 'maplibre'/)
+  for (const file of ['app/components/PamanaLeafletMap.vue']) {
     const previous = execFileSync('git', ['-c', `safe.directory=${process.cwd().replaceAll('\\', '/')}`, 'show', `1c32d40050aa3993ce38f82d429b345d738788e9:${file}`], { encoding: 'utf8' })
     assert.equal(read(file).replaceAll('\r\n', '\n'), previous.replaceAll('\r\n', '\n'), 'Compatibility renderer must stay unchanged')
   }

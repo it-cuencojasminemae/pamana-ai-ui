@@ -875,6 +875,7 @@ onMounted(() => {
 
         <!-- Map -->
         <PamanaMapPanel
+          provider="maplibre"
           icon="i-lucide-map"
           :label="
             selectedOption
@@ -910,8 +911,8 @@ onMounted(() => {
         </PamanaMapPanel>
 
         <p class="text-xs text-neutral-500">
-          Select a card to update the approximate corridor and stop markers. The line
-          connects reference or demo stops in sequence; it is not verified road geometry or turn-by-turn navigation.
+          Select a card to update its supplied stop markers. MapLibre draws a route line only when
+          geometry is supplied; stop order is not a verified road path. The compatibility map may show a reference corridor.
         </p>
 
         <UCard

@@ -1,5 +1,7 @@
 # Phase 6 — MapLibre GL JS + Geoapify setup
 
+Phase 7 builds on this historical setup: see [the passenger renderer documentation](phase-7-maplibre-passenger-map.md). Its client-only renderer now connects the loader/error contracts and supplies Vite's bundled MapLibre 6 worker URL. Phase 6 scope statements below describe the original checkpoint.
+
 Decision recorded 2026-09-23. The selected platform is **MapLibre GL JS + Geoapify + PAMANA's verified transport database**, not Google Maps Platform. This supersedes provider choices in the original revision roadmap, not historic Street View evidence. Separation of rendering, external geography and locally verified transport truth is the reason for this change; it is not a promise of unlimited free services.
 
 ## Ownership and scope

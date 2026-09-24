@@ -259,6 +259,7 @@ onBeforeUnmount(() => {
       <!-- Live map -->
       <div class="space-y-3 lg:col-span-2">
         <PamanaMapPanel
+          provider="maplibre"
           icon="i-lucide-map"
           label="Live transport map"
           height="460px"

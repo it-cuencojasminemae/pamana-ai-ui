@@ -1,9 +1,17 @@
 import assert from 'node:assert/strict'
 import { spawn } from 'node:child_process'
+import { createServer } from 'node:net'
+
+// Nitro treats port 0 as its default 3000. Reserve an actual ephemeral port so
+// this smoke test can run while the developer's app is already listening.
+const probe = createServer()
+await new Promise((resolve, reject) => { probe.once('error', reject); probe.listen(0, '127.0.0.1', resolve) })
+const port = probe.address().port
+await new Promise((resolve, reject) => probe.close(error => error ? reject(error) : resolve()))
 
 // Production SSR check, localhost only; intentionally no provider key or calls.
 const server = spawn(process.execPath, ['.output/server/index.mjs'], {
-  env: { ...process.env, NITRO_HOST: '127.0.0.1', NITRO_PORT: '0', NUXT_PUBLIC_GEOAPIFY_API_KEY: '', NUXT_PUBLIC_GEOAPIFY_MAP_STYLE: '' },
+  env: { ...process.env, NITRO_HOST: '127.0.0.1', NITRO_PORT: String(port), NUXT_PUBLIC_GEOAPIFY_API_KEY: '', NUXT_PUBLIC_GEOAPIFY_MAP_STYLE: '' },
   stdio: ['ignore', 'pipe', 'pipe'], windowsHide: true,
 })
 try {
@@ -27,6 +35,9 @@ try {
     }
     console.log(`ok - missing-key SSR ${path}: ${response.status}`)
   }
+  const preview = await fetch(`${origin}/dev/map-preview`, { redirect: 'manual', signal: AbortSignal.timeout(10000) })
+  assert.equal(preview.status, 404, 'Synthetic map preview must not be available in production')
+  console.log('ok - development map preview is 404 in production')
 } finally {
   server.kill()
 }

@@ -8,7 +8,7 @@ export interface MapLoadState {
   error: MapLoadError | null
 }
 
-/** Loads code only. Creating a map/container and registering render events is Phase 7. */
+/** Loads browser code only; the presentation component owns the map instance. */
 export function createMapLibreLoader(
   getConfig: () => GeographicConfig,
   options: {
@@ -27,7 +27,14 @@ export function createMapLibreLoader(
   }
   const loadModule = options.loadModule ?? (async () => {
     // No static JS/CSS import, global plugin, map constructor, or network call on SSR.
-    const [loaded] = await Promise.all([import('maplibre-gl'), import('maplibre-gl/dist/maplibre-gl.css')])
+    const [loaded, worker] = await Promise.all([
+      import('maplibre-gl'),
+      import('maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'),
+      import('maplibre-gl/dist/maplibre-gl.css'),
+    ])
+    // MapLibre 6's worker imports a shared sibling: use Vite's worker pipeline,
+    // not plain ?url or an optimizer-relative path (which breaks vector tiles).
+    loaded.setWorkerUrl(worker.default)
     return loaded
   })
   async function load(): Promise<MapLibreModule | null> {
@@ -55,7 +62,7 @@ export function createMapLibreLoader(
   return {
     load,
     getState: () => ({ ...state }),
-    // Phase 7 will connect these to constructor failures and map error events.
+    // Presentation component connects constructor failures and map error events.
     reportRenderFailure(error: 'MAP_INITIALIZATION_FAILED' | 'TILE_LOAD_FAILED') {
       if (!disposed) update('error', error)
     },

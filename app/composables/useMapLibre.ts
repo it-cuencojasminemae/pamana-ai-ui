@@ -10,6 +10,6 @@ export function useMapLibre() {
     onState: value => { state.value = value },
   })
   onScopeDispose(loader.dispose)
-  // Opt-in: no onMounted load and no actual renderer in Phase 6.
+  // Opt-in: only presentation components request loading; no global initialization.
   return { state: readonly(state), load: loader.load, reportRenderFailure: loader.reportRenderFailure }
 }

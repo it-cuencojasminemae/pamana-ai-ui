@@ -11,7 +11,8 @@
     "test:trip-planner-selection-contract": "node scripts/test-trip-planner-selection-contract.cjs",
     "test:phase-6": "node --test scripts/test-phase-6.mjs",
     "test:phase-6-db": "node --env-file=../pamana-backend/.env scripts/test-phase-6-db.cjs",
-    "test:phase-6-smoke": "node scripts/test-phase-6-smoke.mjs"
+    "test:phase-6-smoke": "node scripts/test-phase-6-smoke.mjs",
+    "test:phase-7": "node --test scripts/test-phase-7.mjs"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.126",

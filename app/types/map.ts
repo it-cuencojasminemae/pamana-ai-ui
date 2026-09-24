@@ -5,7 +5,7 @@ import type { DataMode, VerificationStatus } from './transportation'
  * GeoJSON positions use [longitude, latitude]. Unknown coordinates produce no feature.
  */
 export type MapSemantic = 'passenger' | 'pickup' | 'dropoff' | 'stop' | 'transfer' | 'terminal'
-  | 'vehicle' | 'destination' | 'walking-route' | 'transport-route' | 'disruption'
+  | 'vehicle' | 'destination' | 'essential-service' | 'walking-route' | 'transport-route' | 'disruption'
 export interface MapFeatureProperties {
   [key: string]: unknown
   semantic: MapSemantic
