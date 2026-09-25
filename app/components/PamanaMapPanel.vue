@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { legacyMarkerFeatures, suppliedLine } from '../services/mapPresentation'
-import type { MapPointFeature } from '../types/map'
+import type { MapLineFeature, MapPointFeature } from '../types/map'
 const props = withDefaults(defineProps<{
   provider?: 'leaflet' | 'maplibre'
   icon?: string
@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<{
   tone?: 'lime' | 'emerald' | 'teal' | 'red'
   markers?: Record<string, any>[]
   nodes?: MapPointFeature[]
+  lines?: MapLineFeature[]
   transportNodes?: MapPointFeature[]
   routePoints?: Record<string, any>[]
   userLocation?: { lat: number; lng: number } | null
@@ -25,6 +26,7 @@ const props = withDefaults(defineProps<{
   tone: 'lime',
   markers: () => [],
   nodes: () => [],
+  lines: () => [],
   transportNodes: () => [],
   routePoints: () => [],
   userLocation: null,
@@ -42,7 +44,7 @@ const mapFailed = ref(false)
 const activeProvider = computed(() => compatibilityMode.value ? 'leaflet' : props.provider)
 const mapNodes = computed(() => [...legacyMarkerFeatures(props.markers), ...props.nodes])
 // Never connect stops to synthesize transit geometry in the new renderer.
-const mapLines = computed(() => suppliedLine(props.routeGeometry, props.routeLabel))
+const mapLines = computed(() => props.lines.length ? props.lines : suppliedLine(props.routeGeometry, props.routeLabel))
 const emit = defineEmits<{ 'feature-selected': [id: string]; 'map-ready': []; 'map-error': [state: string] }>()
 watch(() => props.provider, () => { compatibilityMode.value = false; mapFailed.value = false })
 </script>

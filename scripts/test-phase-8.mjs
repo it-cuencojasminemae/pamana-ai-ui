@@ -119,11 +119,12 @@ test('reusable component compiles with accessible keyboard interaction and curre
   assert.doesNotMatch(source, /raw provider|apiKey|console\./)
 })
 
-test('passenger integration requires resolved coordinates, maps selections and performs no Phase 9-11 work', () => {
+test('passenger integration still requires resolved coordinates and maps geographic selections', () => {
   const planner = read('app/pages/passenger/trip-planner.vue')
   assert.equal((planner.match(/<LocationPamanaLocationSearch/g) ?? []).length, 2)
   assert.match(planner, /!originLocation\.value \|\| !destinationLocation\.value/)
-  assert.match(planner, /:nodes="geographicLocationMarkers"/)
+  assert.match(planner, /journeyMapPresentation\(tripPlan\.selectedJourney\.value, originLocation\.value, destinationLocation\.value\)/)
+  assert.match(planner, /:nodes="mapPresentation\.nodes"/)
   assert.match(planner, /forwardGeocodeLocations/)
   assert.doesNotMatch(planner, /routeGeography|searchPlaces|nearest pickup|transfer calculation/i)
   const geoapify = read('app/services/geoapify.ts')
