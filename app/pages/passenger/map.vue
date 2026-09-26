@@ -1,6 +1,8 @@
 <script setup lang="ts">
 // @ts-nocheck
 import { sortTransportNodesByGeographicDistance, transportNodeFeatureCollection, transportNodeTypeLabel } from '../../services/transportNodes'
+import { fetchSimulatedLiveVehicles, simulatedVehicleFeatures } from '../../services/simulatedLiveVehicles'
+import type { SimulatedLiveVehicleResponse } from '../../types/liveVehicle'
 
 definePageMeta({
   middleware: ['auth', 'passenger']
@@ -11,6 +13,8 @@ useHead({
 })
 
 const { apiFetch } = useApi()
+const runtimeConfig = useRuntimeConfig()
+const simulatedFeedConfigured = computed(() => String(runtimeConfig.public.pamanaDemoModeEnabled).toLowerCase() === 'true')
 const { location: userLocation, error: locationError, loading: locationLoading } = useGeolocation()
 const {
   nodes: pamanaTransportNodes,
@@ -71,8 +75,11 @@ const OCCUPANCY_LABELS: Record<string, string> = {
 }
 
 const rawVehicles = ref<LiveVehicle[]>([])
+const simulatedSnapshot = ref<SimulatedLiveVehicleResponse | null>(null)
 const loadingVehicles = ref(false)
+const loadingSimulation = ref(false)
 const loadError = ref('')
+const simulationError = ref('')
 const lastUpdatedAt = ref<Date | null>(null)
 
 let pollTimer:
@@ -80,7 +87,7 @@ let pollTimer:
   | undefined
 
 const vehicles = computed(() => {
-  return rawVehicles.value.map(vehicle => {
+  const realOrLegacy = rawVehicles.value.map(vehicle => {
     const occupancyKey =
       vehicle.occupancy_level || 'unknown'
 
@@ -106,7 +113,27 @@ const vehicles = computed(() => {
             : vehicle.direction || 'Direction unavailable'
     }
   })
+  const demo = (simulatedSnapshot.value?.vehicles || []).map(vehicle => ({
+    id: vehicle.id,
+    vehicleNumber: vehicle.label,
+    occupancy: vehicle.occupancy.replace('_', ' ').toLowerCase().replace(/^./, value => value.toUpperCase()),
+    occupancyKey: vehicle.occupancy.toLowerCase(),
+    dataMode: 'SIMULATED' as const,
+    direction: vehicle.dataFreshness.status === 'STALE'
+      ? 'Stale location · diagnostic only'
+      : `${vehicle.tripState.replace('_', ' ')} · ${vehicle.transportMode}`
+  }))
+  return [...realOrLegacy, ...demo]
 })
+
+const simulatedMapFeatures = computed(() => simulatedVehicleFeatures(simulatedSnapshot.value?.vehicles || []))
+const realActiveVehicleCount = computed(() => rawVehicles.value.filter(vehicle => vehicle.data_mode === 'REAL').length)
+const simulatedActiveVehicleCount = computed(() =>
+  rawVehicles.value.filter(vehicle => vehicle.data_mode !== 'REAL').length
+  + (simulatedSnapshot.value?.freshActiveVehicleCount || 0)
+)
+const simulatedStaleVehicleCount = computed(() => simulatedSnapshot.value?.staleVehicleCount || 0)
+const hasSimulatedVehicles = computed(() => rawVehicles.value.some(vehicle => vehicle.data_mode !== 'REAL') || simulatedMapFeatures.value.length > 0)
 
 const lastUpdatedText = computed(() => {
   if (!lastUpdatedAt.value) {
@@ -169,13 +196,32 @@ async function loadNearbyVehicles() {
   }
 }
 
+async function loadSimulatedVehicles() {
+  if (!simulatedFeedConfigured.value || loadingSimulation.value) return
+  loadingSimulation.value = true
+  try {
+    simulatedSnapshot.value = await fetchSimulatedLiveVehicles(apiFetch)
+    simulationError.value = ''
+  } catch {
+    // A disabled server is a normal production state. Keep any last valid
+    // snapshot and avoid exposing provider or server details.
+    simulationError.value = 'Simulation feed is unavailable on this server.'
+  } finally {
+    loadingSimulation.value = false
+  }
+}
+
+async function refreshVehicleFeeds() {
+  await Promise.allSettled([loadNearbyVehicles(), loadSimulatedVehicles()])
+}
+
 function startPolling() {
   stopPolling()
 
   // Poll every 15 seconds instead of every 5 seconds.
   pollTimer = setInterval(() => {
     if (document.visibilityState === 'visible') {
-      loadNearbyVehicles()
+      refreshVehicleFeeds()
     }
   }, 15000)
 }
@@ -189,12 +235,12 @@ function stopPolling() {
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'visible') {
-    loadNearbyVehicles()
+    refreshVehicleFeeds()
   }
 }
 
 onMounted(() => {
-  loadNearbyVehicles()
+  refreshVehicleFeeds()
   loadTransportNodes()
   startPolling()
 
@@ -258,6 +304,15 @@ onBeforeUnmount(() => {
 
           Your location
         </span>
+
+        <span
+          v-if="hasSimulatedVehicles"
+          class="pill normal-case bg-amber-100 text-amber-800"
+          aria-label="Simulated demonstration vehicles are visible"
+        >
+          <UIcon name="i-lucide-flask-conical" class="size-3.5" />
+          SIMULATED DEMO
+        </span>
       </div>
 
       <div
@@ -274,9 +329,9 @@ onBeforeUnmount(() => {
           size="sm"
           icon="i-lucide-refresh-cw"
           class="rounded-full"
-          :loading="loadingVehicles"
-          :disabled="loadingVehicles"
-          @click="loadNearbyVehicles"
+          :loading="loadingVehicles || loadingSimulation"
+          :disabled="loadingVehicles || loadingSimulation"
+          @click="refreshVehicleFeeds"
         >
           Refresh
         </UButton>
@@ -293,9 +348,17 @@ onBeforeUnmount(() => {
           height="460px"
           tone="lime"
           :markers="rawVehicles"
+          :vehicles="simulatedMapFeatures"
           :transport-nodes="transportNodeFeatures"
           :user-location="userLocation"
-        />
+        >
+          <div
+            v-if="hasSimulatedVehicles"
+            class="pointer-events-none absolute right-14 top-3 z-20 rounded-full border border-amber-200 bg-amber-50/95 px-3 py-1.5 text-[10px] font-bold tracking-wide text-amber-800 shadow-sm"
+          >
+            SIMULATED DEMO · NOT REAL TRANSPORT DATA
+          </div>
+        </PamanaMapPanel>
 
         <!-- Status is outside the map -->
         <div
@@ -310,14 +373,7 @@ onBeforeUnmount(() => {
             {{ locationStatusLabel }}
           </span>
 
-          <span>
-            {{ rawVehicles.length }}
-            {{
-              rawVehicles.length === 1
-                ? 'active vehicle'
-                : 'active vehicles'
-            }}
-          </span>
+          <span>{{ realActiveVehicleCount }} REAL active · {{ simulatedActiveVehicleCount }} SIMULATED fresh active<span v-if="simulatedStaleVehicleCount"> · {{ simulatedStaleVehicleCount }} stale</span></span>
         </div>
 
         <UAlert
@@ -327,6 +383,16 @@ onBeforeUnmount(() => {
           icon="i-lucide-wifi-off"
           title="Live updates interrupted"
           :description="loadError"
+          class="rounded-2xl"
+        />
+
+        <UAlert
+          v-if="simulationError && simulatedFeedConfigured"
+          color="neutral"
+          variant="soft"
+          icon="i-lucide-flask-conical-off"
+          title="Simulation unavailable"
+          :description="simulationError"
           class="rounded-2xl"
         />
       </div>
@@ -499,7 +565,7 @@ onBeforeUnmount(() => {
           class="px-2 text-xs leading-relaxed text-neutral-500"
         >
           Vehicle positions come from the live API. Updates pause
-          when this browser tab is not visible.
+          when this browser tab is not visible. Simulated vehicles are labeled and counted separately.
         </p>
       </div>
     </div>

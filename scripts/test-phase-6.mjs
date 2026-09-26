@@ -22,7 +22,7 @@ test('dependencies, public configuration allowlist, env placeholders and Leaflet
   assert.ok(!Object.keys(pkg.dependencies).some(key => /google|mapbox-gl|vue-maplibre/.test(key)))
   const source = read('nuxt.config.ts')
   const runtime = new Function('defineNuxtConfig', source.replace('export default', 'return'))(value => value).runtimeConfig
-  assert.deepEqual(Object.keys(runtime.public).sort(), ['apiUrl', 'cartoBasemapKey', 'demoMode', 'geoapifyApiKey', 'geoapifyMapStyle'])
+  assert.deepEqual(Object.keys(runtime.public).sort(), ['apiUrl', 'cartoBasemapKey', 'demoMode', 'geoapifyApiKey', 'geoapifyMapStyle', 'pamanaDemoModeEnabled'])
   assert.equal(runtime.public.geoapifyApiKey, '')
   assert.equal(runtime.public.geoapifyMapStyle, '')
   assert.doesNotMatch(source, /GOOGLE|OPENAI|GEMINI|DATABASE_|JWT_|STRAPI_SECRET/)

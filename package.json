@@ -15,7 +15,8 @@
     "test:phase-7": "node --test scripts/test-phase-7.mjs",
     "test:phase-8": "node --test scripts/test-phase-8.mjs",
     "test:phase-9": "node --test scripts/test-phase-9.mjs",
-    "test:phase-15": "node --test scripts/test-phase-15.mjs"
+    "test:phase-15": "node --test scripts/test-phase-15.mjs",
+    "test:phase-16": "node --test scripts/test-phase-16.mjs"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.126",
