@@ -1,3 +1,5 @@
+let activeWatchId: number | null = null
+
 export function useGeolocation() {
   const location = useState<{ lat: number; lng: number } | null>(
     'user-location',
@@ -19,6 +21,27 @@ export function useGeolocation() {
     () => false
   )
 
+  const observedAt = useState<string | null>('user-location-observed-at', () => null)
+  const accuracy = useState<number | null>('user-location-accuracy', () => null)
+  const speed = useState<number | null>('user-location-speed', () => null)
+  const heading = useState<number | null>('user-location-heading', () => null)
+  const tracking = useState<boolean>('user-location-tracking', () => false)
+
+  function applyPosition(position: GeolocationPosition) {
+    location.value = { lat: position.coords.latitude, lng: position.coords.longitude }
+    observedAt.value = new Date(position.timestamp).toISOString()
+    accuracy.value = position.coords.accuracy
+    speed.value = position.coords.speed
+    heading.value = position.coords.heading
+    error.value = null
+    loading.value = false
+  }
+
+  function applyError(geolocationError: GeolocationPositionError) {
+    error.value = geolocationError.message
+    loading.value = false
+  }
+
   function start() {
     if (!import.meta.client) return
 
@@ -34,40 +57,35 @@ export function useGeolocation() {
     loading.value = true
 
     navigator.geolocation.getCurrentPosition(
-      position => {
-        location.value = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude
-        }
-
-        error.value = null
-        loading.value = false
-
-        if (import.meta.dev) {
-          // eslint-disable-next-line no-console
-          console.log('[useGeolocation] position update', {
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            accuracy: position.coords.accuracy
-          })
-        }
-      },
-      geolocationError => {
-        error.value = geolocationError.message
-        loading.value = false
-
-        if (import.meta.dev) {
-          // eslint-disable-next-line no-console
-          console.log('[useGeolocation] error', {
-            code: geolocationError.code,
-            message: geolocationError.message
-          })
-        }
-      },
+      applyPosition,
+      applyError,
       // maximumAge: 0 forces a fresh fix on every request instead of reusing a
       // cached browser position - relevant while diagnosing accuracy issues.
       { enableHighAccuracy: true, maximumAge: 0, timeout: 15000 }
     )
+  }
+
+  function startTracking() {
+    if (!import.meta.client || activeWatchId !== null) return
+    if (!navigator.geolocation) {
+      error.value = 'Geolocation is not supported by this browser.'
+      return
+    }
+    requested.value = true
+    loading.value = true
+    tracking.value = true
+    activeWatchId = navigator.geolocation.watchPosition(applyPosition, applyError, {
+      enableHighAccuracy: true,
+      maximumAge: 5000,
+      timeout: 15000
+    })
+  }
+
+  function stopTracking() {
+    if (!import.meta.client || activeWatchId === null) return
+    navigator.geolocation.clearWatch(activeWatchId)
+    activeWatchId = null
+    tracking.value = false
   }
 
   onMounted(start)
@@ -76,6 +94,13 @@ export function useGeolocation() {
     location,
     error,
     loading,
-    start
+    observedAt,
+    accuracy,
+    speed,
+    heading,
+    tracking,
+    start,
+    startTracking,
+    stopTracking
   }
 }
