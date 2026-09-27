@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { legacyMarkerFeatures, suppliedLine } from '../services/mapPresentation'
-import type { MapLineFeature, MapPointFeature } from '../types/map'
+import type { MapDisruptionFeature, MapLineFeature, MapPointFeature } from '../types/map'
 const props = withDefaults(defineProps<{
   provider?: 'leaflet' | 'maplibre'
   icon?: string
@@ -12,6 +12,7 @@ const props = withDefaults(defineProps<{
   lines?: MapLineFeature[]
   transportNodes?: MapPointFeature[]
   vehicles?: MapPointFeature[]
+  disruptions?: MapDisruptionFeature[]
   routePoints?: Record<string, any>[]
   userLocation?: { lat: number; lng: number } | null
   routeColor?: string
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<{
   lines: () => [],
   transportNodes: () => [],
   vehicles: () => [],
+  disruptions: () => [],
   routePoints: () => [],
   userLocation: null,
   routeColor: '#65a30d',
@@ -65,7 +67,7 @@ watch(() => props.provider, () => { compatibilityMode.value = false; mapFailed.v
       :route-geometry="routeGeometry"
       :fit-key="fitKey"
     />
-    <PamanaMapLibreMap v-else :height="height" :nodes="mapNodes" :transport-nodes="transportNodes" :vehicles="vehicles" :lines="mapLines" :user-location="mapUserLocation" :fit-key="fitKey"
+    <PamanaMapLibreMap v-else :height="height" :nodes="mapNodes" :transport-nodes="transportNodes" :vehicles="vehicles" :lines="mapLines" :disruptions="disruptions" :user-location="mapUserLocation" :fit-key="fitKey"
       @feature-selected="emit('feature-selected', $event)"
       @map-error="mapFailed = true; emit('map-error', $event)" @map-ready="mapFailed = false; emit('map-ready')" />
     <button v-if="provider === 'maplibre' && (mapFailed || compatibilityMode)" type="button"

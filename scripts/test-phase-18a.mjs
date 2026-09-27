@@ -33,14 +33,15 @@ assert.match(page, /resolved_at:/)
 assert.match(page, /geometry_geojson:/)
 assert.match(page, /Geometry must be valid GeoJSON/)
 assert.match(page, /Text and coordinates never choose a route or stop/)
-assert.match(page, /Planning integration pending Phase 18B/)
+assert.match(page, /Verified disruptions affect journey planning/)
 assert.doesNotMatch(page, /route[_ ]?name.*affected_route|node[_ ]?name.*affected_transport_node/i)
 
-assert.doesNotMatch(tripPlan, /disruption/i, 'Passenger planner must remain unchanged in Phase 18A')
+assert.match(tripPlan, /NO_JOURNEY_DUE_TO_ACTIVE_DISRUPTION/,
+  'Phase 18B should consume the unchanged Phase 18A disruption foundation')
 assert.match(page, /method:\s*'POST'/)
 assert.match(page, /method:\s*'PUT'/)
 assert.match(page, /populate:\s*'\*'/)
 
 console.log('ok - LGU disruption management uses exact route, variant, and node IDs')
 console.log('ok - administrator-only trust controls, time windows, resolution, and optional GeoJSON are present')
-console.log('ok - Phase 18A does not integrate passenger journey filtering')
+console.log('ok - Phase 18B passenger integration consumes the Phase 18A foundation')

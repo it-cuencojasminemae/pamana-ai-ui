@@ -199,7 +199,7 @@ onMounted(loadPage)
           <h2 class="font-display text-base font-semibold text-neutral-900">Record a structured disruption</h2>
           <p class="mt-1 text-xs text-neutral-500">Targets use exact PAMANA records. Text and coordinates never choose a route or stop.</p>
         </div>
-        <span class="pill bg-amber-100 text-amber-700">Planning integration pending Phase 18B</span>
+        <span class="pill bg-amber-100 text-amber-700">Verified disruptions affect journey planning</span>
       </div>
 
       <form class="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-3" @submit.prevent="createDisruption">
@@ -263,7 +263,7 @@ onMounted(loadPage)
             <input v-model="form.verifiedAt" type="datetime-local" class="min-h-11 rounded-xl border border-neutral-200 bg-white px-3 text-sm">
           </label>
           <label class="flex min-h-11 items-center gap-2 self-end rounded-xl border border-neutral-200 bg-white px-3 text-xs font-medium text-neutral-700">
-            <input v-model="form.planningEnabled" type="checkbox"> Eligible to affect planning in Phase 18B
+            <input v-model="form.planningEnabled" type="checkbox"> Eligible to affect journey planning
           </label>
         </template>
 

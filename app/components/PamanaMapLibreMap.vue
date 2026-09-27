@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import type { Map as LibreMap, MapMouseEvent } from 'maplibre-gl'
-import type { MapPointFeature, MapLineFeature } from '../types/map'
+import type { MapPointFeature, MapLineFeature, MapDisruptionFeature } from '../types/map'
 import { resolveMapConfiguration } from '../services/mapConfiguration'
 import { MAP_TOKENS, renderableFeatures, validPosition } from '../services/mapPresentation'
 import { createMapPresentation, LAYER_IDS } from '../services/mapLibrePresentation'
 import { createTransportNodePresentation, TRANSPORT_NODE_LAYER_IDS } from '../services/transportNodePresentation'
+import { createDisruptionMapPresentation } from '../services/disruptionMapPresentation'
 
 type Status = 'INITIALIZING' | 'READY' | 'MISSING_CONFIG' | 'TILE_ERROR' | 'INITIALIZATION_ERROR'
 const props = withDefaults(defineProps<{
@@ -16,10 +17,11 @@ const props = withDefaults(defineProps<{
   transportNodes?: MapPointFeature[]
   lines?: MapLineFeature[]
   vehicles?: MapPointFeature[]
+  disruptions?: MapDisruptionFeature[]
   selectedFeatureId?: string | null
   fitToFeatures?: boolean
   fitKey?: string | number | null
-}>(), { height: '420px', zoom: 11, userLocation: null, nodes: () => [], transportNodes: () => [], lines: () => [], vehicles: () => [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
+}>(), { height: '420px', zoom: 11, userLocation: null, nodes: () => [], transportNodes: () => [], lines: () => [], vehicles: () => [], disruptions: () => [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
 const emit = defineEmits<{
   'feature-selected': [id: string]
   'map-ready': []
@@ -49,6 +51,7 @@ const labels: Record<Status, string> = {
 let map: LibreMap | null = null
 let presentation: ReturnType<typeof createMapPresentation> | null = null
 let transportPresentation: ReturnType<typeof createTransportNodePresentation> | null = null
+let disruptionPresentation: ReturnType<typeof createDisruptionMapPresentation> | null = null
 let resizeObserver: ResizeObserver | null = null
 let timeout: ReturnType<typeof setTimeout> | undefined
 let generation = 0
@@ -81,6 +84,15 @@ function updateTransportPresentation() {
     return false
   }
 }
+function updateDisruptionPresentation() {
+  try {
+    disruptionPresentation?.update(props.disruptions)
+    return true
+  } catch {
+    setError('INITIALIZATION_ERROR')
+    return false
+  }
+}
 function select(id: string) {
   selection.value = id || null
   if (id) emit('feature-selected', id)
@@ -96,6 +108,7 @@ function cleanup() {
   map?.remove(); map = null
   presentation = null
   transportPresentation = null
+  disruptionPresentation = null
 }
 async function initialize() {
   const current = ++generation
@@ -123,9 +136,10 @@ async function initialize() {
     map.getCanvas().setAttribute('aria-label', 'PAMANA transport map. Use zoom controls or arrow keys to explore.')
     presentation = createMapPresentation(map)
     transportPresentation = createTransportNodePresentation(map)
+    disruptionPresentation = createDisruptionMapPresentation(map)
     const onLoad = () => {
       try {
-        if (!updateFeaturePresentation() || !updateTransportPresentation()) return
+        if (!updateFeaturePresentation() || !updateTransportPresentation() || !updateDisruptionPresentation()) return
         presentation?.fitOnIntent(props.fitKey, props.fitToFeatures, transportFeatures.value)
         clearTimeout(timeout)
         hasLoaded.value = true
@@ -133,7 +147,7 @@ async function initialize() {
         emit('map-ready')
       } catch { setError('INITIALIZATION_ERROR') }
     }
-    const onStyle = () => { updateFeaturePresentation(); updateTransportPresentation() }
+    const onStyle = () => { updateFeaturePresentation(); updateTransportPresentation(); updateDisruptionPresentation() }
     const onError = () => { clearTimeout(timeout); setError('TILE_ERROR') }
     const onIdle = () => {
       // Successful subsequent tile loads recover without rebuilding or refitting.
@@ -161,6 +175,8 @@ async function initialize() {
 watch(features, () => updateFeaturePresentation(), { deep: true })
 // Node refreshes call setData on the dedicated source and never move the camera.
 watch(transportFeatures, () => updateTransportPresentation(), { deep: true })
+// Disruption polling updates only its GeoJSON source and never changes the camera.
+watch(() => props.disruptions, () => updateDisruptionPresentation(), { deep: true })
 watch(() => props.selectedFeatureId, value => { selection.value = value })
 watch(selection, value => { presentation?.select(value); transportPresentation?.select(value) })
 watch(() => props.fitKey, () => {

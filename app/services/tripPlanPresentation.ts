@@ -1,6 +1,6 @@
 import type { Position } from 'geojson'
-import type { MapLineFeature, MapPointFeature } from '../types/map.ts'
-import type { JourneyLeg, JourneyTransitLeg, JourneyWalkLeg, PamanaJourney } from '../types/tripPlan.ts'
+import type { MapDisruptionFeature, MapLineFeature, MapPointFeature } from '../types/map.ts'
+import type { JourneyDisruptionWarning, JourneyLeg, JourneyTransitLeg, JourneyWalkLeg, PamanaJourney } from '../types/tripPlan.ts'
 import type { SelectedLocation } from '../types/location.ts'
 import { locationMapFeature } from './locationPresentation.ts'
 import { validPosition } from './mapPresentation.ts'
@@ -8,6 +8,7 @@ import { validPosition } from './mapPresentation.ts'
 export interface JourneyMapPresentation {
   nodes: MapPointFeature[]
   lines: MapLineFeature[]
+  disruptions: MapDisruptionFeature[]
 }
 
 function geometryLines(leg: JourneyWalkLeg | JourneyTransitLeg): Position[][] {
@@ -36,7 +37,7 @@ export function journeyMapPresentation(
     ...(origin ? [locationMapFeature(origin, 'origin')] : []),
     ...(destination ? [locationMapFeature(destination, 'destination')] : []),
   ]
-  if (!journey) return { nodes, lines: [] }
+  if (!journey) return { nodes, lines: [], disruptions: [] }
 
   const lines: MapLineFeature[] = []
   const walkLegs = journey.legs.filter((leg): leg is JourneyWalkLeg => leg.type === 'WALK')
@@ -62,7 +63,24 @@ export function journeyMapPresentation(
       })
     })
   }
-  return { nodes, lines }
+  const disruptions = journey.warnings
+    .filter((warning): warning is JourneyDisruptionWarning => typeof warning === 'object'
+      && warning?.type === 'DISRUPTION' && Boolean(warning.geometry))
+    .filter((warning, index, values) => values.findIndex(candidate => candidate.disruptionId === warning.disruptionId) === index)
+    .map((warning): MapDisruptionFeature => ({
+      type: 'Feature',
+      id: `disruption-${warning.disruptionId}`,
+      geometry: warning.geometry!,
+      properties: {
+        semantic: 'disruption',
+        label: warning.message,
+        source: 'PAMANA_TRANSPORT_DB',
+        recordId: warning.disruptionId,
+        effect: warning.effect,
+        severity: warning.severity,
+      },
+    }))
+  return { nodes, lines, disruptions }
 }
 
 export function formatDistance(meters: number | null) {

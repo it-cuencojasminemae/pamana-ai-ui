@@ -19,7 +19,7 @@ const unavailable = {
 
 const journeys: PamanaJourney[] = [
   {
-    id: 'synthetic-direct', transferCount: 0, modes: ['JEEPNEY'], warnings: [],
+    id: 'synthetic-direct', transferCount: 0, modes: ['JEEPNEY'], warnings: [{ code: 'LIMITED_SERVICE', type: 'DISRUPTION', effect: 'LIMITED_SERVICE', disruptionId: 'synthetic-disruption', message: 'Synthetic limited-service advisory for UI review', severity: 'moderate', startsAt: '2026-09-25T00:00:00.000Z', endsAt: null, geometry: { type: 'LineString', coordinates: [[119.017, 14.005], [119.026, 14.007]] } }],
     fareSummary: { totalStatus: 'KNOWN', knownSubtotal: 18, totalFare: 18, currency: 'PHP', warnings: [] },
     availabilitySummary: { status: 'AVAILABLE', transitLegsKnown: 1, transitLegsUnknown: 0, warnings: [] },
     durationSummary: { status: 'PARTIAL', knownWalkingDurationSeconds: 420, totalJourneyDurationSeconds: null },
@@ -72,7 +72,7 @@ const map = computed(() => journeyMapPresentation(selected.value, origin.value, 
         </div>
         <div class="space-y-3 lg:col-span-3">
           <JourneyPamanaJourneyCard v-for="(journey, index) in journeys" :key="journey.id" :journey="journey" :option-number="index + 1" :selected="selectedId === journey.id" @select="selectedId = $event" />
-          <PamanaMapPanel provider="maplibre" height="clamp(320px, 48vw, 480px)" :nodes="map.nodes" :lines="map.lines" :fit-key="selectedId" />
+          <PamanaMapPanel provider="maplibre" height="clamp(320px, 48vw, 480px)" :nodes="map.nodes" :lines="map.lines" :disruptions="map.disruptions" :fit-key="selectedId" />
           <p class="text-xs text-neutral-500">Synthetic offshore fixture. No PAMANA transport coordinates or database records are represented here.</p>
         </div>
       </div>

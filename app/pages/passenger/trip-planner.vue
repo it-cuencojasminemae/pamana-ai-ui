@@ -52,6 +52,9 @@ const domainCopy: Record<Exclude<TripPlanStatus, 'JOURNEYS_FOUND'>, { title: str
 }
 const currentDomainState = computed(() => {
   const status = tripPlan.response.value?.status
+  if (status === 'NO_TRANSPORT_JOURNEY' && tripPlan.response.value?.warnings.includes('NO_JOURNEY_DUE_TO_ACTIVE_DISRUPTION')) {
+    return { title: 'No journey available during an active disruption', description: 'A verified closure or suspension affects the available transport connections for this trip. Try another departure time or check again later.' }
+  }
   return status && status !== 'JOURNEYS_FOUND' ? domainCopy[status] : null
 })
 const currentError = computed(() => tripPlan.error.value ? clientErrorCopy[tripPlan.error.value] : null)
@@ -215,7 +218,7 @@ onBeforeUnmount(() => queryLocationAbort?.abort())
           </div>
         </UCard>
 
-        <PamanaMapPanel provider="maplibre" icon="i-lucide-map" :label="tripPlan.selectedJourney.value ? 'Selected journey map' : 'Trip locations map'" height="clamp(320px, 48vw, 480px)" tone="lime" :nodes="mapPresentation.nodes" :lines="mapPresentation.lines" :fit-key="mapFitKey" />
+        <PamanaMapPanel provider="maplibre" icon="i-lucide-map" :label="tripPlan.selectedJourney.value ? 'Selected journey map' : 'Trip locations map'" height="clamp(320px, 48vw, 480px)" tone="lime" :nodes="mapPresentation.nodes" :lines="mapPresentation.lines" :disruptions="mapPresentation.disruptions" :fit-key="mapFitKey" />
 
         <p class="text-xs text-neutral-500">Dashed lines are Geoapify walking connectors. Solid lines appear only when PAMANA supplies verified transit geometry. Selecting another journey fits that journey once; live updates do not reset the map camera.</p>
       </div>

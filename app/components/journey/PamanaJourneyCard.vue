@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { JourneyTransitLeg, PamanaJourney } from '../../types/tripPlan'
+import type { JourneyDisruptionWarning, JourneyTransitLeg, PamanaJourney } from '../../types/tripPlan'
 import { formatDistance, formatDuration, formatFare, legTitle } from '../../services/tripPlanPresentation'
 
 const props = defineProps<{ journey: PamanaJourney; optionNumber: number; selected?: boolean }>()
@@ -9,6 +9,13 @@ const transferLabel = computed(() => props.journey.transferCount === 0
   ? 'Direct journey'
   : `${props.journey.transferCount} ${props.journey.transferCount === 1 ? 'transfer' : 'transfers'}`)
 const modeLabel = computed(() => props.journey.modes.length ? props.journey.modes.join(' + ') : 'Public transport')
+const disruptionWarnings = computed(() => props.journey.warnings.filter(
+  (warning): warning is JourneyDisruptionWarning => typeof warning === 'object' && warning?.type === 'DISRUPTION',
+))
+
+function disruptionLabel(warning: JourneyDisruptionWarning) {
+  return warning.effect === 'LIMITED_SERVICE' ? 'Limited service' : 'Travel advisory'
+}
 
 function fareSummary() {
   const summary = props.journey.fareSummary
@@ -96,6 +103,16 @@ function evidenceLabel(leg: JourneyTransitLeg) {
         </div>
       </div>
     </button>
+
+    <div v-if="disruptionWarnings.length" class="mt-3 space-y-2" role="status" aria-label="Active journey disruptions">
+      <div v-for="warning in disruptionWarnings" :key="`${warning.disruptionId}-${warning.effect}`" class="flex gap-2 rounded-2xl border border-amber-300/70 bg-amber-50 px-3 py-2.5 text-amber-950">
+        <UIcon name="i-lucide-triangle-alert" class="mt-0.5 size-4 shrink-0 text-amber-700" />
+        <div class="min-w-0">
+          <p class="text-[10px] font-semibold uppercase tracking-[0.12em] text-amber-700">{{ disruptionLabel(warning) }}</p>
+          <p class="mt-0.5 text-xs font-medium leading-relaxed">{{ warning.message }}</p>
+        </div>
+      </div>
+    </div>
 
     <div v-if="selected" class="mt-4 border-t border-neutral-900/10 pt-4">
       <ol class="space-y-3" :aria-label="`Steps for journey option ${optionNumber}`">

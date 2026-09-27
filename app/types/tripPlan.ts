@@ -1,9 +1,23 @@
-import type { LineString, MultiLineString } from 'geojson'
+import type { LineString, MultiLineString, Point, Polygon, MultiPolygon } from 'geojson'
 import type { SelectedLocation } from './location'
 
 export type PassengerCategory = 'REGULAR' | 'STUDENT' | 'SENIOR' | 'PWD'
 export type TripPlanStatus = 'JOURNEYS_FOUND' | 'NO_ELIGIBLE_ACCESS_NODES' | 'NO_TRANSPORT_JOURNEY' | 'ROUTING_PROVIDER_UNAVAILABLE'
 export type KnowledgeStatus = 'KNOWN' | 'PARTIAL' | 'UNKNOWN' | 'NOT_APPLICABLE'
+
+export interface JourneyDisruptionWarning {
+  code: 'DISRUPTION_WARNING' | 'LIMITED_SERVICE'
+  type: 'DISRUPTION'
+  effect: 'WARNING_ONLY' | 'LIMITED_SERVICE'
+  disruptionId: string
+  message: string
+  severity: string
+  startsAt: string
+  endsAt: string | null
+  geometry: Point | LineString | MultiLineString | Polygon | MultiPolygon | null
+}
+
+export type JourneyWarning = string | JourneyDisruptionWarning
 
 export interface TripPlanPoint {
   lat: number
@@ -137,7 +151,7 @@ export interface PamanaJourney {
     knownWalkingDurationSeconds: number | null
     totalJourneyDurationSeconds: null
   }
-  warnings: string[]
+  warnings: JourneyWarning[]
   dataQuality: {
     planningEligible: boolean
     verificationStatuses: string[]

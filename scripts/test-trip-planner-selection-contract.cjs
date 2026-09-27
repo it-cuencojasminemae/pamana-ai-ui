@@ -15,7 +15,7 @@ assert.match(page, /:nodes="mapPresentation\.nodes"/);
 assert.match(page, /:lines="mapPresentation\.lines"/);
 assert.match(page, /:fit-key="mapFitKey"/);
 assert.match(page, /tripPlan\.selectedJourneyId\.value = \$event/);
-assert.match(adapter, /if \(!journey\) return \{ nodes, lines: \[\] \}/);
+assert.match(adapter, /if \(!journey\) return \{ nodes, lines: \[\], disruptions: \[\] \}/);
 assert.match(adapter, /leg\.geometry/);
 assert.doesNotMatch(adapter, /routePoints|intermediateNodes\.map|connectStops/i);
 

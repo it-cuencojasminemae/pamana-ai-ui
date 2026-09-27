@@ -1,4 +1,4 @@
-import type { Feature, FeatureCollection, Point, LineString, Polygon, MultiPolygon } from 'geojson'
+import type { Feature, FeatureCollection, Point, LineString, MultiLineString, Polygon, MultiPolygon } from 'geojson'
 import type { DataMode, VerificationStatus } from './transportation'
 
 /** Presentation interchange only, NOT a journey response or routing decision model.
@@ -20,6 +20,7 @@ export interface MapFeatureProperties {
 export type MapPointFeature = Feature<Point, MapFeatureProperties>
 export type MapLineFeature = Feature<LineString, MapFeatureProperties>
 export type MapAreaFeature = Feature<Polygon | MultiPolygon, MapFeatureProperties>
+export type MapDisruptionFeature = Feature<Point | LineString | MultiLineString | Polygon | MultiPolygon, MapFeatureProperties>
 export interface MapPresentation {
   features: FeatureCollection<Point | LineString | Polygon | MultiPolygon, MapFeatureProperties>
   selectedLegId: string | null
