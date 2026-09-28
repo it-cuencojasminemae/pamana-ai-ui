@@ -12,6 +12,7 @@ const pageRoute = useRoute()
 const router = useRouter()
 const geoapify = useGeoapify()
 const tripPlan = useTripPlan()
+const approximatePaths = useApproximateJourneyPaths(tripPlan.selectedJourney)
 const form = reactive({ origin: '', destination: '', departure: 'Depart now', scheduledDeparture: '', passengerCategory: 'Regular fare' })
 const originLocation = ref<SelectedLocation | null>(null)
 const destinationLocation = ref<SelectedLocation | null>(null)
@@ -28,6 +29,7 @@ const minimumDeparture = computed(() => {
 })
 const canSearch = computed(() => Boolean(originLocation.value && destinationLocation.value && !tripPlan.loading.value))
 const mapPresentation = computed(() => journeyMapPresentation(tripPlan.selectedJourney.value, originLocation.value, destinationLocation.value))
+const mapLines = computed(() => [...mapPresentation.value.lines, ...approximatePaths.lines.value])
 const mapFitKey = computed(() => [originLocation.value?.id ?? '', destinationLocation.value?.id ?? '', tripPlan.selectedJourneyId.value ?? ''].join('|'))
 const selectedFare = computed(() => {
   const summary = tripPlan.selectedJourney.value?.fareSummary
@@ -232,9 +234,9 @@ onBeforeUnmount(() => queryLocationAbort?.abort())
           </div>
         </UCard>
 
-        <PamanaMapPanel provider="maplibre" icon="i-lucide-map" :label="tripPlan.selectedJourney.value ? 'Selected journey map' : 'Trip locations map'" height="clamp(320px, 48vw, 480px)" tone="lime" :nodes="mapPresentation.nodes" :lines="mapPresentation.lines" :disruptions="mapPresentation.disruptions" :fit-key="mapFitKey" />
+        <PamanaMapPanel provider="maplibre" icon="i-lucide-map" :label="tripPlan.selectedJourney.value ? 'Selected journey map' : 'Trip locations map'" height="clamp(320px, 48vw, 480px)" tone="lime" :nodes="mapPresentation.nodes" :lines="mapLines" :disruptions="mapPresentation.disruptions" :fit-key="mapFitKey" />
 
-        <p class="text-xs text-neutral-500">Dashed lines are Geoapify walking connectors. Solid lines appear only when PAMANA supplies verified transit geometry. Selecting another journey fits that journey once; live updates do not reset the map camera.</p>
+        <p class="text-xs text-neutral-500">Dashed lines are walking connectors. Blue solid lines are approximate road paths for orientation; verified PAMANA transit geometry remains authoritative when available. Selecting another journey fits that journey once; geometry updates do not reset the map camera.</p>
       </div>
     </div>
   </div>

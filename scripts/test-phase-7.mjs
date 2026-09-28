@@ -8,7 +8,7 @@ import { resolveMapConfiguration } from '../app/services/mapConfiguration.ts'
 import * as presentationData from '../app/services/mapPresentation.ts'
 import { parse, compileScript, compileTemplate } from '@vue/compiler-sfc'
 import { legacyMarkerFeatures, suppliedLine, renderableFeatures, markerSemantic, createFitPolicy, MAP_TOKENS } from '../app/services/mapPresentation.ts'
-import { createMapPresentation, presentationLayers, SOURCE_ID } from '../app/services/mapLibrePresentation.ts'
+import { createMapPresentation, presentationLayers, SOURCE_ID, LAYER_IDS } from '../app/services/mapLibrePresentation.ts'
 
 const read = file => fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
 // Synthetic test coordinates only; never stored or labeled as San Juan transport facts.
@@ -53,11 +53,11 @@ test('source updates and style reloads reuse layers; only explicit camera intent
     renderer.fitOnIntent('journey-a', true)
   }
   assert.equal(fits, 1, 'Polling must not reset camera')
-  assert.equal(sources.size, 1); assert.ok(sources.has(SOURCE_ID)); assert.equal(layers.size, 6)
+  assert.equal(sources.size, 1); assert.ok(sources.has(SOURCE_ID)); assert.equal(layers.size, LAYER_IDS.length)
   assert.equal(dataUpdates, 10)
   renderer.fitOnIntent('journey-b', true); assert.equal(fits, 2)
   sources.clear(); layers.clear(); images.clear(); renderer.sync()
-  assert.equal(layers.size, 6); assert.equal(fits, 2, 'Style reload does not fit again')
+  assert.equal(layers.size, LAYER_IDS.length); assert.equal(fits, 2, 'Style reload does not fit again')
   const policy = createFitPolicy()
   assert.equal(policy.shouldFit('a', false), false)
   assert.equal(policy.shouldFit('a', true), false)

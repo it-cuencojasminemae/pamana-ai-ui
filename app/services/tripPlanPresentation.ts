@@ -59,6 +59,7 @@ export function journeyMapPresentation(
           label: leg.type === 'WALK' ? 'Walking connector' : `Transit ${leg.route.code || leg.variant.code || 'leg'}`,
           source: leg.type === 'WALK' ? 'GEOAPIFY' : 'PAMANA',
           legId: `${leg.sequence}`,
+          geometryClassification: leg.type === 'WALK' ? 'WALK' : 'VERIFIED_TRANSIT_GEOMETRY',
         },
       })
     })

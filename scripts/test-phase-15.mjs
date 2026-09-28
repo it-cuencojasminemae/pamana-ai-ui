@@ -81,7 +81,7 @@ test('planner and journey component compile and preserve factual UI contract', (
   const page = read('app/pages/passenger/trip-planner.vue')
   assert.match(page, /Find Best Route/)
   assert.match(page, /buildTripPlanRequest/)
-  assert.match(page, /:lines="mapPresentation\.lines"/)
+  assert.match(page, /:lines="mapLines"/)
   assert.match(page, /selectedJourneyId\.value = \$event/)
   assert.doesNotMatch(page, /\/api\/trip-search|Cheapest|Fastest|Most Reliable|Recommended|Gemini|demoMode/)
   assert.doesNotMatch(page, /\bany\b/)

@@ -3,7 +3,7 @@ import type { MapPointFeature, MapLineFeature } from '../types/map.ts'
 import { MAP_TOKENS, createFitPolicy } from './mapPresentation.ts'
 
 export const SOURCE_ID = 'pamana-features'
-export const LAYER_IDS = ['pamana-route-halo', 'pamana-route', 'pamana-walking', 'pamana-selection', 'pamana-points', 'pamana-icons']
+export const LAYER_IDS = ['pamana-route-halo', 'pamana-route', 'pamana-approximate-road-path', 'pamana-walking', 'pamana-selection', 'pamana-points', 'pamana-icons']
 type Features = (MapPointFeature | MapLineFeature)[]
 
 // Shared semantic tokens drive both WebGL symbols and HTML legend/control styles.
@@ -35,11 +35,12 @@ export function presentationLayers(): LayerSpecification[] {
   const point = ['==', ['geometry-type'], 'Point'] as any
   return [
     { id: LAYER_IDS[0]!, type: 'line', source: SOURCE_ID, filter: line, paint: { 'line-color': '#ffffff', 'line-width': 10, 'line-opacity': 0.9 } },
-    { id: LAYER_IDS[1]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['!=', ['get', 'semantic'], 'walking-route']], paint: { 'line-color': colors as any, 'line-width': 5 } },
-    { id: LAYER_IDS[2]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['==', ['get', 'semantic'], 'walking-route']], paint: { 'line-color': MAP_TOKENS['walking-route'].color, 'line-width': 4, 'line-dasharray': [2, 2] } },
-    { id: LAYER_IDS[3]!, type: 'circle', source: SOURCE_ID, filter: ['all', point, ['==', ['get', 'featureId'], '']], paint: { 'circle-radius': 23, 'circle-color': '#0f172a', 'circle-opacity': 0.18, 'circle-stroke-color': '#0f172a', 'circle-stroke-width': 2 } },
-    { id: LAYER_IDS[4]!, type: 'circle', source: SOURCE_ID, filter: point, paint: { 'circle-radius': ['case', ['==', ['get', 'semantic'], 'passenger'], 13, 17], 'circle-color': colors as any, 'circle-stroke-width': 3, 'circle-stroke-color': '#ffffff' } },
-    { id: LAYER_IDS[5]!, type: 'symbol', source: SOURCE_ID, filter: point, layout: { 'icon-image': ['concat', 'pamana-', ['get', 'semantic']], 'icon-size': 0.8, 'icon-allow-overlap': true, 'icon-ignore-placement': true } },
+    { id: LAYER_IDS[1]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['==', ['get', 'semantic'], 'transport-route']], paint: { 'line-color': MAP_TOKENS['transport-route'].color, 'line-width': 7 } },
+    { id: LAYER_IDS[2]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['==', ['get', 'semantic'], 'approximate-road-path']], paint: { 'line-color': MAP_TOKENS['approximate-road-path'].color, 'line-width': 6 } },
+    { id: LAYER_IDS[3]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['==', ['get', 'semantic'], 'walking-route']], paint: { 'line-color': MAP_TOKENS['walking-route'].color, 'line-width': 4, 'line-dasharray': [2, 2] } },
+    { id: LAYER_IDS[4]!, type: 'circle', source: SOURCE_ID, filter: ['all', point, ['==', ['get', 'featureId'], '']], paint: { 'circle-radius': 23, 'circle-color': '#0f172a', 'circle-opacity': 0.18, 'circle-stroke-color': '#0f172a', 'circle-stroke-width': 2 } },
+    { id: LAYER_IDS[5]!, type: 'circle', source: SOURCE_ID, filter: point, paint: { 'circle-radius': ['case', ['==', ['get', 'semantic'], 'passenger'], 13, 17], 'circle-color': colors as any, 'circle-stroke-width': 3, 'circle-stroke-color': '#ffffff' } },
+    { id: LAYER_IDS[6]!, type: 'symbol', source: SOURCE_ID, filter: point, layout: { 'icon-image': ['concat', 'pamana-', ['get', 'semantic']], 'icon-size': 0.8, 'icon-allow-overlap': true, 'icon-ignore-placement': true } },
   ]
 }
 

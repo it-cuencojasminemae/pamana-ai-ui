@@ -12,7 +12,7 @@ const map = fs.readFileSync(path.join(__dirname, '..', 'app', 'components', 'Pam
 assert.match(page, /tripPlan\.selectedJourney\.value/);
 assert.match(page, /journeyMapPresentation\(tripPlan\.selectedJourney\.value/);
 assert.match(page, /:nodes="mapPresentation\.nodes"/);
-assert.match(page, /:lines="mapPresentation\.lines"/);
+assert.match(page, /:lines="mapLines"/);
 assert.match(page, /:fit-key="mapFitKey"/);
 assert.match(page, /tripPlan\.selectedJourneyId\.value = \$event/);
 assert.match(adapter, /if \(!journey\) return \{ nodes, lines: \[\], disruptions: \[\] \}/);

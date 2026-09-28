@@ -13,6 +13,7 @@ export const MAP_TOKENS = {
   destination: { color: '#9f1239', label: 'PAMANA destination', glyph: 'flag' },
   'essential-service': { color: '#be123c', label: 'PAMANA essential service', glyph: 'cross' },
   'walking-route': { color: '#64748b', label: 'Walking', glyph: 'dot' },
+  'approximate-road-path': { color: '#2563eb', label: 'Approximate route path', glyph: 'dot' },
   'transport-route': { color: '#15803d', label: 'Transport route', glyph: 'dot' },
   disruption: { color: '#b45309', label: 'Disruption', glyph: 'warning' },
 } as const

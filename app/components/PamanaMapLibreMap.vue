@@ -38,6 +38,7 @@ const transportFeatures = computed(() => renderableFeatures(props.transportNodes
 const allFeatures = computed(() => [...features.value, ...transportFeatures.value])
 const choices = computed(() => allFeatures.value.filter(f => f.properties.semantic !== 'passenger'))
 const selected = computed(() => allFeatures.value.find(f => f.id === selection.value))
+const hasApproximateRoadPath = computed(() => features.value.some(feature => feature.properties.semantic === 'approximate-road-path'))
 const legendSemantics = computed(() => {
   const visible = new Set(allFeatures.value.filter(feature => feature.geometry.type === 'Point').map(feature => feature.properties.semantic))
   return ['passenger', 'origin-location', 'destination-location', 'vehicle', 'pickup', 'stop', 'transfer', 'terminal', 'dropoff', 'destination', 'essential-service']
@@ -220,6 +221,10 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
         <button type="button" class="pamana-libre__button" :disabled="!userIsValid" aria-label="Recenter on your location" @click="recenter">◎ My location</button>
         <button v-if="choices.length" type="button" class="pamana-libre__button" aria-label="Fit supplied transport features" @click="fitAll">Fit features</button>
       </div>
+      <div v-if="hasApproximateRoadPath" class="pamana-libre__route-notice" role="note">
+        <i aria-hidden="true" />
+        <span>Approximate route path — actual public transport path may vary.</span>
+      </div>
       <div v-if="legendSemantics.length" class="pamana-libre__legend" aria-label="Map legend">
         <span v-for="semantic in legendSemantics" :key="semantic"><i :style="{ background: MAP_TOKENS[semantic].color }" />{{ MAP_TOKENS[semantic].label }}</span>
       </div>
@@ -243,6 +248,8 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
 .pamana-libre__detail { display: grid; gap: 3px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #dbe4e0; }
 .pamana-libre__detail span { font-size: 11px; color: #475569; }
 .pamana-libre__actions { position: absolute; right: 12px; bottom: 76px; display: grid; justify-items: end; gap: 6px; }
+.pamana-libre__route-notice { position: absolute; right: 12px; bottom: 34px; display: flex; max-width: min(360px, calc(100% - 24px)); align-items: center; gap: 7px; border: 1px solid #fff; border-radius: 12px; background: #fffffff2; padding: 8px 10px; color: #334155; font: 650 10px/1.4 system-ui; pointer-events: none; }
+.pamana-libre__route-notice i { width: 22px; height: 4px; flex: 0 0 auto; border-radius: 999px; background: #2563eb; }
 .pamana-libre__button { min-height: 42px; padding: 8px 12px; border-radius: 12px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 3px 12px #172b2712; font: 650 12px/1.3 system-ui; cursor: pointer; }
 .pamana-libre__button:disabled { opacity: .55; cursor: not-allowed; }
 .pamana-libre__button:focus-visible, select:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
@@ -251,5 +258,5 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
 .pamana-libre__legend i { width: 7px; height: 7px; border-radius: 50%; }
 :deep(.maplibregl-ctrl-group) { border-radius: 12px; overflow: hidden; box-shadow: 0 3px 16px #172b2720; }
 :deep(.maplibregl-ctrl-group button) { width: 42px; height: 42px; }
-@media (max-width: 480px) { .pamana-libre__tools { top: 10px; left: 10px; padding: 10px; } .pamana-libre__actions { bottom: 120px; } .pamana-libre__legend { bottom: 62px; font-size: 9px; gap: 5px 9px; } }
+@media (max-width: 480px) { .pamana-libre__tools { top: 10px; left: 10px; padding: 10px; } .pamana-libre__actions { bottom: 140px; } .pamana-libre__route-notice { bottom: 68px; left: 10px; right: 10px; } .pamana-libre__legend { bottom: 112px; font-size: 9px; gap: 5px 9px; } }
 </style>
