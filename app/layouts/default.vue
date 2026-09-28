@@ -16,9 +16,21 @@ const toast = useToast()
 
 const isSidebarOpen = ref(false)
 const loggingOut = ref(false)
+const hydrated = ref(false)
+
+onMounted(() => {
+  hydrated.value = true
+})
+
+const visibleUser = computed(() => hydrated.value ? user.value : null)
+const visibleRole = computed(() => hydrated.value ? role.value : null)
+const visibleIsPassenger = computed(() => hydrated.value && isPassenger.value)
+const visibleIsDriver = computed(() => hydrated.value && isDriver.value)
+const visibleIsLGU = computed(() => hydrated.value && isLGU.value)
+const visibleIsAdministrator = computed(() => hydrated.value && isAdministrator.value)
 
 const navigationItems = computed(() => {
-  if (isPassenger.value) {
+  if (visibleIsPassenger.value) {
     return [
       {
         label: 'Dashboard',
@@ -43,7 +55,7 @@ const navigationItems = computed(() => {
     ]
   }
 
-  if (isDriver.value) {
+  if (visibleIsDriver.value) {
     return [
       {
         label: 'Dashboard',
@@ -68,7 +80,7 @@ const navigationItems = computed(() => {
     ]
   }
 
-  if (isLGU.value) {
+  if (visibleIsLGU.value) {
     return [
       {
         label: 'Command Center',
@@ -91,6 +103,11 @@ const navigationItems = computed(() => {
         to: '/lgu/disruptions'
       },
       {
+        label: 'Passenger Reports',
+        icon: 'i-lucide-message-square-warning',
+        to: '/lgu/reports'
+      },
+      {
         label: 'Recommendations',
         icon: 'i-lucide-brain-circuit',
         to: '/lgu/recommendations'
@@ -98,7 +115,7 @@ const navigationItems = computed(() => {
     ]
   }
 
-  if (isAdministrator.value) {
+  if (visibleIsAdministrator.value) {
     return [
       {
         label: 'Dashboard',
@@ -136,6 +153,11 @@ const navigationItems = computed(() => {
         to: '/admin/users'
       },
       {
+        label: 'Passenger Reports',
+        icon: 'i-lucide-message-square-warning',
+        to: '/lgu/reports'
+      },
+      {
         label: 'Settings',
         icon: 'i-lucide-settings',
         to: '/admin/settings'
@@ -147,19 +169,19 @@ const navigationItems = computed(() => {
 })
 
 const workspaceHome = computed(() => {
-  if (isPassenger.value) {
+  if (visibleIsPassenger.value) {
     return '/passenger'
   }
 
-  if (isDriver.value) {
+  if (visibleIsDriver.value) {
     return '/driver'
   }
 
-  if (isLGU.value) {
+  if (visibleIsLGU.value) {
     return '/lgu'
   }
 
-  if (isAdministrator.value) {
+  if (visibleIsAdministrator.value) {
     return '/admin'
   }
 
@@ -167,35 +189,35 @@ const workspaceHome = computed(() => {
 })
 
 const roleLabel = computed(() => {
-  if (isPassenger.value) {
+  if (visibleIsPassenger.value) {
     return 'Passenger'
   }
 
-  if (isDriver.value) {
+  if (visibleIsDriver.value) {
     return 'Driver'
   }
 
-  if (isLGU.value) {
+  if (visibleIsLGU.value) {
     return 'LGU'
   }
 
-  if (isAdministrator.value) {
+  if (visibleIsAdministrator.value) {
     return 'Administrator'
   }
 
-  return role.value || 'User'
+  return visibleRole.value || 'User'
 })
 
 const userInitial = computed(() => {
   return (
-    user.value?.username
+    visibleUser.value?.username
       ?.charAt(0)
       ?.toUpperCase() || 'P'
   )
 })
 
 const roleMeta = computed(() => {
-  if (isDriver.value) {
+  if (visibleIsDriver.value) {
     return {
       icon: 'i-lucide-steering-wheel',
       active:
@@ -207,7 +229,7 @@ const roleMeta = computed(() => {
     }
   }
 
-  if (isLGU.value) {
+  if (visibleIsLGU.value) {
     return {
       icon: 'i-lucide-landmark',
       active:
@@ -219,7 +241,7 @@ const roleMeta = computed(() => {
     }
   }
 
-  if (isAdministrator.value) {
+  if (visibleIsAdministrator.value) {
     return {
       icon: 'i-lucide-shield-check',
       active:
@@ -396,7 +418,7 @@ watch(
             <p
               class="truncate text-sm font-semibold text-neutral-900"
             >
-              {{ user?.username || 'PAMANA User' }}
+              {{ visibleUser?.username || 'PAMANA User' }}
             </p>
 
             <p
@@ -575,13 +597,13 @@ watch(
                 <p
                   class="truncate text-sm font-semibold text-neutral-900"
                 >
-                  {{ user?.username || 'PAMANA User' }}
+                  {{ visibleUser?.username || 'PAMANA User' }}
                 </p>
 
                 <p
                   class="truncate text-xs text-neutral-500"
                 >
-                  {{ user?.email || roleLabel }}
+                  {{ visibleUser?.email || roleLabel }}
                 </p>
               </div>
             </div>
@@ -648,11 +670,11 @@ watch(
             <p
               class="text-sm font-medium text-neutral-900"
             >
-              {{ user?.username || 'PAMANA User' }}
+              {{ visibleUser?.username || 'PAMANA User' }}
             </p>
 
             <p class="text-xs text-neutral-500">
-              {{ user?.email || roleLabel }}
+              {{ visibleUser?.email || roleLabel }}
             </p>
           </div>
         </div>

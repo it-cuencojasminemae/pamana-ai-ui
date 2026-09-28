@@ -1,6 +1,6 @@
 let activeWatchId: number | null = null
 
-export function useGeolocation() {
+export function useGeolocation({ autoStart = false }: { autoStart?: boolean } = {}) {
   const location = useState<{ lat: number; lng: number } | null>(
     'user-location',
     () => null
@@ -88,7 +88,7 @@ export function useGeolocation() {
     tracking.value = false
   }
 
-  onMounted(start)
+  if (autoStart) onMounted(start)
 
   return {
     location,

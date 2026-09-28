@@ -36,6 +36,19 @@ const selectedFare = computed(() => {
   if (summary.knownSubtotal !== null) return `Known subtotal ${formatFare(summary.knownSubtotal, summary.currency || 'PHP')}`
   return 'Fare unavailable'
 })
+const reportJourneyLink = computed(() => {
+  const transit = tripPlan.selectedJourney.value?.legs.find(leg => leg.type === 'TRANSIT')
+  if (!transit || transit.type !== 'TRANSIT') return null
+  return {
+    path: '/passenger/reports',
+    query: {
+      route: transit.route.id || undefined,
+      variant: transit.variant.id || undefined,
+      node: transit.boardAt?.nodeId || undefined,
+      context: [transit.variant.code || transit.route.code, transit.boardAt?.name].filter(Boolean).join(' · '),
+    },
+  }
+})
 
 const clientErrorCopy: Record<TripPlanClientError, { title: string; description: string }> = {
   INVALID_INPUT: { title: 'Check your trip details', description: 'Choose valid origin and destination suggestions, then try again.' },
@@ -191,6 +204,7 @@ onBeforeUnmount(() => queryLocationAbort?.abort())
             <span v-if="tripPlan.journeys.value.length" class="pill bg-lime-300/15 text-lime-700">{{ tripPlan.journeys.value.length }} {{ tripPlan.journeys.value.length === 1 ? 'OPTION' : 'OPTIONS' }}</span>
           </div>
           <p class="mt-2 text-xs text-neutral-500">Fare, service, and availability come from verified PAMANA records. Unknown information remains marked unavailable.</p>
+          <UButton v-if="reportJourneyLink" :to="reportJourneyLink" color="neutral" variant="soft" size="sm" icon="i-lucide-message-square-warning" class="mt-3 rounded-full">Report an issue with this journey</UButton>
         </UCard>
       </div>
 
