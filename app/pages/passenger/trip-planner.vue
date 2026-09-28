@@ -2,6 +2,7 @@
 import type { SelectedLocation } from '../../types/location'
 import type { PassengerCategory, TripPlanClientError, TripPlanStatus } from '../../types/tripPlan'
 import { buildTripPlanRequest } from '../../services/tripPlan'
+import { buildJourneyExplanationRequest } from '../../services/journeyExplanation'
 import { formatFare, journeyMapPresentation } from '../../services/tripPlanPresentation'
 
 definePageMeta({ middleware: ['auth', 'passenger'] })
@@ -12,6 +13,7 @@ const pageRoute = useRoute()
 const router = useRouter()
 const geoapify = useGeoapify()
 const tripPlan = useTripPlan()
+const journeyExplanation = useJourneyExplanation()
 const approximatePaths = useApproximateJourneyPaths(tripPlan.selectedJourney)
 const form = reactive({ origin: '', destination: '', departure: 'Depart now', scheduledDeparture: '', passengerCategory: 'Regular fare' })
 const originLocation = ref<SelectedLocation | null>(null)
@@ -73,12 +75,21 @@ const currentDomainState = computed(() => {
   return status && status !== 'JOURNEYS_FOUND' ? domainCopy[status] : null
 })
 const currentError = computed(() => tripPlan.error.value ? clientErrorCopy[tripPlan.error.value] : null)
+const explanationUnavailableCopy = computed(() => {
+  if (journeyExplanation.response.value?.status === 'NOT_CONFIGURED') return 'Simple trip guides are not configured right now. Your factual journey remains available above.'
+  if (journeyExplanation.response.value?.status === 'INVALID_JOURNEY') return 'This journey could not be prepared for explanation. Select another journey or search again.'
+  return 'The simple trip guide is temporarily unavailable. Your factual journey remains available above.'
+})
 
 watch(originLocation, value => { form.origin = value?.label ?? form.origin })
 watch(destinationLocation, value => { form.destination = value?.label ?? form.destination })
+watch(() => tripPlan.selectedJourneyId.value, (value, previous) => { if (value !== previous) journeyExplanation.reset() })
 watch(
   () => `${originLocation.value?.id ?? ''}|${originLocation.value?.lat ?? ''}|${originLocation.value?.lng ?? ''}|${destinationLocation.value?.id ?? ''}|${destinationLocation.value?.lat ?? ''}|${destinationLocation.value?.lng ?? ''}`,
-  (value, previous) => { if (previous && value !== previous && tripPlan.searched.value) tripPlan.reset() },
+  (value, previous) => {
+    if (previous && value !== previous) journeyExplanation.reset()
+    if (previous && value !== previous && tripPlan.searched.value) tripPlan.reset()
+  },
 )
 
 function getQueryValue(value: unknown) {
@@ -149,8 +160,15 @@ async function findJourneys() {
   if (!validateSearch() || !originLocation.value || !destinationLocation.value) return
   const requestedDeparture = departureAt()
   if (!requestedDeparture) return
+  journeyExplanation.reset()
   await updateSearchQuery()
   await tripPlan.search(buildTripPlanRequest(originLocation.value, destinationLocation.value, requestedDeparture, passengerCategories[form.passengerCategory] || 'REGULAR'))
+}
+
+async function explainSelectedJourney() {
+  const journey = tripPlan.selectedJourney.value
+  if (!journey || !originLocation.value || !destinationLocation.value) return
+  await journeyExplanation.explain(buildJourneyExplanationRequest(originLocation.value.label, destinationLocation.value.label, journey))
 }
 
 onMounted(() => {
@@ -221,6 +239,28 @@ onBeforeUnmount(() => queryLocationAbort?.abort())
 
         <template v-else-if="tripPlan.journeys.value.length">
           <JourneyPamanaJourneyCard v-for="(journey, index) in tripPlan.journeys.value" :key="journey.id" :journey="journey" :option-number="index + 1" :selected="tripPlan.selectedJourneyId.value === journey.id" @select="tripPlan.selectedJourneyId.value = $event" />
+          <UCard v-if="tripPlan.selectedJourney.value" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <p class="font-display text-sm font-semibold text-neutral-900">Simple trip guide</p>
+                <p class="mt-1 text-xs text-neutral-500">AI explains PAMANA's computed journey; it does not choose or change the route.</p>
+              </div>
+              <UButton color="neutral" variant="soft" size="sm" icon="i-lucide-sparkles" class="rounded-full" :loading="journeyExplanation.loading.value" :disabled="journeyExplanation.loading.value" @click="explainSelectedJourney">
+                {{ journeyExplanation.response.value?.status === 'AVAILABLE' ? 'Explain again' : 'Explain this trip' }}
+              </UButton>
+            </div>
+            <div class="mt-3" aria-live="polite">
+              <div v-if="journeyExplanation.loading.value" class="space-y-2" role="status">
+                <span class="sr-only">Preparing simple trip guide</span>
+                <div class="h-3 w-full animate-pulse rounded-full bg-neutral-100" />
+                <div class="h-3 w-4/5 animate-pulse rounded-full bg-neutral-100" />
+              </div>
+              <p v-else-if="journeyExplanation.response.value?.status === 'AVAILABLE'" class="whitespace-pre-line text-sm leading-relaxed text-neutral-700">
+                {{ journeyExplanation.response.value.explanation }}
+              </p>
+              <UAlert v-else-if="journeyExplanation.response.value" color="warning" variant="soft" icon="i-lucide-circle-alert" title="Simple guide unavailable" :description="explanationUnavailableCopy" class="rounded-2xl" />
+            </div>
+          </UCard>
         </template>
 
         <UAlert v-if="currentError" color="error" variant="soft" icon="i-lucide-wifi-off" :title="currentError.title" :description="currentError.description" class="rounded-2xl" />
