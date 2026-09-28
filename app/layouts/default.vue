@@ -98,6 +98,11 @@ const navigationItems = computed(() => {
         to: '/lgu/demand'
       },
       {
+        label: 'Transport Data',
+        icon: 'i-lucide-database',
+        to: '/lgu/transport-data'
+      },
+      {
         label: 'Disruptions',
         icon: 'i-lucide-triangle-alert',
         to: '/lgu/disruptions'
@@ -126,6 +131,11 @@ const navigationItems = computed(() => {
         label: 'Routes',
         icon: 'i-lucide-route',
         to: '/admin/routes'
+      },
+      {
+        label: 'Transport Data',
+        icon: 'i-lucide-database',
+        to: '/admin/transport-data'
       },
       {
         label: 'Stops',
