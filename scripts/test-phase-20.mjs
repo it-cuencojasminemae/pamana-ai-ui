@@ -38,11 +38,12 @@ test('explanation endpoint is authenticated, on-demand, provider-neutral and san
   let captured
   const response = await fetchJourneyExplanation(async (endpoint, options) => {
     captured = { endpoint, options }
-    return { status: 'AVAILABLE', explanation: 'Board at PSU Mexico Front.', generatedAt: '2026-09-28T00:00:00.000Z' }
+    return { status: 'AVAILABLE', provider: 'gemini', explanation: 'Board at PSU Mexico Front.', generatedAt: '2026-09-28T00:00:00.000Z' }
   }, buildJourneyExplanationRequest('PSU Mexico', 'SM Pampanga', journey))
   assert.equal(captured.endpoint, '/api/pamana-ai/journey-explanation')
   assert.equal(captured.options.method, 'POST')
   assert.equal(response.status, 'AVAILABLE')
+  assert.equal(response.provider, 'gemini')
 
   const failure = await fetchJourneyExplanation(async () => { throw new Error('provider body') }, buildJourneyExplanationRequest('PSU Mexico', 'SM Pampanga', journey))
   assert.equal(failure.status, 'PROVIDER_UNAVAILABLE')
@@ -57,6 +58,8 @@ test('passenger UI keeps factual journey primary and requests explanation only a
   assert.match(page, /AI explains PAMANA's computed journey; it does not choose or change the route\./)
   assert.match(page, /@click="explainSelectedJourney"/)
   assert.match(page, /<JourneyPamanaJourneyCard[\s\S]*Simple trip guide/)
+  assert.match(page, /title="Simple guide unavailable"[\s\S]*border-sky-200 bg-sky-50/)
+  assert.match(page, /description: 'text-sky-800'/)
   assert.doesNotMatch(page.match(/async function findJourneys\(\)[\s\S]*?\n}/)?.[0] || '', /journeyExplanation\.explain/)
   assert.match(composable, /controller\?\.abort\(\)/)
   assert.match(composable, /onBeforeUnmount\(reset\)/)

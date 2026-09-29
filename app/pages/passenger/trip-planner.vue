@@ -258,7 +258,16 @@ onBeforeUnmount(() => queryLocationAbort?.abort())
               <p v-else-if="journeyExplanation.response.value?.status === 'AVAILABLE'" class="whitespace-pre-line text-sm leading-relaxed text-neutral-700">
                 {{ journeyExplanation.response.value.explanation }}
               </p>
-              <UAlert v-else-if="journeyExplanation.response.value" color="warning" variant="soft" icon="i-lucide-circle-alert" title="Simple guide unavailable" :description="explanationUnavailableCopy" class="rounded-2xl" />
+              <UAlert
+                v-else-if="journeyExplanation.response.value"
+                color="neutral"
+                variant="subtle"
+                icon="i-lucide-info"
+                title="Simple guide unavailable"
+                :description="explanationUnavailableCopy"
+                class="rounded-2xl border border-sky-200 bg-sky-50"
+                :ui="{ icon: 'text-sky-700', title: 'text-sky-950', description: 'text-sky-800' }"
+              />
             </div>
           </UCard>
         </template>

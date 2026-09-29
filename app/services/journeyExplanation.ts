@@ -81,6 +81,7 @@ function validResponse(value: unknown): value is JourneyExplanationResponse {
   if (!value || typeof value !== 'object') return false
   const result = value as Partial<JourneyExplanationResponse>
   return statuses.includes(result.status as JourneyExplanationStatus)
+    && (result.provider === undefined || result.provider === null || result.provider === 'gemini' || result.provider === 'openai')
     && (result.explanation === null || typeof result.explanation === 'string')
     && typeof result.generatedAt === 'string'
     && (result.warning === undefined || typeof result.warning === 'string')

@@ -2,6 +2,7 @@ export type JourneyExplanationStatus = 'AVAILABLE' | 'PROVIDER_UNAVAILABLE' | 'I
 
 export interface JourneyExplanationResponse {
   status: JourneyExplanationStatus
+  provider?: 'gemini' | 'openai' | null
   explanation: string | null
   generatedAt: string
   warning?: string
