@@ -1,6 +1,9 @@
 const TOKEN_STORAGE_KEY = "pamana_token";
+// Refresh-token rotation must be shared by requests in one app, never by SSR users.
+const pendingRefreshes = new WeakMap<object, Promise<boolean>>();
 
 export const useApi = () => {
+  const app = useNuxtApp();
   const config = useRuntimeConfig();
 
   const apiUrl = config.public.apiUrl as string;
@@ -22,7 +25,7 @@ export const useApi = () => {
     }
   };
 
-  const refreshSession = async (): Promise<boolean> => {
+  const performRefresh = async (): Promise<boolean> => {
     try {
       const response = await $fetch<{ jwt: string }>(`${apiUrl}/api/auth/refresh`, {
         method: "POST",
@@ -47,8 +50,17 @@ export const useApi = () => {
     }
   };
 
+  const refreshSession = (): Promise<boolean> => {
+    const pending = pendingRefreshes.get(app);
+    if (pending) return pending;
+    const operation = performRefresh().finally(() => pendingRefreshes.delete(app));
+    pendingRefreshes.set(app, operation);
+    return operation;
+  };
+
   const apiFetch = async <T>(endpoint: string, options: any = {}): Promise<T> => {
     const isAuthRoute = endpoint.startsWith("/api/auth/");
+    const requestToken = token().value;
 
     const request = () =>
       $fetch<T>(`${apiUrl}${endpoint}`, {
@@ -63,6 +75,8 @@ export const useApi = () => {
       const status = error?.response?.status || error?.statusCode;
 
       if (status === 401 && token().value && !isAuthRoute) {
+        // Another request may already have completed rotation before this 401.
+        if (token().value !== requestToken) return await request();
         const refreshed = await refreshSession();
 
         if (refreshed) {

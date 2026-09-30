@@ -229,7 +229,7 @@ const userInitial = computed(() => {
 const roleMeta = computed(() => {
   if (visibleIsDriver.value) {
     return {
-      icon: 'i-lucide-steering-wheel',
+      icon: 'i-lucide-bus-front',
       active:
         'border-emerald-500/30 bg-emerald-500/10 text-emerald-700',
       badge:
@@ -694,7 +694,8 @@ watch(
       <main
         class="mx-auto min-h-[calc(100vh-4rem)] max-w-[1500px] p-4 sm:p-6 lg:min-h-[calc(100vh-5rem)] lg:p-8"
       >
-        <slot />
+        <slot v-if="hydrated" />
+        <p v-else role="status" class="text-sm text-neutral-500">Loading your workspace…</p>
       </main>
     </div>
   </div>

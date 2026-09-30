@@ -15,7 +15,7 @@ const roleMeta = computed(() => ({
   },
   driver: {
     label: 'Driver page',
-    icon: 'i-lucide-steering-wheel',
+    icon: 'i-lucide-bus-front',
     classes: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300/40'
   },
   lgu: {

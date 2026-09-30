@@ -1,5 +1,6 @@
 import type { SelectedLocation } from '../types/location.ts'
 import type { PassengerCategory, TripPlanClientError, TripPlanRequest, TripPlanResponse } from '../types/tripPlan.ts'
+import { validTripPlanResponse } from './tripPlanContract.ts'
 
 type ApiFetcher = <T>(endpoint: string, options?: Record<string, unknown>) => Promise<T>
 
@@ -37,15 +38,7 @@ function providerFailure(error: unknown) {
 }
 
 function validResponse(value: unknown): value is TripPlanResponse {
-  if (!value || typeof value !== 'object') return false
-  const result = value as Partial<TripPlanResponse>
-  const journeysValid = Array.isArray(result.journeys) && result.journeys.every(journey => Boolean(
-    journey && typeof journey === 'object' && typeof journey.id === 'string' && Array.isArray(journey.legs)
-      && journey.fareSummary && journey.availabilitySummary && journey.durationSummary,
-  ))
-  return ['JOURNEYS_FOUND', 'NO_ELIGIBLE_ACCESS_NODES', 'NO_TRANSPORT_JOURNEY', 'ROUTING_PROVIDER_UNAVAILABLE'].includes(String(result.status))
-    && journeysValid
-    && Boolean(result.meta && typeof result.meta === 'object')
+  return validTripPlanResponse(value)
 }
 
 export async function fetchTripPlan(

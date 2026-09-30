@@ -194,9 +194,14 @@ export const useAuth = () => {
    */
 
   const logout = async () => {
-    removeStoredAuth();
-
-    await navigateTo("/login");
+    try {
+      if (token.value) await apiFetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // Local logout must still work while the backend is unavailable.
+    } finally {
+      removeStoredAuth();
+      await navigateTo("/login");
+    }
   };
 
   /*
