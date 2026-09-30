@@ -33,23 +33,39 @@ const vehicles = computed(() =>
 )
 
 let pollTimer: ReturnType<typeof setInterval> | undefined
+let pollingAbort: AbortController | null = null
+let loadingVehicles = false
 
 async function loadLiveVehicles() {
+  if (loadingVehicles || document.visibilityState !== 'visible') return
+  loadingVehicles = true
+  const controller = new AbortController()
+  pollingAbort = controller
   try {
-    const response = await apiFetch<{ data: LiveVehicle[] }>('/api/live-vehicles')
-    rawVehicles.value = response.data
+    const response = await apiFetch<{ data: LiveVehicle[] }>('/api/live-vehicles', { signal: controller.signal })
+    if (!controller.signal.aborted) rawVehicles.value = response.data
   } catch {
     // Keep showing the last known list on a transient polling failure.
+  } finally {
+    loadingVehicles = false
   }
+}
+
+function handleVisibilityChange() {
+  if (document.visibilityState === 'visible') void loadLiveVehicles()
+  else pollingAbort?.abort()
 }
 
 onMounted(() => {
   loadLiveVehicles()
-  pollTimer = setInterval(loadLiveVehicles, 5000)
+  pollTimer = setInterval(loadLiveVehicles, 15000)
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
 onUnmounted(() => {
   if (pollTimer) clearInterval(pollTimer)
+  pollingAbort?.abort()
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
 </script>
 

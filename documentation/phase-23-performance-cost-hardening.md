@@ -1,0 +1,11 @@
+# Phase 23 frontend performance and cost hardening
+
+Validated locally on 2026-09-30. The full planning/query baseline and cache inventory are documented in the backend repository's `documentation/phase-23-performance-cost-hardening.md`.
+
+- One Geoapify client/cache per Nuxt app instance; separate SSR request apps cannot share it. Autocomplete and forward-geocode results use a five-minute, 50-entry memory cache, partitioned by endpoint and geographic options. Concurrent identical searches share a request but cancel independently. Key rotation discards the cache. Nothing is serialized or stored persistently.
+- Search fields retain 320 ms debounce, two-character minimum, small result limits and stale-response rejection. Repeating a pending normalized query keeps its valid response. Moving to a cached query cancels the old request. The field-local 20-entry cache now has a five-minute TTL.
+- A currently displayed successful guide is reused for sixty seconds only when exact factual input is identical. Search/selection/reset clears it. Failures and changed facts do not reuse it. All AI calls remain user initiated through the authenticated backend endpoint.
+- LGU live polling changes from five to fifteen seconds, prevents overlapping calls, skips hidden tabs, aborts on hidden/disposal, and refreshes on return. Passenger feeds already use fifteen seconds with visibility checks; static transport nodes are not reloaded by vehicle refresh. REAL and SIMULATED feeds stay separate.
+- The existing six-hour/40-entry approximate-road cache now keys by coordinates as well as variant/node identity. It remains presentation only. Walking/transit styles, MapLibre `setData()` updates, camera stability and Leaflet compatibility are preserved.
+- Tests verify these actual lifecycle and cancellation behaviors without live provider quota. Phase 6–23 frontend regressions and the production build pass. Existing chunk/dependency warnings remain; no dependency or lockfile change was made. The lazy MapLibre chunk/worker remain 1,061,327/508,637 bytes before and after.
+- The pre-existing `nuxt.config.ts` edit is outside the Phase 23 commit. No persistent transport data, geometry, planning eligibility, fares, service, availability, auth permissions or disruption rules were modified. Phase 24 is untouched.

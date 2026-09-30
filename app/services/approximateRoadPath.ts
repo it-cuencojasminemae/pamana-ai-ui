@@ -27,7 +27,7 @@ export function approximateRoadPathRequest(leg: JourneyTransitLeg) {
   if (resolved.length < 2) return null
   const identity = nodes.map((node, index) => node?.nodeId || node?.nodeCode || `${resolved[index]?.latitude},${resolved[index]?.longitude}`).join('>')
   return {
-    key: `${leg.variant.id || leg.variant.code || 'transit'}|${identity}`,
+    key: `${leg.variant.id || leg.variant.code || 'transit'}|${identity}|${resolved.map(point => `${point.latitude},${point.longitude}`).join('>')}`,
     points: resolved,
     label: `Approximate road path for ${leg.route.code || leg.variant.code || 'transit leg'}`,
     legId: String(leg.sequence),
@@ -69,6 +69,7 @@ export function createApproximateRoadPathResolver(routeGeography: RouteGeography
   const pending = new Map<string, Promise<MapLineFeature[]>>()
 
   async function resolveLeg(leg: JourneyTransitLeg, signal?: AbortSignal) {
+    if (signal?.aborted) return []
     const request = approximateRoadPathRequest(leg)
     if (!request) return []
     const cached = cache.get(request.key)

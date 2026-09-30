@@ -2,6 +2,7 @@ import type { FeatureCollection, Geometry } from 'geojson'
 import type { GeographicConfig } from './mapConfiguration.ts'
 import type { LocationSearchOptions, SelectedLocation } from '../types/location.ts'
 import { resolveMapConfiguration } from './mapConfiguration.ts'
+import { createLocationRequestCache } from './locationRequestCache.ts'
 
 export type GeographyError = 'MISSING_API_KEY' | 'INVALID_CONFIGURATION' | 'INVALID_INPUT' | 'UNAUTHORIZED' | 'RATE_LIMITED' | 'HTTP_ERROR' | 'NETWORK_ERROR' | 'INVALID_RESPONSE' | 'ABORTED' | 'TIMEOUT'
 export type GeographyResult =
@@ -53,6 +54,8 @@ export function createGeoapifyClient(
   options: { fetcher?: typeof fetch; timeoutMs?: number } = {},
 ) {
   const timeoutMs = Math.min(30000, Math.max(1, options.timeoutMs ?? 10000))
+  let searchCache = createLocationRequestCache()
+  let cacheCredential: string | undefined
   async function request(path: string, params: Record<string, string>, signal?: AbortSignal): Promise<GeographyResult> {
     const config = resolveMapConfiguration(getConfig())
     if (!config.ok) return fail(config.error)
@@ -95,8 +98,21 @@ export function createGeoapifyClient(
     ? request(path, searchParams(text, searchOptions), signal)
     : Promise.resolve(fail('INVALID_INPUT'))
   async function normalizedSearch(path: string, text: string, searchOptions: LocationSearchOptions, signal?: AbortSignal): Promise<LocationResult> {
-    const result = await search(path, text, signal, searchOptions)
-    return result.ok ? { ...result, data: normalizeGeoapifyLocations(result.data) } : result
+    if (signal?.aborted) return fail('ABORTED')
+    const config = resolveMapConfiguration(getConfig())
+    if (!config.ok) return fail(config.error)
+    if (!textValid(text)) return fail('INVALID_INPUT')
+    if (cacheCredential !== config.apiKey) {
+      searchCache = createLocationRequestCache()
+      cacheCredential = config.apiKey
+    }
+    const query = text.trim().replace(/\s+/g, ' ')
+    const params = searchParams(query, searchOptions)
+    const key = JSON.stringify([path, { ...params, text: query.toLowerCase() }])
+    return searchCache.resolve(key, async sharedSignal => {
+      const result = await search(path, query, sharedSignal, searchOptions)
+      return result.ok ? { ...result, data: normalizeGeoapifyLocations(result.data) } : result
+    }, signal)
   }
   return {
     autocomplete: (text: string, signal?: AbortSignal, searchOptions: LocationSearchOptions = {}) => search('/v1/geocode/autocomplete', text, signal, searchOptions),

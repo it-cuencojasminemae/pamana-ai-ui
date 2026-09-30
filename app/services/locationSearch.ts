@@ -13,12 +13,14 @@ type Searcher = (query: string, signal: AbortSignal) => Promise<LocationResult>
 export function createLocationSearchController(
   searcher: Searcher,
   onState: (state: LocationSearchState) => void,
-  options: { delayMs?: number; minLength?: number; cacheSize?: number } = {},
+  options: { delayMs?: number; minLength?: number; cacheSize?: number; cacheTtlMs?: number; now?: () => number } = {},
 ) {
   const delayMs = Math.min(1000, Math.max(0, options.delayMs ?? 320))
   const minLength = Math.min(10, Math.max(1, options.minLength ?? 2))
   const cacheSize = Math.min(50, Math.max(1, options.cacheSize ?? 20))
-  const cache = new Map<string, SelectedLocation[]>()
+  const cacheTtlMs = Math.min(300_000, Math.max(1, options.cacheTtlMs ?? 300_000))
+  const now = options.now ?? Date.now
+  const cache = new Map<string, { expiresAt: number; suggestions: SelectedLocation[] }>()
   let timer: ReturnType<typeof setTimeout> | undefined
   let active: AbortController | null = null
   let generation = 0
@@ -27,25 +29,31 @@ export function createLocationSearchController(
   const emit = (state: LocationSearchState) => { if (!disposed) onState(state) }
 
   function schedule(rawQuery: string) {
-    const query = rawQuery.trim()
-    const key = query.toLocaleLowerCase()
+    const query = rawQuery.trim().replace(/\s+/g, ' ')
+    const key = query.toLowerCase()
+    // A repeated focus/input event must not invalidate its own pending response.
+    if (pendingKey === key && (timer !== undefined || active)) return
     clearTimeout(timer)
+    timer = undefined
     generation++
+    active?.abort(); active = null; pendingKey = ''
     if (query.length < minLength) {
       active?.abort(); active = null; pendingKey = ''
       emit({ status: 'idle', suggestions: [], error: null })
       return
     }
-    if (cache.has(key)) {
-      const suggestions = cache.get(key)!
+    const cached = cache.get(key)
+    if (cached && cached.expiresAt > now()) {
+      const suggestions = structuredClone(cached.suggestions)
       emit({ status: suggestions.length ? 'ready' : 'no-results', suggestions, error: null })
       return
     }
-    if (pendingKey === key) return
-    active?.abort(); active = null
+    if (cached) cache.delete(key)
+    pendingKey = key
     const requestGeneration = generation
     emit({ status: 'loading', suggestions: [], error: null })
     timer = setTimeout(async () => {
+      timer = undefined
       if (disposed || requestGeneration !== generation) return
       active = new AbortController()
       pendingKey = key
@@ -63,7 +71,7 @@ export function createLocationSearchController(
         return
       }
       const suggestions = result.data.slice(0, 8)
-      cache.set(key, suggestions)
+      cache.set(key, { expiresAt: now() + cacheTtlMs, suggestions: structuredClone(suggestions) })
       if (cache.size > cacheSize) cache.delete(cache.keys().next().value!)
       emit({ status: suggestions.length ? 'ready' : 'no-results', suggestions, error: null })
     }, delayMs)
@@ -72,11 +80,11 @@ export function createLocationSearchController(
   return {
     schedule,
     clear() {
-      clearTimeout(timer); generation++; active?.abort(); active = null; pendingKey = ''
+      clearTimeout(timer); timer = undefined; generation++; active?.abort(); active = null; pendingKey = ''
       emit({ status: 'idle', suggestions: [], error: null })
     },
     dispose() {
-      disposed = true; clearTimeout(timer); generation++; active?.abort(); active = null; pendingKey = ''
+      disposed = true; clearTimeout(timer); timer = undefined; generation++; active?.abort(); active = null; pendingKey = ''; cache.clear()
     },
   }
 }
