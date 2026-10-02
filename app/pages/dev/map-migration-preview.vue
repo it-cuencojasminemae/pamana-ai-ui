@@ -6,7 +6,6 @@ if (!import.meta.dev) throw createError({ statusCode: 404, statusMessage: 'Not f
 // Offshore synthetic presentation fixtures only. No API calls, GPS observations, or database writes.
 const scene = ref('Live Mobility')
 const narrow = ref(false)
-const compatibility = ref(false)
 const refresh = ref(0)
 const state = ref('INITIALIZING')
 watch(scene, () => { state.value = 'INITIALIZING' })
@@ -25,7 +24,13 @@ const records = computed(() => [{ documentId: 'preview-disruption', type: 'road_
   geometry_geojson: { type: 'Polygon', coordinates: [[[119, 14], [119.02, 14], [119.02, 14.01], [119, 14]]] },
 }])
 const disruptions = computed(() => disruptionMapFeatures(records.value))
-const height = computed(() => ({ 'Driver demand': '420px', Dashboard: '160px', 'Live Mobility': '460px', Disruptions: '340px' })[scene.value])
+// Workbench map contracts only; no editor save or transport-data endpoint is involved.
+const workbenchNodes = [{ type: 'Feature' as const, id: 'fixture-workbench-node', geometry: { type: 'Point' as const, coordinates: [119, 14] as [number, number] },
+  properties: { semantic: 'stop' as const, label: 'SIMULATED coordinate candidate' } }]
+const workbenchLines = [{ type: 'Feature' as const, id: 'fixture-workbench-line', geometry: { type: 'LineString' as const, coordinates: [[119, 14], [119.01, 14.01]] as [number, number][] },
+  properties: { semantic: 'transport-route' as const, label: 'SIMULATED geometry under review' } }]
+const scenes = ['Driver demand', 'Dashboard', 'Live Mobility', 'Disruptions', 'Workbench node', 'Workbench geometry']
+const height = computed(() => ({ 'Driver demand': '420px', Dashboard: '160px', 'Live Mobility': '460px', Disruptions: '340px', 'Workbench node': '280px', 'Workbench geometry': '280px' })[scene.value])
 </script>
 
 <template>
@@ -33,16 +38,16 @@ const height = computed(() => ({ 'Driver demand': '420px', Dashboard: '160px', '
     <h1 class="text-xl font-semibold">Phase 25A · SIMULATED map presentation checks</h1>
     <p class="my-3 text-sm">Development only. These fixtures do not complete real-device Phase 24.5 acceptance.</p>
     <div class="mb-4 flex flex-wrap gap-3">
-      <label>Map <select v-model="scene" class="rounded-lg border p-2"><option v-for="name in ['Driver demand', 'Dashboard', 'Live Mobility', 'Disruptions']" :key="name">{{ name }}</option></select></label>
+      <label>Map <select v-model="scene" class="rounded-lg border p-2"><option v-for="name in scenes" :key="name">{{ name }}</option></select></label>
       <button class="rounded-lg border p-2" @click="refresh++">Refresh simulated data</button>
       <button class="rounded-lg border p-2" @click="narrow = !narrow">Toggle mobile width</button>
-      <label class="flex items-center gap-2"><input v-model="compatibility" type="checkbox">Test Leaflet rollback</label>
     </div>
     <p class="mb-3" role="status">{{ scene }} · {{ state }} · Refresh {{ refresh }}</p>
     <div :style="{ width: narrow ? '360px' : '100%', maxWidth: '100%' }">
-      <PamanaMapPanel :key="scene" :provider="compatibility ? 'leaflet' : 'maplibre'" :height="height" :compact="scene === 'Dashboard'"
+      <PamanaMapPanel :key="scene" provider="maplibre" :height="height" :compact="scene === 'Dashboard'"
         :tools-offset="scene === 'Live Mobility' ? '104px' : scene === 'Driver demand' ? '64px' : undefined"
         :markers="scene === 'Live Mobility' ? vehicles : []" :disruptions="scene === 'Disruptions' ? disruptions : []"
+        :nodes="scene === 'Workbench node' ? workbenchNodes : []" :lines="scene === 'Workbench geometry' ? workbenchLines : []"
         @map-ready="state = 'READY'" @map-error="state = $event">
         <template #overlay>
           <span v-if="scene === 'Driver demand'" class="glass-solid pill absolute left-4 top-4 normal-case">AI-predicted demand · SIMULATED</span>

@@ -50,7 +50,7 @@ async function rendered(component, props = {}, slots = {}) {
   const maps = []
   const app = Vue.createSSRApp({ render: () => Vue.h(component, props, slots) })
   for (const name of ['UCard', 'UButton', 'UIcon', 'USelect', 'PamanaPageHeader', 'PamanaStatCard', 'PamanaInsightCard']) app.component(name, shell)
-  for (const name of ['PamanaMapPanel', 'PamanaMapLibreMap', 'PamanaLeafletMap']) app.component(name, {
+  for (const name of ['PamanaMapPanel', 'PamanaMapLibreMap']) app.component(name, {
     inheritAttrs: false, setup: (_, { attrs, slots }) => () => { maps.push({ name, ...attrs }); return Vue.h('div', [slots.overlay?.(), slots.default?.()]) },
   })
   return { html: await renderToString(app), maps }
@@ -73,24 +73,21 @@ test('all remaining production consumers render MapLibre with preserved map dime
   }
 })
 
-test('shared panel defaults to MapLibre; named overlays survive either provider and rollback remains available', async () => {
+test('shared panel defaults to MapLibre and preserves named overlays, compact sizing and marker metadata', async () => {
   const panel = component('app/components/PamanaMapPanel.vue')
   const fixture = vehicle('SIMULATED')
-  const base = { height: '160px', compact: true, markers: [fixture], compatibilityMarkers: [], nodes: [],
+  const base = { height: '160px', compact: true, markers: [fixture], nodes: [],
     lines: [], transportNodes: [], vehicles: [], disruptions: [], routeGeometry: null, userLocation: null }
-  // Explicit props here exercise both branches; component defaults are checked by the production SSR render below.
-  for (const provider of ['maplibre', 'leaflet']) {
+  // Preserve coverage of both explicit configuration and the supported default.
+  for (const provider of ['maplibre', undefined]) {
     const result = await rendered(panel, { ...base, provider }, { overlay: () => Vue.h('select', { 'aria-label': 'Existing filter' }, Vue.h('option', 'All routes')) })
     assert.match(result.html, /Existing filter/)
-    assert.equal(result.maps[0].name, provider === 'maplibre' ? 'PamanaMapLibreMap' : 'PamanaLeafletMap')
-    if (provider === 'maplibre') {
-      assert.equal(result.maps[0].compact, true)
-      assert.equal(result.maps[0].nodes[0].properties.dataMode, 'SIMULATED')
-    } else assert.deepEqual(JSON.parse(JSON.stringify(result.maps[0].markers)), [fixture])
+    assert.equal(result.maps[0].name, 'PamanaMapLibreMap')
+    assert.equal(result.maps[0].compact, true)
+    assert.equal(result.maps[0].nodes[0].properties.dataMode, 'SIMULATED')
   }
   assert.equal((await rendered(panel, base)).maps[0].name, 'PamanaMapLibreMap')
-  assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
-  assert.match(read('app/components/PamanaLeafletMap.vue'), /leaflet\/dist\/leaflet.css/)
+  assert.equal(JSON.parse(read('package.json')).dependencies.leaflet, undefined)
 })
 
 test('vehicle metadata preserves REAL/SIMULATED, exact variant, occupancy and position timestamp without coordinate guesses', () => {
@@ -196,7 +193,7 @@ test('vehicle/disruption refreshes use setData, preserve camera, reuse layers an
   assert.deepEqual(fits[1], [[119, 14], [119.19, 14.01]])
 })
 
-test('actual MapLibre lifecycle preserves polling camera, disruption selection, resize and disposal; failure permits explicit rollback', async () => {
+test('actual MapLibre lifecycle preserves polling camera, disruption selection, resize, disposal and sanitized failure', async () => {
   let mounted, unmount, observer, removed = 0, resized = 0, instances = 0, fits = 0, recentered = 0, disconnected = 0
   const events = new Map(), updates = [], emitted = []
   class FakeMap {
@@ -226,8 +223,20 @@ test('actual MapLibre lifecycle preserves polling camera, disruption selection, 
   props.disruptions = disruptionMapFeatures([{ ...synthetic, geometry_geojson: { type: 'Point', coordinates: [119, 14] } }])
   props.vehicles = markerData.legacyMarkerFeatures([vehicle('SIMULATED')]); props.userLocation = { lat: 14, lng: 119 }
   await Vue.nextTick(); observer(); events.get('click')({ point: {} })
+  // Exercise each background update independently: no camera intent is emitted.
+  for (const patch of [
+    { vehicles: markerData.legacyMarkerFeatures([{ ...vehicle('SIMULATED'), longitude: 119.02 }]) },
+    { userLocation: { lat: 14.01, lng: 119.01 } },
+    { transportNodes: [{ type: 'Feature', id: 'test-stop', geometry: { type: 'Point', coordinates: [119, 14] }, properties: { semantic: 'stop', label: 'Synthetic stop' } }] },
+    { disruptions: [] },
+    { nodes: [{ type: 'Feature', id: 'test-demand', geometry: { type: 'Point', coordinates: [119, 14] }, properties: { semantic: 'pickup', label: 'Synthetic demand' } }] },
+    { vehicles: markerData.legacyMarkerFeatures([{ ...vehicle('SIMULATED'), occupancy_level: 'FULL' }]) },
+  ]) {
+    Object.assign(props, patch); await Vue.nextTick()
+    assert.equal(fits, 1); assert.equal(recentered, 0); assert.equal(instances, 1)
+  }
   assert.equal(fits, 1); assert.equal(instances, 1); assert.equal(recentered, 0); assert.equal(resized, 1)
-  assert.equal(updates.at(-1)[0].properties.featureId, 'disruption-fixture')
+  assert.ok(updates.some(features => features[0]?.properties.featureId === 'disruption-fixture'))
   assert.ok(emitted.some(([name, id]) => name === 'feature-selected' && id === 'disruption-fixture'))
   setup.fitAll(); setup.recenter(); assert.equal(fits, 2); assert.equal(recentered, 1)
   events.get('error')({ error: new Error('sensitive-provider-url') })
@@ -236,7 +245,7 @@ test('actual MapLibre lifecycle preserves polling camera, disruption selection, 
   const panel = component('app/components/PamanaMapPanel.vue')
   const panelScope = Vue.effectScope()
   const panelSetup = panelScope.run(() => panel.setup(Vue.reactive({ provider: 'maplibre', markers: [], nodes: [], lines: [], userLocation: null }), { emit() {}, expose() {} }))
-  panelSetup.mapFailed.value = true; assert.equal(panelSetup.activeProvider.value, 'maplibre', 'errors do not silently switch provider')
-  panelSetup.compatibilityMode.value = true; assert.equal(panelSetup.activeProvider.value, 'leaflet')
+  assert.equal(panelSetup.props.provider, 'maplibre')
+  assert.equal('compatibilityMode' in panelSetup, false, 'the panel cannot switch to an obsolete renderer')
   panelScope.stop()
 })

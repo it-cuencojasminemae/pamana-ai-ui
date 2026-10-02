@@ -90,7 +90,8 @@ test('component compiles with client lifecycle, redacted states, cleanup and res
   const preview = read('app/pages/dev/map-preview.vue')
   assert.match(preview, /Refresh live vehicles/)
   assert.match(preview, /:vehicles="vehicles"/)
-  assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
+  assert.ok(JSON.parse(read('package.json')).dependencies['maplibre-gl'])
+  assert.doesNotMatch(panel, /PamanaLeafletMap|compatibilityMode/)
 })
 
 test('actual SFC setup is SSR safe, handles failures, late imports and removes listeners/map on unmount', async () => {

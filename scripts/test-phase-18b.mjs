@@ -69,7 +69,7 @@ test('passenger UI keeps existing design and renders warnings and disruption no-
   assert.match(card, /LIMITED_SERVICE/)
   assert.match(planner, /NO_JOURNEY_DUE_TO_ACTIVE_DISRUPTION/)
   assert.match(planner, /:disruptions="mapPresentation\.disruptions"/)
-  assert.match(panel, /<PamanaLeafletMap/)
+  assert.match(panel, /<PamanaMapLibreMap/)
   assert.match(panel, /:disruptions="disruptions"/)
   assert.match(libre, /Disruption polling updates only its GeoJSON source and never changes the camera/)
   assert.doesNotMatch(read('app/services/disruptionMapPresentation.ts'), /fitBounds|easeTo|jumpTo/)

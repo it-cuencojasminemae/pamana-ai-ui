@@ -131,6 +131,6 @@ test('passenger integration still requires resolved coordinates and maps geograp
   const search = read('app/services/locationSearch.ts')
   const component = read('app/components/location/PamanaLocationSearch.vue')
   for (const source of [geoapify, search, component]) assert.doesNotMatch(source, /\/api\/(transport|routes?|stops?)|strapi|createTransport|method:\s*['"](?:POST|PUT|PATCH|DELETE)/i)
-  assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaLeafletMap/)
-  assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
+  assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaMapLibreMap/)
+  assert.ok(JSON.parse(read('package.json')).dependencies['maplibre-gl'])
 })

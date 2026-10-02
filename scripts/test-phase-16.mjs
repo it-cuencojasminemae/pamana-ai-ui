@@ -78,5 +78,5 @@ test('preview is development-only, accessible, and contains no transport or data
   const sources = [preview, read('app/services/demoVehiclePreview.ts'), read('app/services/simulatedLiveVehicles.ts')].join('\n')
   assert.doesNotMatch(sources, /method:\s*['"](?:POST|PUT|PATCH|DELETE)['"]/i)
   assert.doesNotMatch(sources, /transport-nodes|route-variants|VehicleLocation|Geoapify|OpenAI|Gemini|San Juan|SM City/i)
-  assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
+  assert.ok(JSON.parse(read('package.json')).dependencies['maplibre-gl'])
 })

@@ -1,4 +1,11 @@
-# Nuxt Minimal Starter
+# PAMANA Frontend
+
+MapLibre GL JS with Geoapify is PAMANA's sole supported production mapping stack.
+Configure the public Geoapify settings from `.env.example` for basemaps and geographic search.
+Missing configuration shows a readable unavailable state; there is no legacy renderer fallback.
+
+See [Phase 25B validation](documentation/phase-25b-remove-leaflet.md) for the supported maps and cleanup evidence.
+Phase 24.5 real-device Driver/GPS acceptance remains OPEN under the approved prototype Path B.
 
 Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 

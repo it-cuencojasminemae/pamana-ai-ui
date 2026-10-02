@@ -89,12 +89,12 @@ test('geolocation tracking is shared, disposable and does not log coordinates', 
   assert.doesNotMatch(source, /console\./)
 })
 
-test('Phase 16 simulation stays separate from normal driver workflow and Leaflet remains installed', () => {
+test('Phase 16 simulation stays separate from normal driver workflow and MapLibre is installed', () => {
   const sources = [
     read('app/pages/driver/index.vue'),
     read('app/pages/driver/current-trip.vue'),
     read('app/services/driverTrip.ts')
   ].join('\n')
   assert.doesNotMatch(sources, /pamana-demo|demoVehiclePreview|SIM-DEMO-DIRECT-ONLY/)
-  assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
+  assert.ok(JSON.parse(read('package.json')).dependencies['maplibre-gl'])
 })

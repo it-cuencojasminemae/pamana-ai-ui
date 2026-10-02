@@ -182,5 +182,5 @@ test('presentation cache uses endpoint coordinates and preserves null verified g
   const map = read('app/components/PamanaMapLibreMap.vue')
   assert.match(map, /watch\(features, \(\) => updateFeaturePresentation\(\)/)
   assert.doesNotMatch(map.match(/watch\(features,[^\n]+/)[0], /fitBounds|easeTo|initialize/)
-  assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
+  assert.ok(JSON.parse(read('package.json')).dependencies['maplibre-gl'])
 })

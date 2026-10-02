@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import fs from 'node:fs'
-import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
 import { resolveMapConfiguration } from '../app/services/mapConfiguration.ts'
 import { createMapLibreLoader } from '../app/services/mapLibreLoader.ts'
@@ -14,11 +13,11 @@ const empty = { type: 'FeatureCollection', features: [] }
 // Every successful request uses an injected fetcher; any accidental real call fails.
 globalThis.fetch = async () => { throw new Error('Network prohibited in Phase 6 tests') }
 
-test('dependencies, public configuration allowlist, env placeholders and Leaflet compatibility', () => {
+test('MapLibre dependency, public configuration allowlist and env placeholders', () => {
   const pkg = JSON.parse(read('package.json'))
   assert.equal(require('maplibre-gl/package.json').version, '6.11.1')
-  assert.equal(require('leaflet/package.json').version, '1.9.4')
-  assert.ok(pkg.dependencies.leaflet && pkg.dependencies['maplibre-gl'])
+  assert.equal(pkg.dependencies.leaflet, undefined)
+  assert.ok(pkg.dependencies['maplibre-gl'])
   assert.ok(!Object.keys(pkg.dependencies).some(key => /google|mapbox-gl|vue-maplibre/.test(key)))
   const source = read('nuxt.config.ts')
   const runtime = new Function('defineNuxtConfig', source.replace('export default', 'return'))(value => value).runtimeConfig
@@ -29,16 +28,10 @@ test('dependencies, public configuration allowlist, env placeholders and Leaflet
   const env = read('.env.example')
   for (const key of ['NUXT_PUBLIC_GEOAPIFY_API_KEY', 'NUXT_PUBLIC_GEOAPIFY_MAP_STYLE']) assert.match(env, new RegExp(`^${key}=$`, 'm'))
   assert.match(read('.gitignore'), /^\.env$/m)
-  assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaLeafletMap/)
-  assert.match(read('app/components/PamanaLeafletMap.vue'), /onMounted\(async/)
-  assert.match(read('app/components/PamanaLeafletMap.vue'), /import\('leaflet'\)/)
-  assert.match(read('app/components/PamanaLeafletMap.vue'), /leaflet\/dist\/leaflet.css/)
-  // Phase 7 evolves the provider-neutral panel; the compatibility renderer stays intact.
-  assert.match(read('app/components/PamanaMapPanel.vue'), /provider\?: 'leaflet' \| 'maplibre'/)
-  for (const file of ['app/components/PamanaLeafletMap.vue']) {
-    const previous = execFileSync('git', ['-c', `safe.directory=${process.cwd().replaceAll('\\', '/')}`, 'show', `1c32d40050aa3993ce38f82d429b345d738788e9:${file}`], { encoding: 'utf8' })
-    assert.equal(read(file).replaceAll('\r\n', '\n'), previous.replaceAll('\r\n', '\n'), 'Compatibility renderer must stay unchanged')
-  }
+  assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaMapLibreMap/)
+  assert.match(read('app/components/PamanaMapLibreMap.vue'), /onMounted\(initialize\)/)
+  assert.match(read('app/components/PamanaMapPanel.vue'), /provider\?: 'maplibre'/)
+  assert.equal(fs.existsSync(new URL('../app/components/PamanaLeafletMap.vue', import.meta.url)), false)
 })
 
 test('configuration is optional; style identifiers cannot leak a key to arbitrary hosts', () => {

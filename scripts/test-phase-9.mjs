@@ -203,6 +203,6 @@ test('Phase 9 adds no writes, routing, inferred geometry, or public transport-no
   assert.match(accessControl, /'transport-node'/)
   assert.match(accessControl, /\[ROLE\.PASSENGER\]:[\s\S]*?TRANSPORT_KNOWLEDGE_READ/)
   assert.doesNotMatch(accessControl, /\['Public'\]|Public:\s*\[/)
-  assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaLeafletMap/)
-  assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
+  assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaMapLibreMap/)
+  assert.ok(JSON.parse(read('package.json')).dependencies['maplibre-gl'])
 })

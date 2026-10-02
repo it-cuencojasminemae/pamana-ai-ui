@@ -103,10 +103,10 @@ test('stale requests are aborted and location edits invalidate selection', () =>
   assert.match(location, /model\.value = null/)
 })
 
-test('Phase 15 keeps Leaflet and introduces no Strapi writes or transport mutations', () => {
+test('Phase 15 uses MapLibre and introduces no Strapi writes or transport mutations', () => {
   const sources = [read('app/services/tripPlan.ts'), read('app/composables/useTripPlan.ts'), read('app/services/tripPlanPresentation.ts'), read('app/pages/passenger/trip-planner.vue')].join('\n')
   assert.doesNotMatch(sources, /\/api\/(?:transport-nodes|route-variants|fare-rules|service-patterns)/)
   assert.doesNotMatch(sources, /method:\s*['"](?:PUT|PATCH|DELETE)['"]/i)
-  assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaLeafletMap/)
-  assert.ok(JSON.parse(read('package.json')).dependencies.leaflet)
+  assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaMapLibreMap/)
+  assert.ok(JSON.parse(read('package.json')).dependencies['maplibre-gl'])
 })

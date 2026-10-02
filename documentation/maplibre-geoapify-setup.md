@@ -1,5 +1,9 @@
 # Phase 6 — MapLibre GL JS + Geoapify setup
 
+## Current supported stack
+
+After Phase 25B, MapLibre GL JS with Geoapify is the sole supported production mapping stack. Leaflet and its compatibility renderer have been removed. See [Phase 25B](phase-25b-remove-leaflet.md) for current validation and limitations. Phase 24.5 remains OPEN. The Phase 6 record below describes the historical foundation checkpoint, including the then-required compatibility renderer.
+
 Phase 7 builds on this historical setup: see [the passenger renderer documentation](phase-7-maplibre-passenger-map.md). Its client-only renderer now connects the loader/error contracts and supplies Vite's bundled MapLibre 6 worker URL. Phase 6 scope statements below describe the original checkpoint.
 
 Decision recorded 2026-09-23. The selected platform is **MapLibre GL JS + Geoapify + PAMANA's verified transport database**, not Google Maps Platform. This supersedes provider choices in the original revision roadmap, not historic Street View evidence. Separation of rendering, external geography and locally verified transport truth is the reason for this change; it is not a promise of unlimited free services.
@@ -60,7 +64,7 @@ Phase 7: MapLibre renderer and map error/cleanup wiring. Later search phases: Ge
 
 ## Validation
 
-`npm run test:phase-6` uses only synthetic inputs/mocked requests and checks dependency installation, public-config allowlist, empty-key behavior, SSR-safe loader lifecycle, error isolation and unchanged Leaflet code. Node 24 runs these TypeScript imports with built-in type stripping.
+`npm run test:phase-6` uses only synthetic inputs/mocked requests and checks dependency installation, public-config allowlist, empty-key behavior, SSR-safe loader lifecycle and error isolation. Phase 25B updated its original Leaflet-preservation assertion to verify the supported MapLibre renderer and absence of Leaflet. Node 24 runs these TypeScript imports with built-in type stripping.
 
 `npm run test:phase-6-db` is an optional **workspace-only read-only** regression: it expects sibling `pamana-backend` and its ignored `.env`, and asserts Phase 5B facts/planning remain unchanged. Backend credentials are neither copied into frontend configuration nor included in its bundle. Normal frontend build/runtime does not need this test or backend environment file.
 

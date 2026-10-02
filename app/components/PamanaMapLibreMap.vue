@@ -54,7 +54,7 @@ const legendSemantics = computed(() => {
 const userIsValid = computed(() => props.userLocation && validPosition([props.userLocation.lng, props.userLocation.lat]))
 const labels: Record<Status, string> = {
   INITIALIZING: 'Preparing your map…', READY: 'Map ready', MISSING_CONFIG: 'Map unavailable — Geoapify configuration is missing or invalid.',
-  TILE_ERROR: 'Basemap unavailable. Check your connection or try again.', INITIALIZATION_ERROR: 'The interactive map could not start. Try again or use the compatibility map.',
+  TILE_ERROR: 'Basemap unavailable. Check your connection or try again.', INITIALIZATION_ERROR: 'The interactive map could not start. Try again.',
 }
 let map: LibreMap | null = null
 let presentation: ReturnType<typeof createMapPresentation> | null = null

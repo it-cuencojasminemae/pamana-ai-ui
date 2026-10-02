@@ -325,7 +325,7 @@ onMounted(loadPage)
         </UCard>
       </div>
 
-      <PamanaMapPanel provider="maplibre" icon="i-lucide-map-pin" label="Disruption locations" height="340px" tone="red" :disruptions="mapDisruptions" :compatibility-markers="rawDisruptions" :user-location="userLocation" />
+      <PamanaMapPanel provider="maplibre" icon="i-lucide-map-pin" label="Disruption locations" height="340px" tone="red" :disruptions="mapDisruptions" :user-location="userLocation" />
     </div>
   </div>
 </template>
