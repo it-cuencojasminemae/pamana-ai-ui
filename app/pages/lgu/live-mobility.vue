@@ -75,6 +75,8 @@ onUnmounted(() => {
 
     <div class="grid gap-5 lg:grid-cols-3">
       <PamanaMapPanel
+        provider="maplibre"
+        tools-offset="104px"
         class="lg:col-span-2"
         icon="i-lucide-map"
         label="Live fleet positions"
@@ -84,9 +86,9 @@ onUnmounted(() => {
         :user-location="userLocation"
       >
         <template #overlay>
-          <div class="absolute left-4 top-4 z-20 flex flex-wrap gap-2">
-            <USelect v-model="cooperative" :items="['All cooperatives']" class="w-48" />
-            <USelect v-model="route" :items="['All routes']" class="w-36" />
+          <div class="pointer-events-auto absolute left-4 top-4 z-20 flex max-w-[calc(100%-85px)] flex-wrap gap-2">
+            <USelect v-model="cooperative" :items="['All cooperatives']" class="w-48 max-w-full" />
+            <USelect v-model="route" :items="['All routes']" class="w-36 max-w-full" />
           </div>
         </template>
 

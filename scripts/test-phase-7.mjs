@@ -38,7 +38,7 @@ test('source updates and style reloads reuse layers; only explicit camera intent
   const sources = new Map(), layers = new Map(), images = new Set()
   let dataUpdates = 0, fits = 0
   const map = {
-    isStyleLoaded: () => true,
+    isStyleLoaded: () => true, getStyle: () => ({ version: 8 }),
     hasImage: id => images.has(id), addImage: id => images.add(id),
     getSource: id => sources.get(id), addSource: id => sources.set(id, { setData: () => dataUpdates++ }),
     getLayer: id => layers.get(id), addLayer: layer => layers.set(layer.id, layer),
@@ -85,7 +85,7 @@ test('component compiles with client lifecycle, redacted states, cleanup and res
   const panel = read('app/components/PamanaMapPanel.vue')
   assert.match(panel, /suppliedLine\(props.routeGeometry/)
   assert.doesNotMatch(panel, /suppliedLine\(props.routePoints/)
-  assert.match(panel, /provider: 'leaflet'/)
+  assert.match(panel, /provider: 'maplibre'/)
   for (const page of ['trip-planner', 'map']) assert.match(read(`app/pages/passenger/${page}.vue`), /provider="maplibre"/)
   const preview = read('app/pages/dev/map-preview.vue')
   assert.match(preview, /Refresh live vehicles/)
@@ -118,7 +118,7 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
         if (name.endsWith('/mapPresentation')) return presentationData
         if (name.endsWith('/mapLibrePresentation')) return { LAYER_IDS: [], createMapPresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') }, fitOnIntent: token => fitTokens.push(token), select() {} }) }
         if (name.endsWith('/transportNodePresentation')) return { TRANSPORT_NODE_LAYER_IDS: [], createTransportNodePresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') }, select() {} }) }
-        if (name.endsWith('/disruptionMapPresentation')) return { createDisruptionMapPresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') } }) }
+        if (name.endsWith('/disruptionMapPresentation')) return { DISRUPTION_LAYER_IDS: [], createDisruptionMapPresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') } }) }
         throw Error(`Unexpected import: ${name}`)
       },
       ref: Vue.ref, computed: Vue.computed, watch: Vue.watch,

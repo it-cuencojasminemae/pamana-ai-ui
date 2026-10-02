@@ -1,4 +1,4 @@
-import type { DisruptionEffect, StructuredDisruption } from '../types/disruption'
+import type { DisruptionEffect, StructuredDisruption } from '../types/disruption.ts'
 
 export const DISRUPTION_EFFECT_OPTIONS: ReadonlyArray<{ value: DisruptionEffect, label: string }> = [
   { value: 'WARNING_ONLY', label: 'Warning only' },

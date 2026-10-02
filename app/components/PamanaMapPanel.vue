@@ -6,8 +6,11 @@ const props = withDefaults(defineProps<{
   icon?: string
   label?: string
   height?: string
+  compact?: boolean
+  toolsOffset?: string
   tone?: 'lime' | 'emerald' | 'teal' | 'red'
   markers?: Record<string, any>[]
+  compatibilityMarkers?: Record<string, any>[]
   nodes?: MapPointFeature[]
   lines?: MapLineFeature[]
   transportNodes?: MapPointFeature[]
@@ -21,12 +24,14 @@ const props = withDefaults(defineProps<{
   routeGeometry?: { coordinates?: unknown } | null
   fitKey?: string | number | null
 }>(), {
-  provider: 'leaflet',
+  provider: 'maplibre',
   icon: 'i-lucide-map',
   label: 'Map preview',
   height: '360px',
+  compact: false,
   tone: 'lime',
   markers: () => [],
+  compatibilityMarkers: () => [],
   nodes: () => [],
   lines: () => [],
   transportNodes: () => [],
@@ -58,7 +63,7 @@ watch(() => props.provider, () => { compatibilityMode.value = false; mapFailed.v
     <PamanaLeafletMap
       v-if="activeProvider === 'leaflet'"
       :height="height"
-      :markers="markers"
+      :markers="[...markers, ...compatibilityMarkers]"
       :route-points="routePoints"
       :user-location="mapUserLocation"
       :route-color="routeColor"
@@ -67,7 +72,7 @@ watch(() => props.provider, () => { compatibilityMode.value = false; mapFailed.v
       :route-geometry="routeGeometry"
       :fit-key="fitKey"
     />
-    <PamanaMapLibreMap v-else :height="height" :nodes="mapNodes" :transport-nodes="transportNodes" :vehicles="vehicles" :lines="mapLines" :disruptions="disruptions" :user-location="mapUserLocation" :fit-key="fitKey"
+    <PamanaMapLibreMap v-else :height="height" :compact="compact" :tools-offset="toolsOffset" :nodes="mapNodes" :transport-nodes="transportNodes" :vehicles="vehicles" :lines="mapLines" :disruptions="disruptions" :user-location="mapUserLocation" :fit-key="fitKey"
       @feature-selected="emit('feature-selected', $event)"
       @map-error="mapFailed = true; emit('map-error', $event)" @map-ready="mapFailed = false; emit('map-ready')" />
     <button v-if="provider === 'maplibre' && (mapFailed || compatibilityMode)" type="button"
@@ -75,7 +80,7 @@ watch(() => props.provider, () => { compatibilityMode.value = false; mapFailed.v
       @click="compatibilityMode = !compatibilityMode">
       {{ compatibilityMode ? 'Try MapLibre map' : 'Use compatibility map' }}
     </button>
-    <div v-if="activeProvider === 'leaflet'" class="pointer-events-none absolute inset-x-0 top-0 z-20">
+    <div class="pointer-events-none absolute inset-x-0 top-0 z-20">
       <slot name="overlay" />
     </div>
     <slot />

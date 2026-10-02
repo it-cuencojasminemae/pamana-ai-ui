@@ -1,6 +1,6 @@
 import type { Map as LibreMap, GeoJSONSource, LayerSpecification } from 'maplibre-gl'
-import type { MapPointFeature, MapLineFeature } from '../types/map.ts'
-import { MAP_TOKENS, createFitPolicy } from './mapPresentation.ts'
+import type { MapPointFeature, MapLineFeature, MapDisruptionFeature } from '../types/map.ts'
+import { MAP_TOKENS, createFitPolicy, validPosition } from './mapPresentation.ts'
 
 export const SOURCE_ID = 'pamana-features'
 export const LAYER_IDS = ['pamana-route-halo', 'pamana-route', 'pamana-approximate-road-path', 'pamana-walking', 'pamana-selection', 'pamana-points', 'pamana-icons']
@@ -56,7 +56,8 @@ export function createMapPresentation(map: LibreMap, images: (semantic: keyof ty
     map.setPaintProperty('pamana-route-halo', 'line-width', ['case', ['==', ['get', 'featureId'], selected ?? ''], 13, 10])
   }
   function sync() {
-    if (!map.getSource(SOURCE_ID) && !map.isStyleLoaded()) return
+    // A loaded stylesheet can accept sources while other sources/tiles are still loading.
+    if (!map.getSource(SOURCE_ID) && !map.getStyle()) return
     for (const semantic of Object.keys(MAP_TOKENS) as (keyof typeof MAP_TOKENS)[]) {
       if (!map.hasImage(`pamana-${semantic}`)) map.addImage(`pamana-${semantic}`, images(semantic), { pixelRatio: 2 })
     }
@@ -65,9 +66,13 @@ export function createMapPresentation(map: LibreMap, images: (semantic: keyof ty
     for (const layer of presentationLayers()) if (!map.getLayer(layer.id)) map.addLayer(layer)
     highlight()
   }
-  function fit(additional: MapPointFeature[] = []) {
-    const coordinates = [...features, ...additional].filter(f => f.properties.semantic !== 'passenger' && f.properties.semantic !== 'vehicle')
-      .flatMap(f => f.geometry.type === 'Point' ? [f.geometry.coordinates] : f.geometry.coordinates)
+  function positions(value: unknown): number[][] {
+    if (validPosition(value)) return [value]
+    return Array.isArray(value) ? value.flatMap(positions) : []
+  }
+  function fit(additional: MapDisruptionFeature[] = [], includeVehicles = false) {
+    const coordinates = [...features, ...additional].filter(f => f.properties.semantic !== 'passenger' && (includeVehicles || f.properties.semantic !== 'vehicle'))
+      .flatMap(f => positions(f.geometry.coordinates))
     if (!coordinates.length) return
     const lngs = coordinates.map(p => p[0]!), lats = coordinates.map(p => p[1]!)
     map.fitBounds([[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]], { padding: 65, maxZoom: 16, duration: 500 })
@@ -76,7 +81,7 @@ export function createMapPresentation(map: LibreMap, images: (semantic: keyof ty
     sync,
     update(next: Features, id: string | null) { features = next; selected = id; sync() },
     select(id: string | null) { selected = id; highlight() },
-    fitOnIntent(token: unknown, enabled: boolean, additional: MapPointFeature[] = []) { if (policy.shouldFit(token, enabled)) fit(additional) },
+    fitOnIntent(token: unknown, enabled: boolean, additional: MapDisruptionFeature[] = []) { if (policy.shouldFit(token, enabled)) fit(additional) },
     fit,
   }
 }

@@ -151,7 +151,7 @@ test('dedicated MapLibre node source updates with setData and never changes came
   const sources = new Map(), layers = new Map(), images = new Set()
   let updates = 0, cameraCalls = 0
   const map = {
-    isStyleLoaded: () => true,
+    isStyleLoaded: () => true, getStyle: () => ({ version: 8 }),
     hasImage: id => images.has(id), addImage: id => images.add(id),
     getSource: id => sources.get(id), addSource: (id, source) => sources.set(id, { ...source, setData: () => updates++ }),
     getLayer: id => layers.get(id), addLayer: layer => layers.set(layer.id, layer), setFilter() {},

@@ -40,7 +40,7 @@ test('disruption overlay updates GeoJSON without moving the camera', () => {
   const calls = []
   const map = {
     getSource: id => sources.get(id),
-    isStyleLoaded: () => true,
+    isStyleLoaded: () => true, getStyle: () => ({ version: 8 }),
     addSource(id, config) {
       sourceData = config.data
       sources.set(id, { setData(data) { sourceData = data } })

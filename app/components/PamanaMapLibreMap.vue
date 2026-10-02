@@ -5,11 +5,13 @@ import { resolveMapConfiguration } from '../services/mapConfiguration'
 import { MAP_TOKENS, renderableFeatures, validPosition } from '../services/mapPresentation'
 import { createMapPresentation, LAYER_IDS } from '../services/mapLibrePresentation'
 import { createTransportNodePresentation, TRANSPORT_NODE_LAYER_IDS } from '../services/transportNodePresentation'
-import { createDisruptionMapPresentation } from '../services/disruptionMapPresentation'
+import { createDisruptionMapPresentation, DISRUPTION_LAYER_IDS } from '../services/disruptionMapPresentation'
 
 type Status = 'INITIALIZING' | 'READY' | 'MISSING_CONFIG' | 'TILE_ERROR' | 'INITIALIZATION_ERROR'
 const props = withDefaults(defineProps<{
   height?: string
+  compact?: boolean
+  toolsOffset?: string
   center?: [number, number]
   zoom?: number
   userLocation?: { lat: number; lng: number } | null
@@ -21,7 +23,7 @@ const props = withDefaults(defineProps<{
   selectedFeatureId?: string | null
   fitToFeatures?: boolean
   fitKey?: string | number | null
-}>(), { height: '420px', zoom: 11, userLocation: null, nodes: () => [], transportNodes: () => [], lines: () => [], vehicles: () => [], disruptions: () => [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
+}>(), { height: '420px', compact: false, zoom: 11, userLocation: null, nodes: () => [], transportNodes: () => [], lines: () => [], vehicles: () => [], disruptions: () => [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
 const emit = defineEmits<{
   'feature-selected': [id: string]
   'map-ready': []
@@ -35,13 +37,18 @@ const hasLoaded = ref(false)
 const selection = ref<string | null>(props.selectedFeatureId)
 const features = computed(() => renderableFeatures(props.nodes, props.lines, props.vehicles, props.userLocation))
 const transportFeatures = computed(() => renderableFeatures(props.transportNodes, [], [], null) as MapPointFeature[])
-const allFeatures = computed(() => [...features.value, ...transportFeatures.value])
+const disruptionFeatures = computed(() => props.disruptions.map((feature, index) => {
+  const id = String(feature.id ?? feature.properties.recordId ?? `disruption-${index}`)
+  return { ...feature, id, properties: { ...feature.properties, featureId: id } }
+}))
+const fittingFeatures = computed(() => [...transportFeatures.value, ...disruptionFeatures.value])
+const allFeatures = computed(() => [...features.value, ...transportFeatures.value, ...disruptionFeatures.value])
 const choices = computed(() => allFeatures.value.filter(f => f.properties.semantic !== 'passenger'))
 const selected = computed(() => allFeatures.value.find(f => f.id === selection.value))
 const hasApproximateRoadPath = computed(() => features.value.some(feature => feature.properties.semantic === 'approximate-road-path'))
 const legendSemantics = computed(() => {
   const visible = new Set(allFeatures.value.filter(feature => feature.geometry.type === 'Point').map(feature => feature.properties.semantic))
-  return ['passenger', 'origin-location', 'destination-location', 'vehicle', 'pickup', 'stop', 'transfer', 'terminal', 'dropoff', 'destination', 'essential-service']
+  return ['passenger', 'origin-location', 'destination-location', 'vehicle', 'pickup', 'stop', 'transfer', 'terminal', 'dropoff', 'destination', 'essential-service', 'disruption']
     .filter(semantic => visible.has(semantic as keyof typeof MAP_TOKENS)) as (keyof typeof MAP_TOKENS)[]
 })
 const userIsValid = computed(() => props.userLocation && validPosition([props.userLocation.lng, props.userLocation.lat]))
@@ -87,7 +94,7 @@ function updateTransportPresentation() {
 }
 function updateDisruptionPresentation() {
   try {
-    disruptionPresentation?.update(props.disruptions)
+    disruptionPresentation?.update(disruptionFeatures.value)
     return true
   } catch {
     setError('INITIALIZATION_ERROR')
@@ -101,7 +108,7 @@ function select(id: string) {
 function recenter() {
   if (map && userIsValid.value && props.userLocation) map.easeTo({ center: [props.userLocation.lng, props.userLocation.lat], zoom: Math.max(map.getZoom(), 15), duration: 500 })
 }
-function fitAll() { presentation?.fit(transportFeatures.value) }
+function fitAll() { presentation?.fit(fittingFeatures.value, true) }
 function cleanup() {
   clearTimeout(timeout)
   resizeObserver?.disconnect(); resizeObserver = null
@@ -141,7 +148,7 @@ async function initialize() {
     const onLoad = () => {
       try {
         if (!updateFeaturePresentation() || !updateTransportPresentation() || !updateDisruptionPresentation()) return
-        presentation?.fitOnIntent(props.fitKey, props.fitToFeatures, transportFeatures.value)
+        presentation?.fitOnIntent(props.fitKey, props.fitToFeatures, fittingFeatures.value)
         clearTimeout(timeout)
         hasLoaded.value = true
         status.value = 'READY'
@@ -159,7 +166,7 @@ async function initialize() {
     }
     const onClick = (event: MapMouseEvent) => {
       if (!map) return
-      const layers = [...TRANSPORT_NODE_LAYER_IDS, ...LAYER_IDS].filter(id => map!.getLayer(id))
+      const layers = [...DISRUPTION_LAYER_IDS, ...TRANSPORT_NODE_LAYER_IDS, ...LAYER_IDS].filter(id => map!.getLayer(id))
       if (!layers.length) return
       const hit = map.queryRenderedFeatures(event.point, { layers })[0]
       if (hit?.properties?.featureId) select(String(hit.properties.featureId))
@@ -181,14 +188,14 @@ watch(() => props.disruptions, () => updateDisruptionPresentation(), { deep: tru
 watch(() => props.selectedFeatureId, value => { selection.value = value })
 watch(selection, value => { presentation?.select(value); transportPresentation?.select(value) })
 watch(() => props.fitKey, () => {
-  if (status.value === 'READY') presentation?.fitOnIntent(props.fitKey, props.fitToFeatures, transportFeatures.value)
+  if (status.value === 'READY') presentation?.fitOnIntent(props.fitKey, props.fitToFeatures, fittingFeatures.value)
 })
 onMounted(initialize)
 onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
 </script>
 
 <template>
-  <section class="pamana-libre" :style="{ height }" :data-map-state="status" aria-label="Passenger transport map" :aria-busy="status === 'INITIALIZING'">
+  <section class="pamana-libre" :class="{ 'pamana-libre--compact': compact }" :style="{ height, '--map-tools-top': toolsOffset }" :data-map-state="status" aria-label="PAMANA transport map" :aria-busy="status === 'INITIALIZING'">
     <div ref="container" class="pamana-libre__canvas" />
     <div v-if="status !== 'READY'" class="pamana-libre__state" :class="{ 'pamana-libre__state--notice': hasLoaded && status === 'TILE_ERROR' }" role="status" aria-live="polite">
       <span class="pamana-libre__state-icon" aria-hidden="true">{{ status === 'INITIALIZING' ? '◌' : '!' }}</span>
@@ -197,7 +204,7 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
       <button v-if="status !== 'INITIALIZING'" type="button" class="pamana-libre__button" @click="initialize">Retry map</button>
     </div>
     <template v-if="hasLoaded">
-      <div class="pamana-libre__tools">
+      <div v-if="!compact || choices.length" class="pamana-libre__tools">
         <span class="pamana-libre__eyebrow">PAMANA · EXPLORE</span>
         <label v-if="choices.length" class="pamana-libre__picker">Map features
           <select :value="selection ?? ''" aria-label="Select a map feature" @change="select(($event.target as HTMLSelectElement).value)">
@@ -215,10 +222,11 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
             <span v-if="selected.properties.sourceSummary">Source: {{ selected.properties.sourceSummary }}</span>
           </template>
           <span v-else>{{ MAP_TOKENS[selected.properties.semantic].label }} · {{ selected.properties.isTransportNode === false ? 'Geographic place selection' : selected.properties.dataMode === 'SIMULATED' ? 'Simulated / demo' : selected.properties.verificationStatus || 'Verification not supplied' }}</span>
+          <span v-for="(detail, index) in (selected.properties.details as string[] || [])" :key="index">{{ detail }}</span>
         </div>
       </div>
       <div class="pamana-libre__actions">
-        <button type="button" class="pamana-libre__button" :disabled="!userIsValid" aria-label="Recenter on your location" @click="recenter">◎ My location</button>
+        <button v-if="!compact || userIsValid" type="button" class="pamana-libre__button" :disabled="!userIsValid" aria-label="Recenter on your location" @click="recenter">◎ My location</button>
         <button v-if="choices.length" type="button" class="pamana-libre__button" aria-label="Fit supplied transport features" @click="fitAll">Fit features</button>
       </div>
       <div v-if="hasApproximateRoadPath" class="pamana-libre__route-notice" role="note">
@@ -240,7 +248,7 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
 .pamana-libre__state--notice { inset: auto 12px 145px; z-index: 2; border: 1px solid #a4bcb0; border-radius: 12px; padding: 12px; gap: 6px; }
 .pamana-libre__state--notice .pamana-libre__state-icon { display: none; }
 .pamana-libre__state-icon { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #a4bcb0; border-radius: 50%; font-size: 28px; }
-.pamana-libre__tools { position: absolute; top: 16px; left: 16px; width: min(260px, calc(100% - 85px)); padding: 12px; border: 1px solid #ffffff; border-radius: 16px; background: #fffffff2; box-shadow: 0 5px 24px #172b2717; }
+.pamana-libre__tools { position: absolute; top: var(--map-tools-top, 16px); left: 16px; width: min(260px, calc(100% - 85px)); max-height: calc(100% - var(--map-tools-top, 16px) - 155px); overflow-y: auto; padding: 12px; border: 1px solid #ffffff; border-radius: 16px; background: #fffffff2; box-shadow: 0 5px 24px #172b2717; }
 .pamana-libre__eyebrow { display: block; color: #166534; font: 750 10px/1.4 system-ui; letter-spacing: .14em; margin-bottom: 7px; }
 .pamana-libre__picker { display: grid; gap: 4px; font-size: 11px; font-weight: 600; }
 .pamana-libre__picker select { min-height: 40px; width: 100%; border-radius: 9px; border: 1px solid #cbd5e1; padding: 5px; color: #172b27; background: white; font-size: 12px; }
@@ -258,5 +266,9 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
 .pamana-libre__legend i { width: 7px; height: 7px; border-radius: 50%; }
 :deep(.maplibregl-ctrl-group) { border-radius: 12px; overflow: hidden; box-shadow: 0 3px 16px #172b2720; }
 :deep(.maplibregl-ctrl-group button) { width: 42px; height: 42px; }
-@media (max-width: 480px) { .pamana-libre__tools { top: 10px; left: 10px; padding: 10px; } .pamana-libre__actions { bottom: 140px; } .pamana-libre__route-notice { bottom: 68px; left: 10px; right: 10px; } .pamana-libre__legend { bottom: 112px; font-size: 9px; gap: 5px 9px; } }
+.pamana-libre--compact { min-height: 0; }
+.pamana-libre--compact .pamana-libre__state { padding: 10px; gap: 5px; font-size: 12px; }
+.pamana-libre--compact .pamana-libre__state-icon { display: none; }
+.pamana-libre--compact .pamana-libre__actions { bottom: 34px; }
+@media (max-width: 480px) { .pamana-libre__tools { top: var(--map-tools-top, 10px); left: 10px; padding: 10px; } .pamana-libre__actions { bottom: 140px; } .pamana-libre__route-notice { bottom: 68px; left: 10px; right: 10px; } .pamana-libre__legend { bottom: 112px; font-size: 9px; gap: 5px 9px; } }
 </style>

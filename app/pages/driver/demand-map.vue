@@ -21,6 +21,8 @@ const demandStops = [
 
     <div class="grid gap-5 lg:grid-cols-3">
       <PamanaMapPanel
+        provider="maplibre"
+        tools-offset="64px"
         class="lg:col-span-2"
         icon="i-lucide-map-pinned"
         label="Predicted passenger demand by stop"
@@ -28,14 +30,14 @@ const demandStops = [
         tone="emerald"
       >
         <template #overlay>
-          <span class="glass-solid pill absolute right-4 top-4 z-20 normal-case text-neutral-700">
+          <span class="glass-solid pill absolute left-4 top-4 z-20 normal-case text-neutral-700">
             <UIcon name="i-lucide-brain-circuit" class="size-3.5 text-lime-600" />
             AI-predicted demand
           </span>
         </template>
 
-        <span class="absolute left-[25%] top-[30%] size-16 rounded-full bg-red-400/25 ring-2 ring-red-400/30" />
-        <span class="absolute right-[30%] top-[52%] size-20 rounded-full bg-amber-400/25 ring-2 ring-amber-400/30" />
+        <span class="pointer-events-none absolute left-[25%] top-[30%] size-16 rounded-full bg-red-400/25 ring-2 ring-red-400/30" />
+        <span class="pointer-events-none absolute right-[30%] top-[52%] size-20 rounded-full bg-amber-400/25 ring-2 ring-amber-400/30" />
       </PamanaMapPanel>
 
       <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">

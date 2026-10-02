@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { DisruptionEffect, DisruptionTargetOptions, StructuredDisruption, VerificationStatus } from '../../types/disruption'
 import { DISRUPTION_EFFECT_OPTIONS, effectLabel, targetLabel } from '../../services/disruption'
+import { disruptionMapFeatures } from '../../services/disruptionMapFeatures'
 
 definePageMeta({ middleware: ['auth', 'lgu'] })
 useHead({ title: 'Disruptions | PAMANA' })
@@ -46,6 +47,7 @@ function blankForm() {
 
 const form = reactive(blankForm())
 const rawDisruptions = ref<StructuredDisruption[]>([])
+const mapDisruptions = computed(() => disruptionMapFeatures(rawDisruptions.value))
 const targetOptions = ref<DisruptionTargetOptions>({ routes: [], variants: [], nodes: [] })
 const loading = ref(true)
 const saving = ref(false)
@@ -323,7 +325,7 @@ onMounted(loadPage)
         </UCard>
       </div>
 
-      <PamanaMapPanel icon="i-lucide-map-pin" label="Disruption locations" height="340px" tone="red" :markers="rawDisruptions" :user-location="userLocation" />
+      <PamanaMapPanel provider="maplibre" icon="i-lucide-map-pin" label="Disruption locations" height="340px" tone="red" :disruptions="mapDisruptions" :compatibility-markers="rawDisruptions" :user-location="userLocation" />
     </div>
   </div>
 </template>

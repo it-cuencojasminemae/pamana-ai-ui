@@ -39,7 +39,7 @@ export function createDisruptionMapPresentation(map: LibreMap) {
   let features: MapDisruptionFeature[] = []
   const sourceData = () => ({ type: 'FeatureCollection' as const, features })
   function sync() {
-    if (!map.getSource(DISRUPTION_SOURCE_ID) && !map.isStyleLoaded()) return
+    if (!map.getSource(DISRUPTION_SOURCE_ID) && !map.getStyle()) return
     if (!map.getSource(DISRUPTION_SOURCE_ID)) map.addSource(DISRUPTION_SOURCE_ID, { type: 'geojson', data: sourceData() })
     else (map.getSource(DISRUPTION_SOURCE_ID) as GeoJSONSource).setData(sourceData())
     for (const layer of disruptionLayers()) if (!map.getLayer(layer.id)) map.addLayer(layer)

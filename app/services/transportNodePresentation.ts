@@ -26,7 +26,7 @@ export function createTransportNodePresentation(map: LibreMap, images: (semantic
     if (map.getLayer(TRANSPORT_NODE_LAYER_IDS[0]!)) map.setFilter(TRANSPORT_NODE_LAYER_IDS[0]!, ['==', ['get', 'featureId'], selected ?? ''])
   }
   function sync() {
-    if (!map.getSource(TRANSPORT_NODE_SOURCE_ID) && !map.isStyleLoaded()) return
+    if (!map.getSource(TRANSPORT_NODE_SOURCE_ID) && !map.getStyle()) return
     for (const semantic of ['pickup', 'stop', 'dropoff', 'transfer', 'terminal', 'destination', 'essential-service'] as const) {
       if (!map.hasImage(`pamana-${semantic}`)) map.addImage(`pamana-${semantic}`, images(semantic), { pixelRatio: 2 })
     }

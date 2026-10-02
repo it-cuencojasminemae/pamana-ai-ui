@@ -221,7 +221,7 @@ onMounted(() => {
         </div>
         <p class="mt-1 text-xs text-neutral-400">Predicted demand for the selected hour — defaults to now.</p>
 
-        <PamanaMapPanel class="mt-4" icon="i-lucide-map" label="Corridor supply overview" height="160px" tone="teal" />
+        <PamanaMapPanel provider="maplibre" compact class="mt-4" icon="i-lucide-map" label="Corridor supply overview" height="160px" tone="teal" />
 
         <div class="mt-4 overflow-x-auto">
           <table class="data-table">

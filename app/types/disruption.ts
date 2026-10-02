@@ -73,6 +73,10 @@ export interface StructuredDisruption {
   effect?: DisruptionEffect | null
   planning_enabled?: boolean
   verification_status?: VerificationStatus | null
+  geometry_geojson?: unknown
+  geometry_source?: string | null
+  latitude?: number | string | null
+  longitude?: number | string | null
   resolved_at?: string | null
   resolution_notes?: string | null
   affected_route?: DisruptionRelation | null
