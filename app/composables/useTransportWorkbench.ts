@@ -6,23 +6,26 @@ export function useTransportWorkbench() {
   const loading = ref(false)
   const saving = ref(false)
   const error = ref<string | null>(null)
+  let listGeneration = 0
 
   async function list(entity: WorkbenchEntity, filters: WorkbenchFilters = {}) {
+    const generation = ++listGeneration
+    records.value = []
     loading.value = true
     error.value = null
     try {
       const response = await apiFetch<{ data: WorkbenchRecord[] }>(`/api/transport-workbench/${entity}`, {
         query: Object.fromEntries(Object.entries(filters).filter(([, value]) => value !== '' && value != null)),
       })
-      records.value = response.data
+      if (generation === listGeneration) records.value = response.data
       return response.data
     } catch (cause: any) {
-      error.value = cause?.response?.status === 403
+      if (generation === listGeneration) error.value = cause?.response?.status === 403
         ? 'Your account is not authorized to use the transport-data workbench.'
         : 'Transport data is temporarily unavailable.'
       throw cause
     } finally {
-      loading.value = false
+      if (generation === listGeneration) loading.value = false
     }
   }
 

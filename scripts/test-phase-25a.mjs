@@ -32,6 +32,7 @@ function component(file, overrides = {}, imports = {}) {
   const sandbox = { ...Vue, exports: {}, definePageMeta() {}, useHead() {},
     useApi: () => ({ apiFetch: async () => ({ data: [] }) }), useToast: () => ({ add() {} }),
     useAuth: () => ({ isAdministrator: Vue.ref(false) }), useGeolocation: () => ({ location: Vue.ref(null) }),
+    useDemoVehicleFeed: () => ({ enabled: Vue.ref(false), snapshot: Vue.ref(null), loading: Vue.ref(false), error: Vue.ref(''), elapsedSeconds: Vue.ref(null), features: Vue.ref([]), refresh: async () => {}, cancel() {}, sample() {} }),
     require(name) {
       if (name === 'vue') return Vue
       if (name.endsWith('/mapPresentation')) return markerData

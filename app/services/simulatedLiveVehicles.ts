@@ -1,6 +1,17 @@
 import type { SimulatedLiveVehicle, SimulatedLiveVehicleResponse, SimulatedVehicleFeature } from '../types/liveVehicle'
 import { validPosition } from './mapPresentation.ts'
 
+export function validSimulatedSnapshot(value: unknown): value is SimulatedLiveVehicleResponse {
+  const result = value as SimulatedLiveVehicleResponse | null
+  return Boolean(result?.status === 'SIMULATION_READY' && result.dataMode === 'SIMULATED' && result.simulation === true
+    && [result.activeVehicleCount, result.freshActiveVehicleCount, result.staleVehicleCount].every(count => Number.isInteger(count) && count >= 0)
+    && Array.isArray(result.vehicles) && result.vehicles.every(vehicle => vehicle?.dataMode === 'SIMULATED' && vehicle.simulation === true
+      && typeof vehicle.id === 'string' && typeof vehicle.label === 'string' && typeof vehicle.routeVariantId === 'string'
+      && validPosition([vehicle.lng, vehicle.lat]) && ['AVAILABLE', 'NEAR_FULL', 'FULL', 'UNKNOWN'].includes(vehicle.occupancy)
+      && ['ACTIVE', 'NOT_STARTED', 'COMPLETED'].includes(vehicle.tripState)
+      && ['FRESH', 'STALE', 'UNKNOWN'].includes(vehicle.dataFreshness?.status)))
+}
+
 export function simulatedVehicleFeatures(vehicles: SimulatedLiveVehicle[]): SimulatedVehicleFeature[] {
   return (Array.isArray(vehicles) ? vehicles : []).flatMap((vehicle) => {
     if (!vehicle?.simulation || vehicle.dataMode !== 'SIMULATED' || !validPosition([vehicle.lng, vehicle.lat])) return []
@@ -19,6 +30,7 @@ export function simulatedVehicleFeatures(vehicles: SimulatedLiveVehicle[]): Simu
         tripState: vehicle.tripState,
         freshnessStatus: vehicle.dataFreshness.status,
         observedAt: vehicle.observedAt,
+        details: [`Synthetic variant: ${vehicle.routeVariantId}`, `Occupancy: ${vehicle.occupancy}`, `Freshness: ${vehicle.dataFreshness.status}`, 'SIMULATED DEMO — not real transport data'],
       },
     }]
   })

@@ -198,7 +198,7 @@ onMounted(() => {
       <PamanaStatCard label="Active vehicles" :value="activeVehicleCount" icon="i-lucide-bus-front" />
       <PamanaStatCard label="Passengers waiting" :value="totalExpectedPassengers ?? '—'" icon="i-lucide-users" />
       <PamanaStatCard label="Corridor status" :value="corridorStatus.label" :tone="corridorStatus.tone" icon="i-lucide-activity" />
-      <PamanaStatCard label="Active disruptions" value="1" tone="red" icon="i-lucide-triangle-alert" />
+      <PamanaStatCard label="Active disruptions" value="—" tone="red" icon="i-lucide-triangle-alert" />
     </div>
 
     <div class="mb-5 grid gap-5 lg:grid-cols-3">
@@ -327,6 +327,6 @@ onMounted(() => {
       </UCard>
     </div>
 
-    <p class="mt-4 text-xs text-neutral-400">Active vehicle count, Fleet & Driver Management, the Supply Table, and AI Insight are live from PAMANA's prediction models (built on seeded demo data for the pilot corridor). System parameters and passenger reports remain simulated.</p>
+    <p class="mt-4 text-xs text-neutral-400">Active vehicle count, Fleet & Driver Management, the Supply Table, and AI Insight are live from PAMANA's prediction models (built on seeded demo data for the pilot corridor). System parameters and passenger reports remain simulated. Active-disruption totals are unavailable here; review the Disruptions page.</p>
   </div>
 </template>

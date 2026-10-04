@@ -1,8 +1,6 @@
 <script setup lang="ts">
 // @ts-nocheck
 import { sortTransportNodesByGeographicDistance, transportNodeFeatureCollection, transportNodeTypeLabel } from '../../services/transportNodes'
-import { fetchSimulatedLiveVehicles, simulatedVehicleFeatures } from '../../services/simulatedLiveVehicles'
-import type { SimulatedLiveVehicleResponse } from '../../types/liveVehicle'
 
 definePageMeta({
   middleware: ['auth', 'passenger']
@@ -13,8 +11,8 @@ useHead({
 })
 
 const { apiFetch } = useApi()
-const runtimeConfig = useRuntimeConfig()
-const simulatedFeedConfigured = computed(() => String(runtimeConfig.public.pamanaDemoModeEnabled).toLowerCase() === 'true')
+const simulation = useDemoVehicleFeed()
+const simulatedFeedConfigured = simulation.enabled
 const { location: userLocation, error: locationError, loading: locationLoading } = useGeolocation()
 const {
   nodes: pamanaTransportNodes,
@@ -24,7 +22,7 @@ const {
 } = useTransportNodes()
 
 const locationStatusLabel = computed(() => {
-  if (userLocation.value) return 'Centered on your location'
+  if (userLocation.value) return 'Your location available'
   if (locationError.value) return 'Location unavailable'
   if (locationLoading.value) return 'Locating…'
   return 'Pilot corridor'
@@ -75,11 +73,11 @@ const OCCUPANCY_LABELS: Record<string, string> = {
 }
 
 const rawVehicles = ref<LiveVehicle[]>([])
-const simulatedSnapshot = ref<SimulatedLiveVehicleResponse | null>(null)
+const simulatedSnapshot = simulation.snapshot
+const loadingSimulation = simulation.loading
 const loadingVehicles = ref(false)
-const loadingSimulation = ref(false)
 const loadError = ref('')
-const simulationError = ref('')
+const simulationError = simulation.error
 const lastUpdatedAt = ref<Date | null>(null)
 
 let pollTimer:
@@ -126,7 +124,7 @@ const vehicles = computed(() => {
   return [...realOrLegacy, ...demo]
 })
 
-const simulatedMapFeatures = computed(() => simulatedVehicleFeatures(simulatedSnapshot.value?.vehicles || []))
+const simulatedMapFeatures = simulation.features
 const realActiveVehicleCount = computed(() => rawVehicles.value.filter(vehicle => vehicle.data_mode === 'REAL').length)
 const simulatedActiveVehicleCount = computed(() =>
   rawVehicles.value.filter(vehicle => vehicle.data_mode !== 'REAL').length
@@ -197,18 +195,7 @@ async function loadNearbyVehicles() {
 }
 
 async function loadSimulatedVehicles() {
-  if (!simulatedFeedConfigured.value || loadingSimulation.value) return
-  loadingSimulation.value = true
-  try {
-    simulatedSnapshot.value = await fetchSimulatedLiveVehicles(apiFetch)
-    simulationError.value = ''
-  } catch {
-    // A disabled server is a normal production state. Keep any last valid
-    // snapshot and avoid exposing provider or server details.
-    simulationError.value = 'Simulation feed is unavailable on this server.'
-  } finally {
-    loadingSimulation.value = false
-  }
+  await simulation.refresh()
 }
 
 async function refreshVehicleFeeds() {
@@ -236,7 +223,7 @@ function stopPolling() {
 function handleVisibilityChange() {
   if (document.visibilityState === 'visible') {
     refreshVehicleFeeds()
-  }
+  } else simulation.cancel()
 }
 
 onMounted(() => {
@@ -266,6 +253,7 @@ onBeforeUnmount(() => {
       title="Live Map"
       role="passenger"
     />
+    <DemoPamanaDemoVehicleControls v-if="simulatedFeedConfigured" class="mb-4" :snapshot="simulatedSnapshot" :loading="simulation.loading.value" :error="simulationError" :elapsed-seconds="simulation.elapsedSeconds.value" @sample="simulation.sample" />
 
     <!-- Map status bar -->
     <div

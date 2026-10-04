@@ -1,4 +1,5 @@
 import type { WorkbenchEntity, WorkbenchRecord } from '../types/transportWorkbench'
+import { toRaw } from 'vue'
 
 export const WORKBENCH_ENTITIES: ReadonlyArray<{ key: WorkbenchEntity; label: string; icon: string }> = [
   { key: 'transport-nodes', label: 'Transport nodes', icon: 'i-lucide-map-pin' },
@@ -30,7 +31,7 @@ export function relationDocumentId(value: unknown): string {
 }
 
 export function editableRecord(record: WorkbenchRecord): Record<string, any> {
-  const output = structuredClone(record) as Record<string, any>
+  const output = structuredClone(toRaw(record)) as Record<string, any>
   delete output.id
   delete output.documentId
   delete output.createdAt
@@ -54,7 +55,7 @@ export function editableRecord(record: WorkbenchRecord): Record<string, any> {
 }
 
 export function serializeWorkbenchForm(entity: WorkbenchEntity, form: Record<string, any>): Record<string, any> {
-  const output = structuredClone(form)
+  const output = structuredClone(toRaw(form))
   if (output.verified_at) output.verified_at = new Date(output.verified_at).toISOString()
   if (entity === 'transport-nodes') {
     for (const field of ['latitude', 'longitude']) output[field] = output[field] === '' ? null : Number(output[field])

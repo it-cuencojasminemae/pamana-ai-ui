@@ -9,6 +9,7 @@ useHead({
 
 const { apiFetch } = useApi()
 const { location: userLocation } = useGeolocation()
+const simulation = useDemoVehicleFeed()
 
 const cooperative = ref('All cooperatives')
 const route = ref('All routes')
@@ -41,19 +42,21 @@ async function loadLiveVehicles() {
   loadingVehicles = true
   const controller = new AbortController()
   pollingAbort = controller
+  const simulationRequest = simulation.refresh()
   try {
     const response = await apiFetch<{ data: LiveVehicle[] }>('/api/live-vehicles', { signal: controller.signal })
     if (!controller.signal.aborted) rawVehicles.value = response.data
   } catch {
     // Keep showing the last known list on a transient polling failure.
   } finally {
+    await simulationRequest
     loadingVehicles = false
   }
 }
 
 function handleVisibilityChange() {
   if (document.visibilityState === 'visible') void loadLiveVehicles()
-  else pollingAbort?.abort()
+  else { pollingAbort?.abort(); simulation.cancel() }
 }
 
 onMounted(() => {
@@ -65,6 +68,7 @@ onMounted(() => {
 onUnmounted(() => {
   if (pollTimer) clearInterval(pollTimer)
   pollingAbort?.abort()
+  simulation.cancel()
   document.removeEventListener('visibilitychange', handleVisibilityChange)
 })
 </script>
@@ -72,6 +76,7 @@ onUnmounted(() => {
 <template>
   <div>
     <PamanaPageHeader title="Live Mobility" role="lgu" />
+    <DemoPamanaDemoVehicleControls v-if="simulation.enabled.value" class="mb-5" :snapshot="simulation.snapshot.value" :loading="simulation.loading.value" :error="simulation.error.value" :elapsed-seconds="simulation.elapsedSeconds.value" @sample="simulation.sample" />
 
     <div class="grid gap-5 lg:grid-cols-3">
       <PamanaMapPanel
@@ -83,6 +88,7 @@ onUnmounted(() => {
         height="460px"
         tone="teal"
         :markers="rawVehicles"
+        :vehicles="simulation.features.value"
         :user-location="userLocation"
       >
         <template #overlay>
@@ -94,7 +100,7 @@ onUnmounted(() => {
 
         <div class="pointer-events-none absolute right-4 bottom-4 z-20 glass-solid pill normal-case text-neutral-700">
           <UIcon name="i-lucide-map-pin" class="size-3.5 text-teal-600" />
-          Live API positions
+          Live API positions<span v-if="simulation.features.value.length"> · SIMULATED DEMO overlay</span>
         </div>
       </PamanaMapPanel>
 

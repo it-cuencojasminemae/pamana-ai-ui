@@ -139,6 +139,7 @@ test('LGU polling pauses when hidden, prevents overlaps and aborts on disposal',
   const state = vm.runInNewContext(`${source}\n;({ rawVehicles, loadLiveVehicles })`, {
     ref, computed: fn => ({ get value() { return fn() } }), AbortController, document,
     definePageMeta() {}, useHead() {}, useGeolocation: () => ({ location: ref(null) }),
+    useDemoVehicleFeed: () => ({ refresh: async () => {}, cancel() {} }),
     useApi: () => ({ apiFetch: (_, options) => new Promise(resolve => requests.push({ options, resolve })) }),
     onMounted: fn => mounted.push(fn), onUnmounted: fn => disposed.push(fn),
     setInterval: (fn, ms) => { timers.push({ fn, ms }); return 1 }, clearInterval() {},
