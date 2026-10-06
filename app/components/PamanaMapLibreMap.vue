@@ -2,7 +2,7 @@
 import type { Map as LibreMap, MapMouseEvent } from 'maplibre-gl'
 import type { MapPointFeature, MapLineFeature, MapDisruptionFeature } from '../types/map'
 import { resolveMapConfiguration } from '../services/mapConfiguration'
-import { MAP_TOKENS, renderableFeatures, validPosition } from '../services/mapPresentation'
+import { MAP_TOKENS, markerOffsets, renderableFeatures, validPosition } from '../services/mapPresentation'
 import { createMapPresentation, LAYER_IDS } from '../services/mapLibrePresentation'
 import { createTransportNodePresentation, TRANSPORT_NODE_LAYER_IDS } from '../services/transportNodePresentation'
 import { createDisruptionMapPresentation, DISRUPTION_LAYER_IDS } from '../services/disruptionMapPresentation'
@@ -35,8 +35,12 @@ const container = ref<HTMLElement | null>(null)
 const status = ref<Status>('INITIALIZING')
 const hasLoaded = ref(false)
 const selection = ref<string | null>(props.selectedFeatureId)
-const features = computed(() => renderableFeatures(props.nodes, props.lines, props.vehicles, props.userLocation))
-const transportFeatures = computed(() => renderableFeatures(props.transportNodes, [], [], null) as MapPointFeature[])
+const rawFeatures = computed(() => renderableFeatures(props.nodes, props.lines, props.vehicles, props.userLocation))
+const rawTransportFeatures = computed(() => renderableFeatures(props.transportNodes, [], [], null) as MapPointFeature[])
+const offsets = computed(() => markerOffsets([...rawFeatures.value.filter((f): f is MapPointFeature => f.geometry.type === 'Point'), ...rawTransportFeatures.value]))
+const features = computed(() => rawFeatures.value.map(f => f.geometry.type === 'Point'
+  ? { ...f, properties: { ...f.properties, markerOffset: offsets.value.get(f as MapPointFeature) } } : f))
+const transportFeatures = computed(() => rawTransportFeatures.value.map(f => ({ ...f, properties: { ...f.properties, markerOffset: offsets.value.get(f) } })))
 const disruptionFeatures = computed(() => props.disruptions.map((feature, index) => {
   const id = String(feature.id ?? feature.properties.recordId ?? `disruption-${index}`)
   return { ...feature, id, properties: { ...feature.properties, featureId: id } }
@@ -179,7 +183,7 @@ async function initialize() {
   } catch { cleanup(); setError('INITIALIZATION_ERROR') }
 }
 
-// Vehicle/GPS polling updates only the general feature source. Transport infrastructure has its own lifecycle.
+// Vehicle/GPS polling refreshes badges and shared offsets without moving the camera.
 watch(features, () => updateFeaturePresentation(), { deep: true })
 // Node refreshes call setData on the dedicated source and never move the camera.
 watch(transportFeatures, () => updateTransportPresentation(), { deep: true })

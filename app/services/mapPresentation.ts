@@ -6,7 +6,7 @@ export const MAP_TOKENS = {
   'destination-location': { color: '#dc2626', label: 'Geographic destination', glyph: 'flag' },
   pickup: { color: '#15803d', label: 'PAMANA pickup', glyph: 'up' },
   stop: { color: '#7c3aed', label: 'PAMANA stop', glyph: 'dot' },
-  dropoff: { color: '#0f766e', label: 'PAMANA drop-off', glyph: 'down' },
+  dropoff: { color: '#0f766e', label: 'PAMANA drop-off', glyph: 'exit' },
   transfer: { color: '#c2410c', label: 'PAMANA transfer', glyph: 'transfer' },
   terminal: { color: '#334155', label: 'PAMANA terminal', glyph: 'terminal' },
   vehicle: { color: '#0369a1', label: 'Vehicle', glyph: 'vehicle' },
@@ -17,6 +17,28 @@ export const MAP_TOKENS = {
   'transport-route': { color: '#15803d', label: 'Transport route', glyph: 'dot' },
   disruption: { color: '#b45309', label: 'Disruption', glyph: 'warning' },
 } as const
+
+/** Screen-space offsets only: colocated records keep their real coordinates and IDs. */
+export function markerOffsets(points: MapPointFeature[]): Map<MapPointFeature, [number, number]> {
+  const groups = new Map<string, MapPointFeature[]>()
+  for (const point of points) {
+    if (!validPosition(point.geometry.coordinates)) continue
+    const key = point.geometry.coordinates.slice(0, 2).join(',')
+    const group = groups.get(key) ?? []
+    group.push(point)
+    groups.set(key, group)
+  }
+  const offsets = new Map<MapPointFeature, [number, number]>()
+  for (const group of groups.values()) {
+    group.sort((a, b) => `${a.properties.semantic}:${a.id}`.localeCompare(`${b.properties.semantic}:${b.id}`))
+    const radius = group.length > 1 ? 56 / (2 * Math.sin(Math.PI / group.length)) : 0
+    group.forEach((point, index) => {
+      const angle = 2 * Math.PI * index / group.length
+      offsets.set(point, radius ? [Math.round(Math.cos(angle) * radius), Math.round(Math.sin(angle) * radius)] : [0, 0])
+    })
+  }
+  return offsets
+}
 
 export function markerSemantic(type: unknown): MapSemantic {
   const mapping: Record<string, MapSemantic> = {

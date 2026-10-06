@@ -11,7 +11,11 @@ const key = ref(0)
 const vehicleRefresh = ref(0)
 const selection = ref<string | null>(null)
 const user = ref<{ lat: number; lng: number } | null>(null)
-const transportNodes = computed<MapPointFeature[]>(() => fixtures.value ? ['pickup', 'stop', 'transfer', 'terminal', 'destination', 'essential-service'].map((semantic, index) => ({
+const colocatedNodes = computed<MapPointFeature[]>(() => fixtures.value ? ['origin-location', 'destination-location'].map((semantic, index) => ({
+  type: 'Feature', id: `synthetic-place-${index}`, geometry: { type: 'Point', coordinates: [119 + index * .01, 14] },
+  properties: { semantic: semantic as MapPointFeature['properties']['semantic'], label: `Synthetic ${semantic}`, source: 'GEOAPIFY', dataMode: 'SIMULATED' }
+})) : [])
+const transportNodes = computed<MapPointFeature[]>(() => fixtures.value ? ['pickup', 'stop', 'dropoff', 'transfer', 'terminal', 'destination', 'essential-service'].map((semantic, index) => ({
   type: 'Feature', id: `synthetic-transport-${index}`, geometry: { type: 'Point', coordinates: [119 + index * .005, 14] }, properties: {
     semantic: semantic as MapPointFeature['properties']['semantic'], label: `Synthetic ${semantic}`, source: 'PAMANA_TRANSPORT_DB',
     dataMode: 'SIMULATED', isTransportNode: true, nodeTypeLabel: `Synthetic ${semantic}`, verificationLabel: 'Simulated fixture',
@@ -33,7 +37,7 @@ const lines = computed<MapLineFeature[]>(() => fixtures.value ? [{ type: 'Featur
     </div>
     <p role="status">State: {{ state }} · Vehicle refresh: {{ vehicleRefresh }} · Selected: {{ selection || 'none' }}</p>
     <div :style="{ width: narrow ? '360px' : '100%', maxWidth: '100%', borderRadius: '24px' }">
-      <PamanaMapLibreMap v-if="mounted" height="520px" :transport-nodes="transportNodes" :vehicles="vehicles" :lines="lines" :user-location="user" :fit-key="fixtures ? 1 : 0"
+      <PamanaMapLibreMap v-if="mounted" height="520px" :nodes="colocatedNodes" :transport-nodes="transportNodes" :vehicles="vehicles" :lines="lines" :user-location="user" :fit-key="fixtures ? 1 : 0"
         @map-ready="state = 'READY'" @map-error="state = $event" @feature-selected="selection = $event" />
     </div>
   </main>
