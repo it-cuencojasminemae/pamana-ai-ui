@@ -26,18 +26,22 @@ try {
     server.on('error', () => { clearTimeout(timer); reject(new Error('SSR process failed to start')) })
     server.on('exit', code => { clearTimeout(timer); reject(new Error(`SSR exited before readiness: ${code}`)) })
   })
-  for (const path of ['/login', '/register', '/passenger/map', '/driver/current-trip', '/lgu/live-mobility']) {
+  for (const path of ['/', '/login', '/register', '/passenger/map', '/passenger/trip-planner', '/driver/current-trip', '/lgu/live-mobility', '/admin']) {
     const response = await fetch(`${origin}${path}`, { redirect: 'manual', signal: AbortSignal.timeout(10000) })
     assert.ok([200, 301, 302, 303, 307, 308].includes(response.status), `${path}: ${response.status}`)
-    if (path === '/login' || path === '/register') {
+    if (path === '/' || path === '/login' || path === '/register') {
       assert.equal(response.status, 200)
       assert.match(await response.text(), /<html/)
     }
     console.log(`ok - missing-key SSR ${path}: ${response.status}`)
   }
-  const preview = await fetch(`${origin}/dev/map-preview`, { redirect: 'manual', signal: AbortSignal.timeout(10000) })
-  assert.equal(preview.status, 404, 'Synthetic map preview must not be available in production')
-  console.log('ok - development map preview is 404 in production')
+  // Protected 200 responses above only prove SSR can render a shell. The role
+  // and session behavior is exercised separately by the portable auth tests.
+  for (const path of ['/dev/map-preview', '/dev/trip-planner-preview', '/dev/map-migration-preview', '/dev/location-search-preview', '/dev/live-vehicle-preview']) {
+    const preview = await fetch(`${origin}${path}`, { redirect: 'manual', signal: AbortSignal.timeout(10000) })
+    assert.equal(preview.status, 404, `${path} must not be available in production`)
+    console.log(`ok - development preview ${path}: 404`)
+  }
 } finally {
   server.kill()
 }

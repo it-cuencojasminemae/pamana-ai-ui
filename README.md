@@ -1,5 +1,8 @@
 # PAMANA Frontend
 
+For the first Vercel preview, follow [deployment settings and integration requirements](documentation/vercel-deployment.md).
+Use `npm ci`, `npm test`, and `npm run build` for portable frontend validation.
+
 MapLibre GL JS with Geoapify is PAMANA's sole supported production mapping stack.
 Configure the public Geoapify settings from `.env.example` for basemaps and geographic search.
 Missing configuration shows a readable unavailable state; there is no legacy renderer fallback.

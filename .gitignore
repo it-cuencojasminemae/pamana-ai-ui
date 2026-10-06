@@ -4,6 +4,8 @@
 .nuxt
 .nitro
 .cache
+.vercel/
+coverage/
 dist
 
 # Node dependencies
