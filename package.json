@@ -3,6 +3,12 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "test": "node scripts/run-portable-tests.mjs",
+    "test:map-markers": "node --test scripts/test-map-markers.mjs",
+    "test:integration:backend": "node --test scripts/test-integration-batch-a.mjs scripts/test-integration-access-control.mjs",
+    "test:integration:database": "node --env-file=../pamana-backend/.env scripts/test-phase-6-db.cjs",
+    "test:production-smoke": "node scripts/test-phase-6-smoke.mjs",
+    "test:batch-a-contract": "node --test scripts/test-batch-a-contract.mjs",
     "build": "nuxt build",
     "dev": "nuxt dev",
     "dev:lan": "nuxt dev --host 0.0.0.0 --port 3000",
@@ -11,7 +17,7 @@
     "postinstall": "nuxt prepare",
     "test:trip-planner-selection-contract": "node scripts/test-trip-planner-selection-contract.cjs",
     "test:phase-6": "node --test scripts/test-phase-6.mjs",
-    "test:phase-6-db": "node --env-file=../pamana-backend/.env scripts/test-phase-6-db.cjs",
+    "test:phase-6-db": "npm run test:integration:database",
     "test:phase-6-smoke": "node scripts/test-phase-6-smoke.mjs",
     "test:phase-7": "node --test scripts/test-phase-7.mjs",
     "test:phase-8": "node --test scripts/test-phase-8.mjs",
@@ -29,7 +35,10 @@
     "test:phase-24": "node --test scripts/test-phase-24.mjs",
     "test:phase-25a": "node --test scripts/test-phase-25a.mjs",
     "test:phase-25b": "node --test scripts/test-phase-25b.mjs",
-    "test:phase-26": "node --test scripts/test-phase-26.mjs"
+    "test:phase-26": "node --test scripts/test-phase-26.mjs",
+    "test:batch-a5b-contract": "node --test scripts/test-batch-a5b-contract.mjs",
+    "test:batch-b": "node --test scripts/test-batch-b-route-options.mjs",
+    "test:batch-c": "node --test scripts/test-batch-c-guide.mjs"
   },
   "dependencies": {
     "@iconify-json/lucide": "^1.2.126",

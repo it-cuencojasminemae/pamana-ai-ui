@@ -67,7 +67,7 @@ test('passenger UI keeps existing design and renders warnings and disruption no-
   const libre = read('app/components/PamanaMapLibreMap.vue')
   assert.match(card, /Active journey disruptions/)
   assert.match(card, /LIMITED_SERVICE/)
-  assert.match(planner, /NO_JOURNEY_DUE_TO_ACTIVE_DISRUPTION/)
+  assert.match(planner, /routeResultState/)
   assert.match(planner, /:disruptions="mapPresentation\.disruptions"/)
   assert.match(panel, /<PamanaMapLibreMap/)
   assert.match(panel, /:disruptions="disruptions"/)

@@ -27,23 +27,21 @@ const journey = {
 test('client payload contains selected factual display fields without coordinates, geometry or internal IDs', () => {
   const payload = buildJourneyExplanationRequest('PSU Mexico', 'SM Pampanga', journey)
   const serialized = JSON.stringify(payload)
-  assert.match(serialized, /RCH-SJ-SMROB-OUT/)
-  assert.match(serialized, /SERVICE_INTERVAL_ONLY/)
-  assert.match(serialized, /Limited service/)
+  assert.doesNotMatch(serialized, /RCH-|SERVICE_INTERVAL_ONLY|FIELD_VERIFIED|headway|sourceSummary|sourceType/)
   assert.doesNotMatch(serialized, /internal-journey|route-id|variant-id|node-a|private-id|"lat"|"lng"|geometry|dataQuality/)
-  assert.equal(payload.journey.durationSummary.totalJourneyDurationSeconds, null)
+  assert.equal(payload.journey.durationSummary, undefined)
 })
 
 test('explanation endpoint is authenticated, on-demand, provider-neutral and sanitizes failures', async () => {
   let captured
   const response = await fetchJourneyExplanation(async (endpoint, options) => {
     captured = { endpoint, options }
-    return { status: 'AVAILABLE', provider: 'gemini', explanation: 'Board at PSU Mexico Front.', generatedAt: '2026-09-28T00:00:00.000Z' }
+    return { status: 'AVAILABLE', provider: 'openai', explanation: 'Ride the jeep marked SM Pampanga from PSU Mexico Front. No transfer is needed.', generatedAt: '2026-09-28T00:00:00.000Z' }
   }, buildJourneyExplanationRequest('PSU Mexico', 'SM Pampanga', journey))
   assert.equal(captured.endpoint, '/api/pamana-ai/journey-explanation')
   assert.equal(captured.options.method, 'POST')
   assert.equal(response.status, 'AVAILABLE')
-  assert.equal(response.provider, 'gemini')
+  assert.equal(response.provider, 'openai')
 
   const failure = await fetchJourneyExplanation(async () => { throw new Error('provider body') }, buildJourneyExplanationRequest('PSU Mexico', 'SM Pampanga', journey))
   assert.equal(failure.status, 'PROVIDER_UNAVAILABLE')
@@ -51,17 +49,15 @@ test('explanation endpoint is authenticated, on-demand, provider-neutral and san
   assert.deepEqual(journey.legs[0].route, { id: 'route-id', code: 'RCH-SJ-CSF-SM-ROB' })
 })
 
-test('passenger UI keeps factual journey primary and requests explanation only after the explicit action', () => {
+test('passenger UI keeps factual journey primary and requests guides after selection renders', () => {
   const page = read('app/pages/passenger/trip-planner.vue')
   const composable = read('app/composables/useJourneyExplanation.ts')
-  assert.match(page, /Explain this trip/)
-  assert.match(page, /AI explains PAMANA's computed journey; it does not choose or change the route\./)
-  assert.match(page, /@click="explainSelectedJourney"/)
-  assert.match(page, /<JourneyPamanaJourneyCard[\s\S]*Simple trip guide/)
-  assert.match(page, /title="Simple guide unavailable"[\s\S]*border-sky-200 bg-sky-50/)
-  assert.match(page, /description: 'text-sky-800'/)
+  assert.match(page, /<JourneyPamanaJourneyCard[\s\S]*JourneyPamanaTripGuide/)
+  assert.match(page, /@regenerate="explainSelectedJourney"/)
+  assert.match(page, /flush: 'post'/)
+  assert.doesNotMatch(page, /AI explains PAMANA's computed journey|Explain this trip/)
   assert.doesNotMatch(page.match(/async function findJourneys\(\)[\s\S]*?\n}/)?.[0] || '', /journeyExplanation\.explain/)
-  assert.match(composable, /controller\?\.abort\(\)/)
+  assert.match(composable, /controller\.abort\(\)/)
   assert.match(composable, /onBeforeUnmount\(reset\)/)
 })
 

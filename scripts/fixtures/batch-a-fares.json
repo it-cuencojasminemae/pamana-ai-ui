@@ -1,0 +1,1201 @@
+{
+  "missing": {
+    "request": {
+      "origin": {
+        "lat": 14.5994,
+        "lng": 120.9794,
+        "label": "Synthetic origin"
+      },
+      "destination": {
+        "lat": 14.6106,
+        "lng": 120.9906,
+        "label": "Synthetic destination"
+      },
+      "departureAt": "2026-10-04T08:00:00+08:00",
+      "passengerCategory": "REGULAR"
+    },
+    "status": "JOURNEYS_FOUND",
+    "journeys": [
+      {
+        "id": "journey-e62fb1fba9aa6301",
+        "transferCount": 0,
+        "modes": [
+          "PUJ_TRADITIONAL"
+        ],
+        "legs": [
+          {
+            "type": "WALK",
+            "from": {
+              "lat": 14.5994,
+              "lng": 120.9794,
+              "label": "Synthetic origin"
+            },
+            "to": {
+              "nodeId": "node-WALK-A",
+              "nodeCode": "WALK-A",
+              "name": "Fixture node WALK-A",
+              "nodeType": "DESIGNATED_STOP",
+              "lat": 14.6,
+              "lng": 120.98
+            },
+            "distanceMeters": 120,
+            "durationSeconds": 90,
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  120.9794,
+                  14.5994
+                ],
+                [
+                  120.98,
+                  14.6
+                ]
+              ]
+            },
+            "instructions": [],
+            "source": "GEOAPIFY",
+            "calculatedAt": "2026-10-04T08:00:00+08:00",
+            "sequence": 1,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": "PHP",
+              "regularFare": 0,
+              "discountedFare": null,
+              "payableFare": 0,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": "FREE_WALK",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          },
+          {
+            "sequence": 2,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_TRADITIONAL",
+            "route": {
+              "id": "route-WALK-DIRECT",
+              "code": "WALK-DIRECT"
+            },
+            "variant": {
+              "id": "variant-WALK-DIRECT-OUT",
+              "code": "WALK-DIRECT-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "node-WALK-A",
+              "nodeCode": "WALK-A",
+              "name": "Fixture node WALK-A",
+              "lat": 14.6,
+              "lng": 120.98
+            },
+            "alightAt": {
+              "nodeId": "node-WALK-B",
+              "nodeCode": "WALK-B",
+              "name": "Fixture node WALK-B",
+              "lat": 14.61,
+              "lng": 120.99
+            },
+            "intermediateNodes": [],
+            "signboard": "Signboard WALK-DIRECT-OUT",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "FARE_DISTANCE_UNAVAILABLE",
+              "currency": "PHP",
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": [
+                "FARE_DISTANCE_UNAVAILABLE"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          },
+          {
+            "type": "WALK",
+            "from": {
+              "nodeId": "node-WALK-B",
+              "nodeCode": "WALK-B",
+              "name": "Fixture node WALK-B",
+              "nodeType": "DESIGNATED_STOP",
+              "lat": 14.61,
+              "lng": 120.99
+            },
+            "to": {
+              "lat": 14.6106,
+              "lng": 120.9906,
+              "label": "Synthetic destination"
+            },
+            "distanceMeters": 120,
+            "durationSeconds": 90,
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  120.99,
+                  14.61
+                ],
+                [
+                  120.9906,
+                  14.6106
+                ]
+              ]
+            },
+            "instructions": [],
+            "source": "GEOAPIFY",
+            "calculatedAt": "2026-10-04T08:00:00+08:00",
+            "sequence": 3,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": "PHP",
+              "regularFare": 0,
+              "discountedFare": null,
+              "payableFare": 0,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": "FREE_WALK",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "UNKNOWN",
+          "knownSubtotal": null,
+          "totalFare": null,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 1,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "PARTIAL",
+          "knownWalkingDurationSeconds": 180,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "FARE_DISTANCE_UNAVAILABLE",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      }
+    ],
+    "recommendations": {
+      "recommended": {
+        "journeyId": "journey-e62fb1fba9aa6301",
+        "unavailableReason": null
+      },
+      "cheapest": {
+        "journeyId": null,
+        "unavailableReason": "FARE_DATA_UNAVAILABLE"
+      },
+      "fastest": {
+        "journeyId": null,
+        "unavailableReason": "TIME_DATA_UNAVAILABLE"
+      },
+      "fewestTransfers": {
+        "journeyId": "journey-e62fb1fba9aa6301",
+        "unavailableReason": null
+      }
+    },
+    "warnings": [],
+    "meta": {
+      "journeyCount": 1,
+      "generatedAt": "2026-10-04T00:00:00.000Z",
+      "dataMode": "REAL",
+      "maxJourneys": 5
+    }
+  },
+  "known": {
+    "request": {
+      "origin": {
+        "lat": 14.5994,
+        "lng": 120.9794,
+        "label": "Synthetic origin"
+      },
+      "destination": {
+        "lat": 14.6106,
+        "lng": 120.9906,
+        "label": "Synthetic destination"
+      },
+      "departureAt": "2026-10-04T08:00:00+08:00",
+      "passengerCategory": "REGULAR"
+    },
+    "status": "JOURNEYS_FOUND",
+    "journeys": [
+      {
+        "id": "journey-e62fb1fba9aa6301",
+        "transferCount": 0,
+        "modes": [
+          "PUJ_MODERN"
+        ],
+        "legs": [
+          {
+            "type": "WALK",
+            "from": {
+              "lat": 14.5994,
+              "lng": 120.9794,
+              "label": "Synthetic origin"
+            },
+            "to": {
+              "nodeId": "node-WALK-A",
+              "nodeCode": "WALK-A",
+              "name": "Fixture node WALK-A",
+              "nodeType": "DESIGNATED_STOP",
+              "lat": 14.6,
+              "lng": 120.98
+            },
+            "distanceMeters": 120,
+            "durationSeconds": 90,
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  120.9794,
+                  14.5994
+                ],
+                [
+                  120.98,
+                  14.6
+                ]
+              ]
+            },
+            "instructions": [],
+            "source": "GEOAPIFY",
+            "calculatedAt": "2026-10-04T08:00:00+08:00",
+            "sequence": 1,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": "PHP",
+              "regularFare": 0,
+              "discountedFare": null,
+              "payableFare": 0,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": "FREE_WALK",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          },
+          {
+            "sequence": 2,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_MODERN",
+            "route": {
+              "id": "route-WALK-DIRECT",
+              "code": "WALK-DIRECT"
+            },
+            "variant": {
+              "id": "variant-WALK-DIRECT-OUT",
+              "code": "WALK-DIRECT-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "node-WALK-A",
+              "nodeCode": "WALK-A",
+              "name": "Fixture node WALK-A",
+              "lat": 14.6,
+              "lng": 120.98
+            },
+            "alightAt": {
+              "nodeId": "node-WALK-B",
+              "nodeCode": "WALK-B",
+              "name": "Fixture node WALK-B",
+              "lat": 14.61,
+              "lng": 120.99
+            },
+            "intermediateNodes": [],
+            "signboard": "Signboard WALK-DIRECT-OUT",
+            "segmentDistanceMeters": 6000,
+            "roadDistanceSource": "STORED_ROUTE_STOP_DISTANCE",
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "KNOWN",
+              "currency": "PHP",
+              "regularFare": 22,
+              "discountedFare": 17,
+              "payableFare": 22,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": true,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          },
+          {
+            "type": "WALK",
+            "from": {
+              "nodeId": "node-WALK-B",
+              "nodeCode": "WALK-B",
+              "name": "Fixture node WALK-B",
+              "nodeType": "DESIGNATED_STOP",
+              "lat": 14.61,
+              "lng": 120.99
+            },
+            "to": {
+              "lat": 14.6106,
+              "lng": 120.9906,
+              "label": "Synthetic destination"
+            },
+            "distanceMeters": 120,
+            "durationSeconds": 90,
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  120.99,
+                  14.61
+                ],
+                [
+                  120.9906,
+                  14.6106
+                ]
+              ]
+            },
+            "instructions": [],
+            "source": "GEOAPIFY",
+            "calculatedAt": "2026-10-04T08:00:00+08:00",
+            "sequence": 3,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": "PHP",
+              "regularFare": 0,
+              "discountedFare": null,
+              "payableFare": 0,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": "FREE_WALK",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "KNOWN",
+          "knownSubtotal": 22,
+          "totalFare": 22,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 1,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "PARTIAL",
+          "knownWalkingDurationSeconds": 180,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      }
+    ],
+    "recommendations": {
+      "recommended": {
+        "journeyId": "journey-e62fb1fba9aa6301",
+        "unavailableReason": null
+      },
+      "cheapest": {
+        "journeyId": "journey-e62fb1fba9aa6301",
+        "unavailableReason": null
+      },
+      "fastest": {
+        "journeyId": null,
+        "unavailableReason": "TIME_DATA_UNAVAILABLE"
+      },
+      "fewestTransfers": {
+        "journeyId": "journey-e62fb1fba9aa6301",
+        "unavailableReason": null
+      }
+    },
+    "warnings": [],
+    "meta": {
+      "journeyCount": 1,
+      "generatedAt": "2026-10-04T00:00:00.000Z",
+      "dataMode": "REAL",
+      "maxJourneys": 5
+    }
+  },
+  "transfer": {
+    "request": {
+      "origin": {
+        "lat": 14.5994,
+        "lng": 120.9794,
+        "label": "Synthetic origin"
+      },
+      "destination": {
+        "lat": 14.6106,
+        "lng": 120.9906,
+        "label": "Synthetic destination"
+      },
+      "departureAt": "2026-10-04T08:00:00+08:00",
+      "passengerCategory": "REGULAR"
+    },
+    "status": "JOURNEYS_FOUND",
+    "journeys": [
+      {
+        "id": "journey-ce4249388d77f30f",
+        "transferCount": 1,
+        "modes": [
+          "TRICYCLE",
+          "PUJ_MODERN"
+        ],
+        "legs": [
+          {
+            "type": "WALK",
+            "from": {
+              "lat": 14.5994,
+              "lng": 120.9794,
+              "label": "Synthetic origin"
+            },
+            "to": {
+              "nodeId": "node-WALK-TA",
+              "nodeCode": "RCH-PSU-MEXICO-FRONT",
+              "name": "Fixture node WALK-TA",
+              "nodeType": "DESIGNATED_STOP",
+              "lat": 14.6,
+              "lng": 120.98
+            },
+            "distanceMeters": 120,
+            "durationSeconds": 90,
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  120.9794,
+                  14.5994
+                ],
+                [
+                  120.98,
+                  14.6
+                ]
+              ]
+            },
+            "instructions": [],
+            "source": "GEOAPIFY",
+            "calculatedAt": "2026-10-04T08:00:00+08:00",
+            "sequence": 1,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": "PHP",
+              "regularFare": 0,
+              "discountedFare": null,
+              "payableFare": 0,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": "FREE_WALK",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          },
+          {
+            "sequence": 2,
+            "type": "TRANSIT",
+            "transportMode": "TRICYCLE",
+            "route": {
+              "id": "route-WALK-LOCAL",
+              "code": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE"
+            },
+            "variant": {
+              "id": "variant-WALK-LOCAL-OUT",
+              "code": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "node-WALK-TA",
+              "nodeCode": "RCH-PSU-MEXICO-FRONT",
+              "name": "Fixture node WALK-TA",
+              "lat": 14.6,
+              "lng": 120.98
+            },
+            "alightAt": {
+              "nodeId": "node-WALK-T",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Fixture node WALK-T",
+              "lat": 14.605,
+              "lng": 120.985
+            },
+            "intermediateNodes": [],
+            "signboard": "Signboard WALK-LOCAL-OUT",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "KNOWN",
+              "currency": "PHP",
+              "regularFare": 100,
+              "discountedFare": null,
+              "payableFare": 100,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A supplied demo estimate",
+              "verificationStatus": null,
+              "sourceType": "DEMO_ESTIMATE",
+              "isCalculated": false,
+              "isDemoEstimate": true,
+              "warnings": [
+                "DEMO_ESTIMATE_NOT_VERIFIED"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          },
+          {
+            "type": "TRANSFER",
+            "at": {
+              "nodeId": "node-WALK-T",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Fixture node WALK-T",
+              "lat": 14.605,
+              "lng": 120.985
+            },
+            "fromRouteVariantId": "variant-WALK-LOCAL-OUT",
+            "fromVariantCode": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE-OUT",
+            "toRouteVariantId": "variant-WALK-TRUNK-OUT",
+            "toVariantCode": "WALK-TRUNK-OUT",
+            "sequence": 3,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": null,
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": null,
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          },
+          {
+            "sequence": 4,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_MODERN",
+            "route": {
+              "id": "route-WALK-TRUNK",
+              "code": "WALK-TRUNK"
+            },
+            "variant": {
+              "id": "variant-WALK-TRUNK-OUT",
+              "code": "WALK-TRUNK-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "node-WALK-T",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Fixture node WALK-T",
+              "lat": 14.605,
+              "lng": 120.985
+            },
+            "alightAt": {
+              "nodeId": "node-WALK-TB",
+              "nodeCode": "WALK-TB",
+              "name": "Fixture node WALK-TB",
+              "lat": 14.61,
+              "lng": 120.99
+            },
+            "intermediateNodes": [],
+            "signboard": "Signboard WALK-TRUNK-OUT",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "FARE_DISTANCE_UNAVAILABLE",
+              "currency": "PHP",
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": [
+                "FARE_DISTANCE_UNAVAILABLE"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          },
+          {
+            "type": "WALK",
+            "from": {
+              "nodeId": "node-WALK-TB",
+              "nodeCode": "WALK-TB",
+              "name": "Fixture node WALK-TB",
+              "nodeType": "DESIGNATED_STOP",
+              "lat": 14.61,
+              "lng": 120.99
+            },
+            "to": {
+              "lat": 14.6106,
+              "lng": 120.9906,
+              "label": "Synthetic destination"
+            },
+            "distanceMeters": 120,
+            "durationSeconds": 90,
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  120.99,
+                  14.61
+                ],
+                [
+                  120.9906,
+                  14.6106
+                ]
+              ]
+            },
+            "instructions": [],
+            "source": "GEOAPIFY",
+            "calculatedAt": "2026-10-04T08:00:00+08:00",
+            "sequence": 5,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": "PHP",
+              "regularFare": 0,
+              "discountedFare": null,
+              "payableFare": 0,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": "FREE_WALK",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "PARTIAL",
+          "knownSubtotal": 100,
+          "totalFare": null,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 2,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "PARTIAL",
+          "knownWalkingDurationSeconds": 180,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "DEMO_ESTIMATE_NOT_VERIFIED",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT",
+          "FARE_DISTANCE_UNAVAILABLE"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      }
+    ],
+    "recommendations": {
+      "recommended": {
+        "journeyId": "journey-ce4249388d77f30f",
+        "unavailableReason": null
+      },
+      "cheapest": {
+        "journeyId": null,
+        "unavailableReason": "FARE_DATA_UNAVAILABLE"
+      },
+      "fastest": {
+        "journeyId": null,
+        "unavailableReason": "TIME_DATA_UNAVAILABLE"
+      },
+      "fewestTransfers": {
+        "journeyId": "journey-ce4249388d77f30f",
+        "unavailableReason": null
+      }
+    },
+    "warnings": [],
+    "meta": {
+      "journeyCount": 1,
+      "generatedAt": "2026-10-04T00:00:00.000Z",
+      "dataMode": "REAL",
+      "maxJourneys": 5
+    }
+  }
+}

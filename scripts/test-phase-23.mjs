@@ -103,28 +103,31 @@ test('geography cache bounds, expiration, failure retries and last-subscriber ca
   assert.equal(underlying.aborted, true)
 })
 
-test('successful AI guide reuse is on-demand, exact-fact, short-lived and cleared on selection reset', async () => {
+test('AI guides reuse exact facts for the current search, and failures retry only explicitly', async () => {
   let calls = 0, time = 1000, nextStatus = 'AVAILABLE'
   const source = stripTypeScriptTypes(read('app/composables/useJourneyExplanation.ts').replace(/^import .*\n/gm, '').replace('export function', 'function'))
   const make = vm.runInNewContext(`${source}\nuseJourneyExplanation`, {
-    ref, readonly: value => value, onBeforeUnmount() {}, AbortController,
+    ref, shallowRef: ref, computed: fn => ({ get value() { return fn() } }), readonly: value => value, onBeforeUnmount() {}, AbortController, setTimeout, clearTimeout,
+    unavailableGuide: () => ({ status: 'PROVIDER_UNAVAILABLE', explanation: null }),
     Date: { now: () => time }, useApi: () => ({ apiFetch: null }),
     fetchJourneyExplanation: async () => { calls++; return { status: nextStatus, explanation: nextStatus === 'AVAILABLE' ? 'Synthetic factual guide' : null } },
   })
   const guide = make(), input = { originLabel: 'Synthetic origin', journey: { fare: 20 } }
   assert.equal(calls, 0)
-  await guide.explain(input); await guide.explain(input)
+  await guide.explain('A', input); await guide.explain('A', input)
   assert.equal(calls, 1)
-  await guide.explain({ ...input, journey: { fare: 30 } })
+  await guide.explain('A', { ...input, journey: { fare: 30 } })
   assert.equal(calls, 2, 'changed facts must request a new explanation')
   time += 60_000
-  await guide.explain({ ...input, journey: { fare: 30 } })
+  await guide.explain('A', { ...input, journey: { fare: 30 } })
+  assert.equal(calls, 2, 'current search cache does not expire into repeated automatic calls')
+  guide.reset(); await guide.explain('A', input)
   assert.equal(calls, 3)
-  guide.reset(); await guide.explain(input)
-  assert.equal(calls, 4)
   guide.reset(); nextStatus = 'PROVIDER_UNAVAILABLE'
-  await guide.explain(input); await guide.explain(input)
-  assert.equal(calls, 6, 'failures must remain retryable')
+  await guide.explain('A', input); await guide.explain('A', input)
+  assert.equal(calls, 4, 'a failed result is automatically attempted only once')
+  await guide.explain('A', input, true)
+  assert.equal(calls, 5, 'Explain again explicitly retries the selected guide')
 })
 
 test('LGU polling pauses when hidden, prevents overlaps and aborts on disposal', async () => {

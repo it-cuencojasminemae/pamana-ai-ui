@@ -4,6 +4,8 @@ import type { SelectedLocation } from './location'
 export type PassengerCategory = 'REGULAR' | 'STUDENT' | 'SENIOR' | 'PWD'
 export type TripPlanStatus = 'JOURNEYS_FOUND' | 'NO_ELIGIBLE_ACCESS_NODES' | 'NO_TRANSPORT_JOURNEY' | 'ROUTING_PROVIDER_UNAVAILABLE'
 export type KnowledgeStatus = 'KNOWN' | 'PARTIAL' | 'UNKNOWN' | 'NOT_APPLICABLE'
+export type FareStatus = KnowledgeStatus | 'FARE_DISTANCE_UNAVAILABLE'
+export type FareSourceType = 'SYSTEM_CALCULATED' | 'DEMO_ESTIMATE' | 'VERIFIED_RULE' | 'FREE_WALK'
 
 export interface JourneyDisruptionWarning {
   code: 'DISRUPTION_WARNING' | 'LIMITED_SERVICE'
@@ -42,7 +44,7 @@ export interface JourneyNodeReference {
 }
 
 export interface JourneyFare {
-  status: KnowledgeStatus
+  status: FareStatus
   currency: string | null
   regularFare: number | null
   discountedFare: number | null
@@ -50,6 +52,9 @@ export interface JourneyFare {
   discountType: PassengerCategory | null
   sourceSummary: string | null
   verificationStatus: string | null
+  sourceType?: FareSourceType | null
+  isCalculated?: boolean
+  isDemoEstimate?: boolean
   warnings: string[]
 }
 
@@ -113,6 +118,7 @@ export interface JourneyTransitLeg extends JourneyLegBase {
   intermediateNodes: JourneyNodeReference[]
   signboard: string | null
   segmentDistanceMeters: number | null
+  roadDistanceSource?: 'STORED_ROUTE_STOP_DISTANCE' | 'STORED_ROAD_GEOMETRY' | null
   durationSeconds: null
   geometry: LineString | MultiLineString | null
 }
@@ -163,6 +169,7 @@ export interface TripPlanResponse {
   request: TripPlanRequest
   status: TripPlanStatus
   journeys: PamanaJourney[]
+  recommendations?: JourneyRecommendations
   warnings: string[]
   meta: {
     journeyCount: number
@@ -171,6 +178,12 @@ export interface TripPlanResponse {
     maxJourneys: number
   }
 }
+
+export type RouteOptionCategory = 'recommended' | 'cheapest' | 'fastest' | 'fewestTransfers'
+export type JourneyRecommendations = Record<RouteOptionCategory, {
+  journeyId: string | null
+  unavailableReason: 'NO_VALID_JOURNEY' | 'FARE_DATA_UNAVAILABLE' | 'TIME_DATA_UNAVAILABLE' | null
+}>
 
 export type TripPlanClientError = 'INVALID_INPUT' | 'AUTH_REQUIRED' | 'PROVIDER_UNAVAILABLE' | 'SERVICE_UNAVAILABLE' | 'INVALID_RESPONSE' | 'CANCELLED'
 

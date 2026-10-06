@@ -1,5 +1,6 @@
 import type { PamanaJourney, TripPlanClientError, TripPlanRequest, TripPlanResponse } from '../types/tripPlan'
 import { fetchTripPlan, tripPlanFingerprint } from '../services/tripPlan'
+import { defaultRouteOption, validRouteOptions } from '../services/routeOptionsPresentation'
 
 export const useTripPlan = () => {
   const { apiFetch } = useApi()
@@ -36,8 +37,8 @@ export const useTripPlan = () => {
       return null
     }
     response.value = result.data
-    journeys.value = result.data.journeys
-    selectedJourneyId.value = result.data.journeys[0]?.id ?? null
+    journeys.value = validRouteOptions(result.data.journeys)
+    selectedJourneyId.value = defaultRouteOption(result.data)
     return result.data
   }
 

@@ -45,6 +45,10 @@ export function journeyMapPresentation(
   const lastWalk = walkLegs[walkLegs.length - 1]
   if (firstWalk) nodes.push(...pointFeature(`${journey.id}-pickup`, firstWalk.to, 'pickup'))
   if (lastWalk) nodes.push(...pointFeature(`${journey.id}-dropoff`, lastWalk.from, 'dropoff'))
+  journey.legs.filter((leg): leg is JourneyTransitLeg => leg.type === 'TRANSIT').forEach(leg => {
+    if (leg.boardAt) nodes.push(...pointFeature(`${journey.id}-board-${leg.sequence}`, { ...leg.boardAt, label: leg.boardAt.name || 'Pickup' }, 'pickup'))
+    if (leg.alightAt) nodes.push(...pointFeature(`${journey.id}-alight-${leg.sequence}`, { ...leg.alightAt, label: leg.alightAt.name || 'Drop-off' }, 'dropoff'))
+  })
 
   for (const leg of journey.legs) {
     if (leg.type === 'TRANSFER') continue
@@ -56,7 +60,7 @@ export function journeyMapPresentation(
         geometry: { type: 'LineString', coordinates },
         properties: {
           semantic: leg.type === 'WALK' ? 'walking-route' : 'transport-route',
-          label: leg.type === 'WALK' ? 'Walking connector' : `Transit ${leg.route.code || leg.variant.code || 'leg'}`,
+          label: leg.type === 'WALK' ? 'Walking connector' : `Ride to ${leg.alightAt?.name || 'the drop-off point'}`,
           source: leg.type === 'WALK' ? 'GEOAPIFY' : 'PAMANA',
           legId: `${leg.sequence}`,
           geometryClassification: leg.type === 'WALK' ? 'WALK' : 'VERIFIED_TRANSIT_GEOMETRY',
@@ -99,7 +103,7 @@ export function formatDuration(seconds: number | null) {
 export function formatFare(value: number | null, currency = 'PHP') {
   if (value === null || !Number.isFinite(value)) return 'Fare unavailable'
   if (value === 0) return 'No fare charged'
-  return new Intl.NumberFormat('en-PH', { style: 'currency', currency: currency || 'PHP', minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value)
+  return new Intl.NumberFormat('en-PH', { style: 'currency', currency: currency || 'PHP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(value)
 }
 
 export function legTitle(leg: JourneyLeg) {

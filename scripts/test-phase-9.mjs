@@ -191,7 +191,7 @@ test('component and passenger page compile with truthful independent transport-n
   assert.match(page, /loadTransportNodes\(\)/)
 })
 
-test('Phase 9 adds no writes, routing, inferred geometry, or public transport-node permission', () => {
+test('Phase 9 adds no writes, routing, or inferred geometry; transport nodes remain authenticated', () => {
   const sources = [
     read('app/services/transportNodes.ts'), read('app/composables/useTransportNodes.ts'),
     read('app/services/transportNodePresentation.ts'), read('app/pages/passenger/map.vue'),
@@ -199,10 +199,7 @@ test('Phase 9 adds no writes, routing, inferred geometry, or public transport-no
   assert.doesNotMatch(sources, /method:\s*['"](?:POST|PUT|PATCH|DELETE)['"]/i)
   assert.doesNotMatch(sources, /Geoapify|geocode|\/routing|nearest pickup|transfer calculation/i)
   assert.doesNotMatch(sources, /LineString|RouteVariant|FareRule|ServicePattern/)
-  const accessControl = fs.readFileSync(new URL('../../pamana-backend/src/services/security/access-control.js', import.meta.url), 'utf8')
-  assert.match(accessControl, /'transport-node'/)
-  assert.match(accessControl, /\[ROLE\.PASSENGER\]:[\s\S]*?TRANSPORT_KNOWLEDGE_READ/)
-  assert.doesNotMatch(accessControl, /\['Public'\]|Public:\s*\[/)
+  assert.match(read('app/pages/passenger/map.vue'), /middleware:\s*\['auth',\s*'passenger'\]/)
   assert.match(read('app/components/PamanaMapPanel.vue'), /<PamanaMapLibreMap/)
   assert.ok(JSON.parse(read('package.json')).dependencies['maplibre-gl'])
 })

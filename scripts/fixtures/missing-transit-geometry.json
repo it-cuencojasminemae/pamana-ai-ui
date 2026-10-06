@@ -1,0 +1,1396 @@
+[
+  {
+    "request": {
+      "origin": {
+        "lat": 15.128026422211173,
+        "lng": 120.69826461388278,
+        "label": "Pampanga State University Mexico Campus – Front Waiting Area",
+        "source": "GEOAPIFY"
+      },
+      "destination": {
+        "lat": 15.05158520927461,
+        "lng": 120.69885494898818,
+        "label": "SM City Pampanga Main Gate Drop-off Area",
+        "source": "GEOAPIFY"
+      },
+      "departureAt": "2026-10-04T13:26:03.905Z",
+      "passengerCategory": "REGULAR"
+    },
+    "status": "JOURNEYS_FOUND",
+    "journeys": [
+      {
+        "id": "journey-b192b791ff888fd9",
+        "transferCount": 0,
+        "modes": [
+          "PUJ_TRADITIONAL"
+        ],
+        "legs": [
+          {
+            "sequence": 1,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_TRADITIONAL",
+            "route": {
+              "id": "25093a7f635ec36fa4a871d6",
+              "code": "RCH-SJ-CSF-SM-ROB"
+            },
+            "variant": {
+              "id": "8bc5f7bcd7f6ef3b633aa631",
+              "code": "RCH-SJ-SMROB-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "3780fd3ecbea93498b9291d0",
+              "nodeCode": "RCH-PSU-MEXICO-FRONT",
+              "name": "Pampanga State University Mexico Campus – Front Waiting Area",
+              "lat": 15.128026422211173,
+              "lng": 120.69826461388278
+            },
+            "alightAt": {
+              "nodeId": "39556cc647622dfd679e0312",
+              "nodeCode": "RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF",
+              "name": "SM City Pampanga Main Gate Drop-off Area",
+              "lat": 15.05158520927461,
+              "lng": 120.69885494898818
+            },
+            "intermediateNodes": [],
+            "signboard": "SM Pampanga",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "FARE_DISTANCE_UNAVAILABLE",
+              "currency": "PHP",
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": [
+                "FARE_DISTANCE_UNAVAILABLE"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "UNKNOWN",
+          "knownSubtotal": null,
+          "totalFare": null,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 1,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "UNKNOWN",
+          "knownWalkingDurationSeconds": null,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "FARE_DISTANCE_UNAVAILABLE",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      },
+      {
+        "id": "journey-d6b915d1d0df8b77",
+        "transferCount": 1,
+        "modes": [
+          "TRICYCLE",
+          "PUJ_TRADITIONAL"
+        ],
+        "legs": [
+          {
+            "sequence": 1,
+            "type": "TRANSIT",
+            "transportMode": "TRICYCLE",
+            "route": {
+              "id": "a35d6a541c3eb2c89c87ca1a",
+              "code": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE"
+            },
+            "variant": {
+              "id": "f54fe37fa7439d412061107d",
+              "code": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "3780fd3ecbea93498b9291d0",
+              "nodeCode": "RCH-PSU-MEXICO-FRONT",
+              "name": "Pampanga State University Mexico Campus – Front Waiting Area",
+              "lat": 15.128026422211173,
+              "lng": 120.69826461388278
+            },
+            "alightAt": {
+              "nodeId": "89f160d2fe6d1a1e259539f3",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+              "lat": 15.064333794084051,
+              "lng": 120.72025022065026
+            },
+            "intermediateNodes": [],
+            "signboard": null,
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "KNOWN",
+              "currency": "PHP",
+              "regularFare": 100,
+              "discountedFare": null,
+              "payableFare": 100,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A supplied demo estimate",
+              "verificationStatus": null,
+              "sourceType": "DEMO_ESTIMATE",
+              "isCalculated": false,
+              "isDemoEstimate": true,
+              "warnings": [
+                "DEMO_ESTIMATE_NOT_VERIFIED"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          },
+          {
+            "type": "TRANSFER",
+            "at": {
+              "nodeId": "89f160d2fe6d1a1e259539f3",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+              "lat": 15.064333794084051,
+              "lng": 120.72025022065026
+            },
+            "fromRouteVariantId": "f54fe37fa7439d412061107d",
+            "fromVariantCode": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE-OUT",
+            "toRouteVariantId": "a6a8a7a2c0c8fc50398e738b",
+            "toVariantCode": "PILOT-ARAYAT-SF-MEXICO-BAYAN-SM-OUT",
+            "sequence": 2,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": null,
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": null,
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          },
+          {
+            "sequence": 3,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_TRADITIONAL",
+            "route": {
+              "id": "c26109b17b1d918e48139a46",
+              "code": "RCH-ARAYAT-SF-VIA-STAANA-MEXICO"
+            },
+            "variant": {
+              "id": "a6a8a7a2c0c8fc50398e738b",
+              "code": "PILOT-ARAYAT-SF-MEXICO-BAYAN-SM-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "89f160d2fe6d1a1e259539f3",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+              "lat": 15.064333794084051,
+              "lng": 120.72025022065026
+            },
+            "alightAt": {
+              "nodeId": "39556cc647622dfd679e0312",
+              "nodeCode": "RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF",
+              "name": "SM City Pampanga Main Gate Drop-off Area",
+              "lat": 15.05158520927461,
+              "lng": 120.69885494898818
+            },
+            "intermediateNodes": [],
+            "signboard": "SM Pampanga",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "FARE_DISTANCE_UNAVAILABLE",
+              "currency": "PHP",
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": [
+                "FARE_DISTANCE_UNAVAILABLE"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "PARTIAL",
+          "knownSubtotal": 100,
+          "totalFare": null,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 2,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "UNKNOWN",
+          "knownWalkingDurationSeconds": null,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "DEMO_ESTIMATE_NOT_VERIFIED",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT",
+          "FARE_DISTANCE_UNAVAILABLE"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      }
+    ],
+    "warnings": [],
+    "meta": {
+      "journeyCount": 2,
+      "generatedAt": "2026-10-04T13:26:03.906Z",
+      "dataMode": "REAL",
+      "maxJourneys": 5
+    }
+  },
+  {
+    "request": {
+      "origin": {
+        "lat": 15.128026422211173,
+        "lng": 120.69826461388278,
+        "label": "Pampanga State University Mexico Campus – Front Waiting Area",
+        "source": "GEOAPIFY"
+      },
+      "destination": {
+        "lat": 15.064333794084051,
+        "lng": 120.72025022065026,
+        "label": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+        "source": "GEOAPIFY"
+      },
+      "departureAt": "2026-10-04T13:26:04.040Z",
+      "passengerCategory": "REGULAR"
+    },
+    "status": "JOURNEYS_FOUND",
+    "journeys": [
+      {
+        "id": "journey-a9ced6b56863067a",
+        "transferCount": 0,
+        "modes": [
+          "TRICYCLE"
+        ],
+        "legs": [
+          {
+            "sequence": 1,
+            "type": "TRANSIT",
+            "transportMode": "TRICYCLE",
+            "route": {
+              "id": "a35d6a541c3eb2c89c87ca1a",
+              "code": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE"
+            },
+            "variant": {
+              "id": "f54fe37fa7439d412061107d",
+              "code": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "3780fd3ecbea93498b9291d0",
+              "nodeCode": "RCH-PSU-MEXICO-FRONT",
+              "name": "Pampanga State University Mexico Campus – Front Waiting Area",
+              "lat": 15.128026422211173,
+              "lng": 120.69826461388278
+            },
+            "alightAt": {
+              "nodeId": "89f160d2fe6d1a1e259539f3",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+              "lat": 15.064333794084051,
+              "lng": 120.72025022065026
+            },
+            "intermediateNodes": [],
+            "signboard": null,
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "KNOWN",
+              "currency": "PHP",
+              "regularFare": 100,
+              "discountedFare": null,
+              "payableFare": 100,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A supplied demo estimate",
+              "verificationStatus": null,
+              "sourceType": "DEMO_ESTIMATE",
+              "isCalculated": false,
+              "isDemoEstimate": true,
+              "warnings": [
+                "DEMO_ESTIMATE_NOT_VERIFIED"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "KNOWN",
+          "knownSubtotal": 100,
+          "totalFare": 100,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 1,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "UNKNOWN",
+          "knownWalkingDurationSeconds": null,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "DEMO_ESTIMATE_NOT_VERIFIED",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      }
+    ],
+    "warnings": [],
+    "meta": {
+      "journeyCount": 1,
+      "generatedAt": "2026-10-04T13:26:04.040Z",
+      "dataMode": "REAL",
+      "maxJourneys": 5
+    }
+  },
+  {
+    "request": {
+      "origin": {
+        "lat": 15.064333794084051,
+        "lng": 120.72025022065026,
+        "label": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+        "source": "GEOAPIFY"
+      },
+      "destination": {
+        "lat": 15.05158520927461,
+        "lng": 120.69885494898818,
+        "label": "SM City Pampanga Main Gate Drop-off Area",
+        "source": "GEOAPIFY"
+      },
+      "departureAt": "2026-10-04T13:26:04.095Z",
+      "passengerCategory": "REGULAR"
+    },
+    "status": "JOURNEYS_FOUND",
+    "journeys": [
+      {
+        "id": "journey-fd50225c71669da7",
+        "transferCount": 0,
+        "modes": [
+          "PUJ_TRADITIONAL"
+        ],
+        "legs": [
+          {
+            "sequence": 1,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_TRADITIONAL",
+            "route": {
+              "id": "c26109b17b1d918e48139a46",
+              "code": "RCH-ARAYAT-SF-VIA-STAANA-MEXICO"
+            },
+            "variant": {
+              "id": "a6a8a7a2c0c8fc50398e738b",
+              "code": "PILOT-ARAYAT-SF-MEXICO-BAYAN-SM-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "89f160d2fe6d1a1e259539f3",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+              "lat": 15.064333794084051,
+              "lng": 120.72025022065026
+            },
+            "alightAt": {
+              "nodeId": "39556cc647622dfd679e0312",
+              "nodeCode": "RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF",
+              "name": "SM City Pampanga Main Gate Drop-off Area",
+              "lat": 15.05158520927461,
+              "lng": 120.69885494898818
+            },
+            "intermediateNodes": [],
+            "signboard": "SM Pampanga",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "FARE_DISTANCE_UNAVAILABLE",
+              "currency": "PHP",
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": [
+                "FARE_DISTANCE_UNAVAILABLE"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "UNKNOWN",
+          "knownSubtotal": null,
+          "totalFare": null,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 1,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "UNKNOWN",
+          "knownWalkingDurationSeconds": null,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "FARE_DISTANCE_UNAVAILABLE",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      }
+    ],
+    "warnings": [],
+    "meta": {
+      "journeyCount": 1,
+      "generatedAt": "2026-10-04T13:26:04.095Z",
+      "dataMode": "REAL",
+      "maxJourneys": 5
+    }
+  },
+  {
+    "request": {
+      "origin": {
+        "lat": 15.050605637995128,
+        "lng": 120.69778203294244,
+        "label": "Robinsons Starmills – Arayat Gate Return Loading Area",
+        "source": "GEOAPIFY"
+      },
+      "destination": {
+        "lat": 15.128026422211173,
+        "lng": 120.69826461388278,
+        "label": "Pampanga State University Mexico Campus – Front Waiting Area",
+        "source": "GEOAPIFY"
+      },
+      "departureAt": "2026-10-04T13:26:04.175Z",
+      "passengerCategory": "REGULAR"
+    },
+    "status": "JOURNEYS_FOUND",
+    "journeys": [
+      {
+        "id": "journey-2db52a21345612e6",
+        "transferCount": 0,
+        "modes": [
+          "PUJ_TRADITIONAL"
+        ],
+        "legs": [
+          {
+            "sequence": 1,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_TRADITIONAL",
+            "route": {
+              "id": "25093a7f635ec36fa4a871d6",
+              "code": "RCH-SJ-CSF-SM-ROB"
+            },
+            "variant": {
+              "id": "cc642aaf4b6afc5a263649d3",
+              "code": "RCH-SJ-SMROB-IN"
+            },
+            "direction": "INBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "da1b2236b63f6a62ba273fb4",
+              "nodeCode": "RCH-ROB-STARMILLS-ARAYAT-GATE-LOAD",
+              "name": "Robinsons Starmills – Arayat Gate Return Loading Area",
+              "lat": 15.050605637995128,
+              "lng": 120.69778203294244
+            },
+            "alightAt": {
+              "nodeId": "3780fd3ecbea93498b9291d0",
+              "nodeCode": "RCH-PSU-MEXICO-FRONT",
+              "name": "Pampanga State University Mexico Campus – Front Waiting Area",
+              "lat": 15.128026422211173,
+              "lng": 120.69826461388278
+            },
+            "intermediateNodes": [],
+            "signboard": "SAN JUAN",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "FARE_DISTANCE_UNAVAILABLE",
+              "currency": "PHP",
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": [
+                "FARE_DISTANCE_UNAVAILABLE"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "UNKNOWN",
+          "knownSubtotal": null,
+          "totalFare": null,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 1,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "UNKNOWN",
+          "knownWalkingDurationSeconds": null,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "FARE_DISTANCE_UNAVAILABLE",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      }
+    ],
+    "warnings": [],
+    "meta": {
+      "journeyCount": 1,
+      "generatedAt": "2026-10-04T13:26:04.175Z",
+      "dataMode": "REAL",
+      "maxJourneys": 5
+    }
+  },
+  {
+    "request": {
+      "origin": {
+        "lat": 15.128026422211173,
+        "lng": 120.69826461388278,
+        "label": "Pampanga State University Mexico Campus – Front Waiting Area",
+        "source": "GEOAPIFY"
+      },
+      "destination": {
+        "lat": 15.05158520927461,
+        "lng": 120.69885494898818,
+        "label": "SM City Pampanga Main Gate Drop-off Area",
+        "source": "GEOAPIFY"
+      },
+      "departureAt": "2026-10-04T13:26:04.246Z",
+      "passengerCategory": "STUDENT"
+    },
+    "status": "JOURNEYS_FOUND",
+    "journeys": [
+      {
+        "id": "journey-b192b791ff888fd9",
+        "transferCount": 0,
+        "modes": [
+          "PUJ_TRADITIONAL"
+        ],
+        "legs": [
+          {
+            "sequence": 1,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_TRADITIONAL",
+            "route": {
+              "id": "25093a7f635ec36fa4a871d6",
+              "code": "RCH-SJ-CSF-SM-ROB"
+            },
+            "variant": {
+              "id": "8bc5f7bcd7f6ef3b633aa631",
+              "code": "RCH-SJ-SMROB-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "3780fd3ecbea93498b9291d0",
+              "nodeCode": "RCH-PSU-MEXICO-FRONT",
+              "name": "Pampanga State University Mexico Campus – Front Waiting Area",
+              "lat": 15.128026422211173,
+              "lng": 120.69826461388278
+            },
+            "alightAt": {
+              "nodeId": "39556cc647622dfd679e0312",
+              "nodeCode": "RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF",
+              "name": "SM City Pampanga Main Gate Drop-off Area",
+              "lat": 15.05158520927461,
+              "lng": 120.69885494898818
+            },
+            "intermediateNodes": [],
+            "signboard": "SM Pampanga",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "FARE_DISTANCE_UNAVAILABLE",
+              "currency": "PHP",
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": "STUDENT",
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": [
+                "FARE_DISTANCE_UNAVAILABLE"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "UNKNOWN",
+          "knownSubtotal": null,
+          "totalFare": null,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 1,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "UNKNOWN",
+          "knownWalkingDurationSeconds": null,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "FARE_DISTANCE_UNAVAILABLE",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      },
+      {
+        "id": "journey-d6b915d1d0df8b77",
+        "transferCount": 1,
+        "modes": [
+          "TRICYCLE",
+          "PUJ_TRADITIONAL"
+        ],
+        "legs": [
+          {
+            "sequence": 1,
+            "type": "TRANSIT",
+            "transportMode": "TRICYCLE",
+            "route": {
+              "id": "a35d6a541c3eb2c89c87ca1a",
+              "code": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE"
+            },
+            "variant": {
+              "id": "f54fe37fa7439d412061107d",
+              "code": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "3780fd3ecbea93498b9291d0",
+              "nodeCode": "RCH-PSU-MEXICO-FRONT",
+              "name": "Pampanga State University Mexico Campus – Front Waiting Area",
+              "lat": 15.128026422211173,
+              "lng": 120.69826461388278
+            },
+            "alightAt": {
+              "nodeId": "89f160d2fe6d1a1e259539f3",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+              "lat": 15.064333794084051,
+              "lng": 120.72025022065026
+            },
+            "intermediateNodes": [],
+            "signboard": null,
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "KNOWN",
+              "currency": "PHP",
+              "regularFare": 100,
+              "discountedFare": null,
+              "payableFare": 100,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": "PAMANA Batch A supplied demo estimate",
+              "verificationStatus": null,
+              "sourceType": "DEMO_ESTIMATE",
+              "isCalculated": false,
+              "isDemoEstimate": true,
+              "warnings": [
+                "DEMO_ESTIMATE_NOT_VERIFIED"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          },
+          {
+            "type": "TRANSFER",
+            "at": {
+              "nodeId": "89f160d2fe6d1a1e259539f3",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+              "lat": 15.064333794084051,
+              "lng": 120.72025022065026
+            },
+            "fromRouteVariantId": "f54fe37fa7439d412061107d",
+            "fromVariantCode": "PILOT-PSU-MEXICO-BAYAN-TRICYCLE-OUT",
+            "toRouteVariantId": "a6a8a7a2c0c8fc50398e738b",
+            "toVariantCode": "PILOT-ARAYAT-SF-MEXICO-BAYAN-SM-OUT",
+            "sequence": 2,
+            "fare": {
+              "status": "NOT_APPLICABLE",
+              "currency": null,
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": null,
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "sourceType": null,
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": []
+            },
+            "service": {
+              "status": "NOT_APPLICABLE",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": null,
+              "limitedService": null,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": []
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "NOT_APPLICABLE",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": null,
+              "boardableVehicleCount": null,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": []
+            }
+          },
+          {
+            "sequence": 3,
+            "type": "TRANSIT",
+            "transportMode": "PUJ_TRADITIONAL",
+            "route": {
+              "id": "c26109b17b1d918e48139a46",
+              "code": "RCH-ARAYAT-SF-VIA-STAANA-MEXICO"
+            },
+            "variant": {
+              "id": "a6a8a7a2c0c8fc50398e738b",
+              "code": "PILOT-ARAYAT-SF-MEXICO-BAYAN-SM-OUT"
+            },
+            "direction": "OUTBOUND",
+            "operatingStatus": "ACTIVE",
+            "boardAt": {
+              "nodeId": "89f160d2fe6d1a1e259539f3",
+              "nodeCode": "RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER",
+              "name": "Mexico Bayan – Sta. Monica Parish Church Transfer Area",
+              "lat": 15.064333794084051,
+              "lng": 120.72025022065026
+            },
+            "alightAt": {
+              "nodeId": "39556cc647622dfd679e0312",
+              "nodeCode": "RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF",
+              "name": "SM City Pampanga Main Gate Drop-off Area",
+              "lat": 15.05158520927461,
+              "lng": 120.69885494898818
+            },
+            "intermediateNodes": [],
+            "signboard": "SM Pampanga",
+            "segmentDistanceMeters": null,
+            "roadDistanceSource": null,
+            "durationSeconds": null,
+            "geometry": null,
+            "fare": {
+              "status": "FARE_DISTANCE_UNAVAILABLE",
+              "currency": "PHP",
+              "regularFare": null,
+              "discountedFare": null,
+              "payableFare": null,
+              "appliedRuleId": null,
+              "discountType": "STUDENT",
+              "sourceSummary": "PAMANA Batch A system fare policy",
+              "verificationStatus": null,
+              "sourceType": "SYSTEM_CALCULATED",
+              "isCalculated": false,
+              "isDemoEstimate": false,
+              "warnings": [
+                "FARE_DISTANCE_UNAVAILABLE"
+              ]
+            },
+            "service": {
+              "status": "UNKNOWN",
+              "operatingMode": null,
+              "serviceStart": null,
+              "serviceEnd": null,
+              "headwayMinutes": null,
+              "scheduledDepartures": [],
+              "leaveWhenFull": null,
+              "variantOperatingStatus": "ACTIVE",
+              "limitedService": false,
+              "daysOfWeek": [],
+              "windowStatus": "UNKNOWN",
+              "sourceSummary": null,
+              "verificationStatus": null,
+              "appliedPatternId": null,
+              "warnings": [
+                "NO_ELIGIBLE_SERVICE_PATTERN"
+              ]
+            },
+            "availability": {
+              "status": "UNKNOWN",
+              "wait": {
+                "status": "UNKNOWN",
+                "lowMinutes": null,
+                "highMinutes": null,
+                "basis": null
+              },
+              "activeVehicleCount": 0,
+              "boardableVehicleCount": 0,
+              "dataFreshness": {
+                "status": "UNKNOWN",
+                "latestObservedAt": null,
+                "ageSeconds": null
+              },
+              "sourceSummary": null,
+              "warnings": [
+                "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+              ]
+            }
+          }
+        ],
+        "fareSummary": {
+          "totalStatus": "PARTIAL",
+          "knownSubtotal": 100,
+          "totalFare": null,
+          "currency": "PHP",
+          "warnings": []
+        },
+        "availabilitySummary": {
+          "status": "UNKNOWN",
+          "transitLegsKnown": 0,
+          "transitLegsUnknown": 2,
+          "warnings": [
+            "AVAILABILITY_EVIDENCE_INSUFFICIENT"
+          ]
+        },
+        "durationSummary": {
+          "status": "UNKNOWN",
+          "knownWalkingDurationSeconds": null,
+          "totalJourneyDurationSeconds": null
+        },
+        "warnings": [
+          "DEMO_ESTIMATE_NOT_VERIFIED",
+          "NO_ELIGIBLE_SERVICE_PATTERN",
+          "AVAILABILITY_EVIDENCE_INSUFFICIENT",
+          "FARE_DISTANCE_UNAVAILABLE"
+        ],
+        "dataQuality": {
+          "planningEligible": true,
+          "verificationStatuses": [
+            "FIELD_VERIFIED"
+          ],
+          "dataModes": [
+            "REAL"
+          ]
+        }
+      }
+    ],
+    "warnings": [],
+    "meta": {
+      "journeyCount": 2,
+      "generatedAt": "2026-10-04T13:26:04.246Z",
+      "dataMode": "REAL",
+      "maxJourneys": 5
+    }
+  }
+]

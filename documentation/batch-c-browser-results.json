@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-10-05T06:21:14.359Z",
+  "provider": "openai",
+  "model": "gpt-4o-mini",
+  "examples": [
+    {
+      "case": "PSU to SM regular",
+      "fare": 27,
+      "transfers": 0,
+      "guide": "Ride the Jeep marked SM Pampanga from Pampanga State University Mexico Campus – Front Waiting Area and get off at SM City Pampanga Main Gate Drop-off Area. The estimated fare is ₱27 with no transfers."
+    },
+    {
+      "case": "PSU to SM transfer regular",
+      "fare": 114,
+      "transfers": 1,
+      "guide": "Ride the Tricycle from Pampanga State University Mexico Campus – Front Waiting Area and get off at Mexico Bayan – Sta. Monica Parish Church Transfer Area. Then transfer to the Jeep marked SM Pampanga and get off at SM City Pampanga Main Gate Drop-off Area. Walk northwest, turn left, walk west on SM Loading and Unloading Bay, and bear right onto 3/Jose Abad Santos Avenue. The estimated fare is ₱114 with 1 transfer."
+    },
+    {
+      "case": "PSU to SM regular explicit regeneration",
+      "fare": 27,
+      "transfers": 0,
+      "guide": "Ride the Jeep marked SM Pampanga from Pampanga State University Mexico Campus – Front Waiting Area and get off at SM City Pampanga Main Gate Drop-off Area. The estimated fare is ₱27 and no transfers are needed."
+    },
+    {
+      "case": "Robinsons to PSU regular",
+      "fare": 28,
+      "transfers": 0,
+      "guide": "Ride the Jeep marked SAN JUAN from Robinsons Starmills – Arayat Gate Return Loading Area and get off at Pampanga State University Mexico Campus – Front Waiting Area. The estimated fare is ₱28 with no transfers needed."
+    },
+    {
+      "case": "Robinsons to PSU explicit Student",
+      "fare": 23,
+      "transfers": 0,
+      "guide": "Ride the Jeep marked SAN JUAN from Robinsons Starmills – Arayat Gate Return Loading Area and get off at Pampanga State University Mexico Campus – Front Waiting Area. After that, walk north, turn right onto the walkway, walk north on Mexico-Arayat Road, and then turn right. The estimated fare is ₱23 and no transfers are needed."
+    },
+    {
+      "case": "Robinsons to PSU Student mobile regeneration",
+      "fare": 23,
+      "transfers": 0,
+      "guide": "Ride the Jeep marked SAN JUAN from Robinsons Starmills – Arayat Gate Return Loading Area and get off at Pampanga State University Mexico Campus – Front Waiting Area. The estimated fare is ₱23 with no transfers needed."
+    }
+  ],
+  "desktop": {
+    "width": 1440,
+    "height": 1000
+  },
+  "phone": {
+    "width": 390,
+    "height": 844
+  },
+  "guideMatchesReturnedFares": true,
+  "technicalLeakObserved": false,
+  "unknownTimeWaitServiceInvented": false,
+  "cachedSelectionReused": true,
+  "explicitRegenerationPassed": true
+}

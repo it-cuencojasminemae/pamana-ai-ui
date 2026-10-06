@@ -1,47 +1,54 @@
 import type { JourneyExplanationRequest, JourneyExplanationResponse } from '../types/journeyExplanation'
-import { fetchJourneyExplanation } from '../services/journeyExplanation'
+import { fetchJourneyExplanation, unavailableGuide } from '../services/journeyExplanation'
 
+interface GuideEntry {
+  response: JourneyExplanationResponse | null
+  loading: boolean
+  controller: AbortController
+  request: Promise<void> | null
+}
+
+/** One automatic request per selected journey/facts in this search. No routing or ranking. */
 export function useJourneyExplanation() {
   const { apiFetch } = useApi()
-  const response = ref<JourneyExplanationResponse | null>(null)
-  const loading = ref(false)
-  let controller: AbortController | null = null
+  const entries = shallowRef<Record<string, GuideEntry>>({})
+  const selectedKey = ref('')
+  const response = computed(() => entries.value[selectedKey.value]?.response ?? null)
+  const loading = computed(() => entries.value[selectedKey.value]?.loading ?? false)
   let generation = 0
-  let fingerprint = ''
-  let completedAt = 0
 
-  async function explain(request: JourneyExplanationRequest) {
-    const nextFingerprint = JSON.stringify(request)
-    if (loading.value && fingerprint === nextFingerprint) return
-    // Reuse only the currently displayed successful guide for identical facts.
-    if (fingerprint === nextFingerprint && response.value?.status === 'AVAILABLE'
-      && Date.now() - completedAt < 60_000) return
-    controller?.abort()
-    controller = new AbortController()
-    const current = ++generation
-    fingerprint = nextFingerprint
-    loading.value = true
-    response.value = null
-    try {
-      const result = await fetchJourneyExplanation(apiFetch, request, controller.signal)
-      if (current === generation && !controller.signal.aborted) {
-        response.value = result
-        completedAt = Date.now()
-      }
-    } catch {
-      // Selection changes and disposal intentionally cancel stale requests.
-    } finally {
-      if (current === generation) loading.value = false
-    }
+  function explain(journeyId: string, facts: JourneyExplanationRequest, force = false) {
+    const key = `${journeyId}|${JSON.stringify(facts)}`
+    selectedKey.value = key
+    const previous = entries.value[key]
+    if (previous && !force) return previous.request ?? Promise.resolve()
+    previous?.controller.abort()
+    const controller = new AbortController()
+    const current = generation
+    const entry: GuideEntry = { response: null, loading: true, controller, request: null }
+    entries.value = { ...entries.value, [key]: entry }
+    let timer: ReturnType<typeof setTimeout>
+    const timeout = new Promise<JourneyExplanationResponse>(resolve => {
+      timer = setTimeout(() => { controller.abort(); resolve(unavailableGuide()) }, 25_000)
+    })
+    entry.request = (async () => {
+      let result: JourneyExplanationResponse
+      try { result = await Promise.race([fetchJourneyExplanation(apiFetch, facts, controller.signal), timeout]) }
+      catch { result = unavailableGuide() }
+      finally { clearTimeout(timer) }
+      // A late response cannot replace a new search or a forced regeneration.
+      // Selection is separate, so an off-screen result only fills its own cache.
+      if (current !== generation || entries.value[key] !== entry) return
+      entries.value = { ...entries.value, [key]: { ...entry, loading: false, response: result, request: null } }
+    })()
+    return entry.request
   }
 
   function reset() {
-    controller?.abort()
+    Object.values(entries.value).forEach(entry => entry.controller.abort())
     generation++
-    fingerprint = ''
-    completedAt = 0
-    loading.value = false
-    response.value = null
+    selectedKey.value = ''
+    entries.value = {}
   }
 
   onBeforeUnmount(reset)

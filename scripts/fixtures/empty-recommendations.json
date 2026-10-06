@@ -1,0 +1,18 @@
+{
+  "recommended": {
+    "journeyId": null,
+    "unavailableReason": "NO_VALID_JOURNEY"
+  },
+  "cheapest": {
+    "journeyId": null,
+    "unavailableReason": "NO_VALID_JOURNEY"
+  },
+  "fastest": {
+    "journeyId": null,
+    "unavailableReason": "NO_VALID_JOURNEY"
+  },
+  "fewestTransfers": {
+    "journeyId": null,
+    "unavailableReason": "NO_VALID_JOURNEY"
+  }
+}

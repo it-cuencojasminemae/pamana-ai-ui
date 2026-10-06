@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { routeResultState } from '../app/services/routeOptionsPresentation.ts'
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const read = file => fs.readFileSync(path.join(root, file), 'utf8')
@@ -36,8 +37,18 @@ assert.match(page, /Text and coordinates never choose a route or stop/)
 assert.match(page, /Verified disruptions affect journey planning/)
 assert.doesNotMatch(page, /route[_ ]?name.*affected_route|node[_ ]?name.*affected_transport_node/i)
 
-assert.match(tripPlan, /NO_JOURNEY_DUE_TO_ACTIVE_DISRUPTION/,
-  'Phase 18B should consume the unchanged Phase 18A disruption foundation')
+assert.match(tripPlan, /routeResultState\([^\n]+tripPlan\.response\.value\)/,
+  'The passenger empty state must receive the backend response, including disruption warnings')
+const disrupted = { status: 'NO_TRANSPORT_JOURNEY', warnings: ['NO_JOURNEY_DUE_TO_ACTIVE_DISRUPTION'] }
+const disruptionState = routeResultState(false, null, true, [], disrupted)
+assert.equal(disruptionState.kind, 'empty')
+assert.match(disruptionState.title, /active disruption/i)
+assert.match(disruptionState.description, /check again.*disruption clears/i)
+assert.doesNotMatch(JSON.stringify(disruptionState), /NO_JOURNEY_DUE_TO_ACTIVE_DISRUPTION/)
+assert.doesNotMatch(routeResultState(false, null, true, [], { ...disrupted, warnings: [] }).title, /disruption/i)
+assert.equal(routeResultState(true, null, true, [], disrupted).kind, 'loading')
+assert.equal(routeResultState(false, 'SERVICE_UNAVAILABLE', true, [], disrupted).kind, 'error')
+assert.equal(routeResultState(false, null, false, [], disrupted).kind, 'idle')
 assert.match(page, /method:\s*'POST'/)
 assert.match(page, /method:\s*'PUT'/)
 assert.match(page, /populate:\s*'\*'/)

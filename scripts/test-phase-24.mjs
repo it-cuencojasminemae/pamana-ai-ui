@@ -8,6 +8,7 @@ import { parse, compileScript, compileTemplate } from '@vue/compiler-sfc'
 import { fetchTripPlan, tripPlanFingerprint } from '../app/services/tripPlan.ts'
 import { validTripPlanResponse } from '../app/services/tripPlanContract.ts'
 import { journeyMapPresentation } from '../app/services/tripPlanPresentation.ts'
+import { defaultRouteOption, validRouteOptions } from '../app/services/routeOptionsPresentation.ts'
 
 const read = file => fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
 const code = file => stripTypeScriptTypes(read(file).replace(/^import[\s\S]*?from\s+['"][^'"]+['"];?\s*$/gm, '')
@@ -113,8 +114,8 @@ test('malformed trip responses never reach journey rendering; failures stay sani
   }
 })
 
-test('real backend acceptance payloads satisfy the frontend contract and never invent transit lines', { skip: !fs.existsSync(new URL('../.cache/phase24-trip-plan.json', import.meta.url)) }, () => {
-  const results = JSON.parse(read('.cache/phase24-trip-plan.json'))
+test('captured missing-geometry contracts never invent transit lines', () => {
+  const results = JSON.parse(read('scripts/fixtures/missing-transit-geometry.json'))
   assert.equal(results.length, 5)
   for (const result of results) {
     assert.equal(validTripPlanResponse(result), true)
@@ -131,7 +132,7 @@ test('real backend acceptance payloads satisfy the frontend contract and never i
 test('new search, reset and disposal cancel old plans; late responses cannot replace selection', async () => {
   const requests = [], dispose = []
   const make = vm.runInNewContext(`${code('app/composables/useTripPlan.ts')}\nuseTripPlan`, {
-    ...Vue, AbortController, tripPlanFingerprint, useApi: () => ({ apiFetch: null }), onBeforeUnmount: fn => dispose.push(fn),
+    ...Vue, AbortController, tripPlanFingerprint, defaultRouteOption, validRouteOptions, useApi: () => ({ apiFetch: null }), onBeforeUnmount: fn => dispose.push(fn),
     fetchTripPlan: (_, request, signal) => { const pending = deferred(); requests.push({ ...pending, request, signal }); return pending.promise },
   })
   const state = make()
