@@ -35,6 +35,7 @@ const container = ref<HTMLElement | null>(null)
 const status = ref<Status>('INITIALIZING')
 const hasLoaded = ref(false)
 const selection = ref<string | null>(props.selectedFeatureId)
+const isFeaturePanelOpen = ref(false)
 const rawFeatures = computed(() => renderableFeatures(props.nodes, props.lines, props.vehicles, props.userLocation))
 const rawTransportFeatures = computed(() => renderableFeatures(props.transportNodes, [], [], null) as MapPointFeature[])
 const offsets = computed(() => markerOffsets([...rawFeatures.value.filter((f): f is MapPointFeature => f.geometry.type === 'Point'), ...rawTransportFeatures.value]))
@@ -142,7 +143,7 @@ async function initialize() {
     const initialCenter: [number, number] = userIsValid.value && props.userLocation ? [props.userLocation.lng, props.userLocation.lat]
       : validPosition(props.center) ? props.center : [120.70, 15.10]
     map = new lib.Map({ container: container.value, style: resolved.styleUrl, center: initialCenter,
-      zoom: props.zoom, attributionControl: false, cooperativeGestures: true })
+      zoom: props.zoom, attributionControl: false, cooperativeGestures: false })
     map.addControl(new lib.NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new lib.AttributionControl({ compact: true }), 'bottom-right')
     map.getCanvas().setAttribute('aria-label', 'PAMANA transport map. Use zoom controls or arrow keys to explore.')
@@ -208,27 +209,39 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
       <button v-if="status !== 'INITIALIZING'" type="button" class="pamana-libre__button" @click="initialize">Retry map</button>
     </div>
     <template v-if="hasLoaded">
-      <div v-if="!compact || choices.length" class="pamana-libre__tools">
-        <span class="pamana-libre__eyebrow">PAMANA · EXPLORE</span>
-        <label v-if="choices.length" class="pamana-libre__picker">Map features
-          <select :value="selection ?? ''" aria-label="Select a map feature" @change="select(($event.target as HTMLSelectElement).value)">
-            <option value="">Choose a point or line</option>
-            <option v-for="feature in choices" :key="String(feature.id)" :value="feature.id">{{ MAP_TOKENS[feature.properties.semantic].label }} · {{ feature.properties.label }}{{ feature.properties.dataMode === 'SIMULATED' ? ' (simulated)' : '' }}</option>
-          </select>
-        </label>
-        <div v-else class="pamana-libre__empty">No transport features to display.<br>Unverified coordinates stay off the map.</div>
-        <div v-if="selected" class="pamana-libre__detail" role="status">
-          <strong>{{ selected.properties.label }}</strong>
-          <template v-if="selected.properties.isTransportNode === true">
-            <span>{{ selected.properties.nodeTypeLabel }}</span>
-            <span>{{ selected.properties.verificationLabel }} · {{ selected.properties.dataMode }}</span>
-            <span>{{ selected.properties.planningLabel }}</span>
-            <span v-if="selected.properties.sourceSummary">Source: {{ selected.properties.sourceSummary }}</span>
-          </template>
-          <span v-else>{{ MAP_TOKENS[selected.properties.semantic].label }} · {{ selected.properties.isTransportNode === false ? 'Geographic place selection' : selected.properties.dataMode === 'SIMULATED' ? 'Simulated / demo' : selected.properties.verificationStatus || 'Verification not supplied' }}</span>
-          <span v-for="(detail, index) in (selected.properties.details as string[] || [])" :key="index">{{ detail }}</span>
+      <template v-if="choices.length">
+        <button
+          type="button"
+          class="pamana-libre__feature-toggle"
+          :aria-expanded="isFeaturePanelOpen"
+          aria-label="Toggle map feature details"
+          @click="isFeaturePanelOpen = !isFeaturePanelOpen"
+        >
+          <span aria-hidden="true">☷</span>
+          Map features
+          <span class="pamana-libre__feature-count">{{ choices.length }}</span>
+        </button>
+        <div v-if="isFeaturePanelOpen" class="pamana-libre__tools">
+          <span class="pamana-libre__eyebrow">PAMANA · EXPLORE</span>
+          <label class="pamana-libre__picker">Select a feature
+            <select :value="selection ?? ''" aria-label="Select a map feature" @change="select(($event.target as HTMLSelectElement).value)">
+              <option value="">Choose a point or line</option>
+              <option v-for="feature in choices" :key="String(feature.id)" :value="feature.id">{{ MAP_TOKENS[feature.properties.semantic].label }} · {{ feature.properties.label }}{{ feature.properties.dataMode === 'SIMULATED' ? ' (simulated)' : '' }}</option>
+            </select>
+          </label>
+          <div v-if="selected" class="pamana-libre__detail" role="status">
+            <strong>{{ selected.properties.label }}</strong>
+            <template v-if="selected.properties.isTransportNode === true">
+              <span>{{ selected.properties.nodeTypeLabel }}</span>
+              <span>{{ selected.properties.verificationLabel }} · {{ selected.properties.dataMode }}</span>
+              <span>{{ selected.properties.planningLabel }}</span>
+              <span v-if="selected.properties.sourceSummary">Source: {{ selected.properties.sourceSummary }}</span>
+            </template>
+            <span v-else>{{ MAP_TOKENS[selected.properties.semantic].label }} · {{ selected.properties.isTransportNode === false ? 'Geographic place selection' : selected.properties.dataMode === 'SIMULATED' ? 'Simulated / demo' : selected.properties.verificationStatus || 'Verification not supplied' }}</span>
+            <span v-for="(detail, index) in (selected.properties.details as string[] || [])" :key="index">{{ detail }}</span>
+          </div>
         </div>
-      </div>
+      </template>
       <div class="pamana-libre__actions">
         <button v-if="!compact || userIsValid" type="button" class="pamana-libre__button" :disabled="!userIsValid" aria-label="Recenter on your location" @click="recenter">◎ My location</button>
         <button v-if="choices.length" type="button" class="pamana-libre__button" aria-label="Fit supplied transport features" @click="fitAll">Fit features</button>
@@ -252,27 +265,49 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
 .pamana-libre__state--notice { inset: auto 12px 145px; z-index: 2; border: 1px solid #a4bcb0; border-radius: 12px; padding: 12px; gap: 6px; }
 .pamana-libre__state--notice .pamana-libre__state-icon { display: none; }
 .pamana-libre__state-icon { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #a4bcb0; border-radius: 50%; font-size: 28px; }
-.pamana-libre__tools { position: absolute; top: var(--map-tools-top, 16px); left: 16px; width: min(260px, calc(100% - 85px)); max-height: calc(100% - var(--map-tools-top, 16px) - 155px); overflow-y: auto; padding: 12px; border: 1px solid #ffffff; border-radius: 16px; background: #fffffff2; box-shadow: 0 5px 24px #172b2717; }
+.pamana-libre__feature-toggle { position: absolute; top: var(--map-tools-top, 16px); left: 16px; z-index: 4; display: inline-flex; min-height: 40px; align-items: center; gap: 7px; border: 1px solid #dbe4e0; border-radius: 12px; background: rgb(255 255 255 / 0.97); padding: 8px 11px; color: #172b27; box-shadow: 0 3px 14px #172b2720; font: 650 12px/1.3 system-ui; cursor: pointer; }
+.pamana-libre__feature-toggle:hover { background: #f8faf9; }
+.pamana-libre__feature-count { display: inline-grid; min-width: 20px; height: 20px; place-items: center; border-radius: 999px; background: #ecfccb; color: #365314; font-size: 10px; }
+.pamana-libre__tools { position: absolute; top: calc(var(--map-tools-top, 16px) + 48px); left: 16px; z-index: 3; width: min(240px, calc(100% - 80px)); max-height: min(58%, 320px); overflow: auto; overscroll-behavior: contain; padding: 11px; border: 1px solid #ffffff; border-radius: 16px; background: rgb(255 255 255 / 0.96); box-shadow: 0 5px 24px #172b2720; }
 .pamana-libre__eyebrow { display: block; color: #166534; font: 750 10px/1.4 system-ui; letter-spacing: .14em; margin-bottom: 7px; }
 .pamana-libre__picker { display: grid; gap: 4px; font-size: 11px; font-weight: 600; }
 .pamana-libre__picker select { min-height: 40px; width: 100%; border-radius: 9px; border: 1px solid #cbd5e1; padding: 5px; color: #172b27; background: white; font-size: 12px; }
 .pamana-libre__empty, .pamana-libre__detail { font-size: 12px; line-height: 1.5; }
 .pamana-libre__detail { display: grid; gap: 3px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #dbe4e0; }
 .pamana-libre__detail span { font-size: 11px; color: #475569; }
-.pamana-libre__actions { position: absolute; right: 12px; bottom: 76px; display: grid; justify-items: end; gap: 6px; }
-.pamana-libre__route-notice { position: absolute; right: 12px; bottom: 34px; display: flex; max-width: min(360px, calc(100% - 24px)); align-items: center; gap: 7px; border: 1px solid #fff; border-radius: 12px; background: #fffffff2; padding: 8px 10px; color: #334155; font: 650 10px/1.4 system-ui; pointer-events: none; }
+.pamana-libre__actions { position: absolute; right: 12px; bottom: 72px; z-index: 3; display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; max-width: calc(100% - 24px); }
+.pamana-libre__route-notice { position: absolute; right: 12px; bottom: 30px; z-index: 2; display: flex; max-width: min(360px, calc(100% - 24px)); align-items: center; gap: 7px; border: 1px solid #fff; border-radius: 12px; background: rgb(255 255 255 / 0.96); padding: 8px 10px; color: #334155; font: 650 10px/1.4 system-ui; pointer-events: none; }
 .pamana-libre__route-notice i { width: 22px; height: 4px; flex: 0 0 auto; border-radius: 999px; background: #2563eb; }
-.pamana-libre__button { min-height: 42px; padding: 8px 12px; border-radius: 12px; background: #fff; border: 1px solid #cbd5e1; box-shadow: 0 3px 12px #172b2712; font: 650 12px/1.3 system-ui; cursor: pointer; }
+.pamana-libre__button { min-height: 40px; padding: 8px 11px; border-radius: 12px; background: #fff; border: 1px solid #cbd5e1; color: #172b27; box-shadow: 0 3px 12px #172b2712; font: 650 12px/1.3 system-ui; white-space: nowrap; cursor: pointer; }
 .pamana-libre__button:disabled { opacity: .55; cursor: not-allowed; }
 .pamana-libre__button:focus-visible, select:focus-visible { outline: 3px solid #2563eb; outline-offset: 3px; }
-.pamana-libre__legend { position: absolute; bottom: 34px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; width: fit-content; gap: 7px 12px; padding: 8px 10px; border: 1px solid #fff; border-radius: 12px; background: #fffffff2; font: 600 10px/1.4 system-ui; pointer-events: none; }
+.pamana-libre__legend { position: absolute; bottom: 30px; left: 12px; z-index: 2; display: flex; flex-wrap: wrap; width: fit-content; max-width: calc(100% - 24px); gap: 7px 12px; padding: 8px 10px; border: 1px solid #fff; border-radius: 12px; background: rgb(255 255 255 / 0.96); color: #334155; font: 600 10px/1.4 system-ui; pointer-events: none; }
 .pamana-libre__legend span { display: inline-flex; gap: 5px; align-items: center; }
 .pamana-libre__legend i { width: 7px; height: 7px; border-radius: 50%; }
-:deep(.maplibregl-ctrl-group) { border-radius: 12px; overflow: hidden; box-shadow: 0 3px 16px #172b2720; }
-:deep(.maplibregl-ctrl-group button) { width: 42px; height: 42px; }
+:deep(.maplibregl-ctrl-top-right) { top: 12px; right: 12px; }
+:deep(.maplibregl-ctrl-bottom-right) { right: 12px; bottom: 8px; }
+:deep(.maplibregl-ctrl-group) { border: 1px solid #dbe4e0; border-radius: 12px; overflow: hidden; background: #fff; box-shadow: 0 3px 16px #172b2720; }
+:deep(.maplibregl-ctrl-group button) { width: 40px; height: 40px; }
+:deep(.maplibregl-ctrl-attrib) { border-radius: 8px 0 0; background: rgb(255 255 255 / 0.9); color: #334155; font-size: 9px; }
 .pamana-libre--compact { min-height: 0; }
 .pamana-libre--compact .pamana-libre__state { padding: 10px; gap: 5px; font-size: 12px; }
 .pamana-libre--compact .pamana-libre__state-icon { display: none; }
-.pamana-libre--compact .pamana-libre__actions { bottom: 34px; }
-@media (max-width: 480px) { .pamana-libre__tools { top: var(--map-tools-top, 10px); left: 10px; padding: 10px; } .pamana-libre__actions { bottom: 140px; } .pamana-libre__route-notice { bottom: 68px; left: 10px; right: 10px; } .pamana-libre__legend { bottom: 112px; font-size: 9px; gap: 5px 9px; } }
+.pamana-libre--compact .pamana-libre__feature-toggle { top: 8px; left: 8px; min-height: 34px; padding: 6px 9px; font-size: 11px; }
+.pamana-libre--compact .pamana-libre__tools { top: 48px; left: 8px; width: min(205px, calc(100% - 68px)); max-height: calc(100% - 56px); padding: 8px; border-radius: 12px; }
+.pamana-libre--compact .pamana-libre__eyebrow { margin-bottom: 4px; font-size: 9px; }
+.pamana-libre--compact .pamana-libre__picker select { min-height: 34px; }
+.pamana-libre--compact .pamana-libre__detail { display: none; }
+.pamana-libre--compact .pamana-libre__actions { right: 8px; bottom: 48px; max-width: calc(100% - 16px); }
+.pamana-libre--compact .pamana-libre__button { min-height: 34px; padding: 6px 9px; font-size: 11px; }
+@media (max-width: 480px) {
+  .pamana-libre__feature-toggle { top: var(--map-tools-top, 10px); left: 10px; min-height: 36px; padding: 7px 9px; font-size: 11px; }
+  .pamana-libre__tools { top: calc(var(--map-tools-top, 10px) + 44px); left: 10px; width: min(220px, calc(100% - 76px)); max-height: 50%; padding: 9px; }
+  .pamana-libre__actions { right: 8px; bottom: 54px; gap: 5px; }
+  .pamana-libre__button { min-height: 36px; padding: 7px 9px; font-size: 11px; }
+  .pamana-libre__route-notice { right: 8px; bottom: 8px; max-width: calc(55% - 12px); padding: 6px 8px; font-size: 9px; }
+  .pamana-libre__legend { bottom: 8px; left: 8px; max-width: calc(45% - 12px); gap: 5px 8px; padding: 6px 8px; font-size: 9px; }
+  :deep(.maplibregl-ctrl-top-right) { top: 8px; right: 8px; }
+  :deep(.maplibregl-ctrl-bottom-right) { right: 8px; bottom: 4px; }
+  :deep(.maplibregl-ctrl-group button) { width: 36px; height: 36px; }
+}
 </style>

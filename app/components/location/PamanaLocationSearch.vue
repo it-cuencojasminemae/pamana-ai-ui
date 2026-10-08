@@ -229,7 +229,8 @@ onBeforeUnmount(() => {
 .location-search__loading span { height: 8px; border-radius: 9px; background: linear-gradient(90deg, #edf2f0, #f8faf9, #edf2f0); background-size: 200% 100%; animation: location-shimmer 1.2s infinite; }
 .location-search__loading span:nth-child(2) { width: 82%; }.location-search__loading span:nth-child(3) { width: 64%; }
 .location-search__message { margin: 0; padding: 11px 12px; color: #475569; font-size: 12px; line-height: 1.4; }
-.location-search button:focus-visible, .location-search input:focus-visible { outline: 3px solid #2563eb; outline-offset: 2px; }
+.location-search button:focus-visible { outline: 3px solid #65a30d; outline-offset: 2px; }
+.location-search input:focus-visible { outline: none; }
 @keyframes location-spin { to { transform: rotate(360deg); } }
 @keyframes location-shimmer { to { background-position: -200% 0; } }
 @media (max-width: 480px) { .location-search__panel { position: fixed; top: auto; right: 12px; bottom: 12px; left: 12px; max-height: min(65vh, 430px); overflow-y: auto; } }

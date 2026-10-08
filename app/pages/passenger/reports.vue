@@ -139,15 +139,6 @@ onMounted(loadReports)
         </div>
 
         <form class="mt-5 space-y-4" @submit.prevent="submitReport">
-          <fieldset>
-            <legend class="text-xs font-semibold text-neutral-700">What did you observe?</legend>
-            <div class="mt-2 grid grid-cols-2 gap-2">
-              <button v-for="category in categories" :key="category.value" type="button" class="flex min-h-20 flex-col items-center justify-center rounded-xl border px-2 py-2 text-center text-xs font-semibold transition focus-visible:outline-3 focus-visible:outline-blue-600" :class="selectedCategory === category.value ? 'border-lime-500 bg-lime-50 text-lime-800' : 'border-neutral-200 bg-white/70 text-neutral-600 hover:border-lime-300'" @click="selectedCategory = category.value">
-                <UIcon :name="category.icon" class="mb-1 size-5" />{{ category.label }}
-              </button>
-            </div>
-          </fieldset>
-
           <label class="grid gap-1 text-xs font-semibold text-neutral-700">Description
             <textarea v-model="description" rows="4" maxlength="500" required class="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-normal outline-none focus:border-lime-500" placeholder="Describe what you observed and when." />
             <span class="text-right text-[10px] font-normal text-neutral-400">{{ description.length }}/500</span>
@@ -156,6 +147,15 @@ onMounted(loadReports)
           <label class="grid gap-1 text-xs font-semibold text-neutral-700">Location description <span class="font-normal text-neutral-400">optional</span>
             <input v-model="locationNote" maxlength="160" class="min-h-11 rounded-xl border border-neutral-200 bg-white px-3 text-sm font-normal outline-none focus:border-lime-500" placeholder="Stop, road, barangay, or landmark">
           </label>
+
+          <fieldset>
+            <legend class="text-xs font-semibold text-neutral-700">What did you observe?</legend>
+            <div class="mt-2 grid grid-cols-2 gap-2">
+              <button v-for="category in categories" :key="category.value" type="button" class="flex min-h-16 sm:min-h-20 flex-col items-center justify-center rounded-xl border px-2 py-2 text-center text-xs font-semibold transition focus-visible:outline-3 focus-visible:outline-blue-600" :class="selectedCategory === category.value ? 'border-lime-500 bg-lime-50 text-lime-800' : 'border-neutral-200 bg-white/70 text-neutral-600 hover:border-lime-300'" @click="selectedCategory = category.value">
+                <UIcon :name="category.icon" class="mb-1 size-5" />{{ category.label }}
+              </button>
+            </div>
+          </fieldset>
 
           <div class="rounded-2xl border border-neutral-200 bg-white/70 p-3">
             <div class="flex items-center justify-between gap-3">

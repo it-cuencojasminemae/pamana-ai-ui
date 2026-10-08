@@ -104,15 +104,22 @@ onMounted(async () => {
     <PamanaPageHeader title="Dashboard" role="driver" />
 
     <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div class="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_13rem] sm:items-center">
+        <div class="min-w-0">
           <h2 class="font-display text-xl font-bold capitalize text-neutral-900">Good morning, {{ firstName }}!</h2>
           <p class="mt-1 text-sm text-neutral-500">Have a safe and productive day.</p>
         </div>
-        <label class="pill normal-case bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300/40">
-          <span class="badge-dot" :class="online ? 'bg-emerald-500' : 'bg-neutral-400'" />
-          {{ online ? 'Online · Available' : 'Offline' }}
-          <USwitch v-model="online" size="xs" color="success" />
+        <label
+          class="pill flex w-full items-center justify-between normal-case ring-1 sm:w-52"
+          :class="online
+            ? 'bg-emerald-100 text-emerald-800 ring-emerald-300/50'
+            : 'bg-neutral-100 text-neutral-700 ring-neutral-300/70'"
+        >
+          <span class="flex min-w-0 items-center gap-2 whitespace-nowrap">
+            <span class="badge-dot shrink-0" :class="online ? 'bg-emerald-500' : 'bg-neutral-400'" />
+            {{ online ? 'Online · Available' : 'Offline' }}
+          </span>
+          <USwitch v-model="online" size="xs" color="success" aria-label="Driver availability" />
         </label>
       </div>
     </UCard>
@@ -185,9 +192,9 @@ onMounted(async () => {
     </div>
 
     <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <NuxtLink v-for="action in quickActions" :key="action.label" :to="action.to || '/driver'" class="glass card-lift flex flex-col items-center gap-1.5 rounded-2xl p-4 text-xs font-semibold text-neutral-800">
+      <NuxtLink v-for="action in quickActions" :key="action.label" :to="action.to || '/driver'" class="glass card-lift flex min-h-[88px] flex-col items-center justify-center gap-1.5 rounded-2xl p-3 text-center text-xs font-semibold text-neutral-800 sm:p-4">
         <UIcon :name="action.icon" class="size-5" :class="action.classes" />
-        {{ action.label }}
+        <span class="leading-tight">{{ action.label }}</span>
       </NuxtLink>
     </div>
   </div>

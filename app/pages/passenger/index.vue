@@ -330,7 +330,7 @@ onBeforeUnmount(() => {
             type="submit"
             size="lg"
             trailing-icon="i-lucide-arrow-right"
-            class="rounded-full font-semibold text-neutral-950"
+            class="w-full rounded-full font-semibold text-neutral-950 sm:w-auto"
           >
             Find Best Route
           </UButton>

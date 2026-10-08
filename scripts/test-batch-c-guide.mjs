@@ -99,6 +99,36 @@ test('actual Find Best Route selects Recommended and starts only its guide witho
   app.stop()
 })
 
+test('departure and fare preferences refresh previously searched routes with the selected values', async () => {
+  const requests=[]
+  const app=page(async(endpoint,settings)=>{
+    if(endpoint.endsWith('trip-plan')){requests.push(settings.body);return structuredClone(regular)}
+    return response(direct)
+  })
+  await Vue.nextTick()
+  await app.state.findJourneys()
+  assert.equal(requests.length,1)
+
+  app.state.form.passengerCategory='Student'
+  await Vue.nextTick()
+  await new Promise(resolve=>setImmediate(resolve))
+  assert.equal(requests.length,2)
+  assert.equal(requests.at(-1).passengerCategory,'STUDENT')
+
+  app.state.form.departure='Schedule for later'
+  await Vue.nextTick()
+  assert.equal(app.state.tripPlan.searched.value,false,'clear results while a scheduled time is missing')
+
+  const future=new Date(Date.now()+60*60*1000)
+  app.state.form.scheduledDeparture=new Date(future.getTime()-future.getTimezoneOffset()*60_000).toISOString().slice(0,16)
+  await Vue.nextTick()
+  await new Promise(resolve=>setImmediate(resolve))
+  assert.equal(requests.length,3)
+  assert.equal(requests.at(-1).passengerCategory,'STUDENT')
+  assert.ok(Date.parse(requests.at(-1).departureAt)>Date.now())
+  app.stop()
+})
+
 test('only the compact guide area renders loading, valid text or friendly fallback', async () => {
   const loading=await renderGuide({loading:true,response:null,fallback:guide.deterministicTripGuide(direct)})
   assert.match(loading,/PAMANA AI Trip Guide|PAMANA AI is preparing your trip guide/)

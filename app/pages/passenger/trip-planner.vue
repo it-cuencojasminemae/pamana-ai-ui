@@ -20,6 +20,9 @@ const approximatePaths = useApproximateJourneyPaths(tripPlan.selectedJourney)
 const form = reactive({ origin: '', destination: '', departure: 'Depart now', scheduledDeparture: '', passengerCategory: 'Regular fare' })
 const originLocation = ref<SelectedLocation | null>(null)
 const destinationLocation = ref<SelectedLocation | null>(null)
+const hasSearchedTrip = ref(false)
+const preferenceMenuRoot = ref<HTMLElement | null>(null)
+const openPreference = ref<'departure' | 'fare' | null>(null)
 let queryLocationAbort: AbortController | null = null
 
 const departureOptions = ['Depart now', 'Schedule for later']
@@ -55,6 +58,31 @@ function badgesFor(id: string) { return categories.value.filter(category => cate
 function selectCategory(id: string | null) { if (id && tripPlan.journeys.value.some(journey => journey.id === id)) tripPlan.selectedJourneyId.value = id }
 const fallbackGuide = computed(() => tripPlan.selectedJourney.value ? deterministicTripGuide(tripPlan.selectedJourney.value) : '')
 
+function togglePreference(name: 'departure' | 'fare') {
+  if (tripPlan.loading.value) return
+  openPreference.value = openPreference.value === name ? null : name
+}
+
+function selectDeparturePreference(value: string) {
+  form.departure = value
+  openPreference.value = null
+}
+
+function selectFarePreference(value: string) {
+  form.passengerCategory = value
+  openPreference.value = null
+}
+
+function closePreferenceMenu(event: PointerEvent) {
+  if (event.target instanceof Node && !preferenceMenuRoot.value?.contains(event.target)) {
+    openPreference.value = null
+  }
+}
+
+function handlePreferenceKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') openPreference.value = null
+}
+
 watch(originLocation, value => { form.origin = value?.label ?? form.origin })
 watch(destinationLocation, value => { form.destination = value?.label ?? form.destination })
 // Post-render selection drives only the guide. Cards/details/map never await AI.
@@ -66,7 +94,22 @@ watch(
   () => `${originLocation.value?.id ?? ''}|${originLocation.value?.lat ?? ''}|${originLocation.value?.lng ?? ''}|${destinationLocation.value?.id ?? ''}|${destinationLocation.value?.lat ?? ''}|${destinationLocation.value?.lng ?? ''}`,
   (value, previous) => {
     if (previous && value !== previous) journeyExplanation.reset()
-    if (previous && value !== previous && tripPlan.searched.value) tripPlan.reset()
+    if (previous && value !== previous) {
+      hasSearchedTrip.value = false
+      if (tripPlan.searched.value) tripPlan.reset()
+    }
+  },
+)
+
+watch(
+  () => [form.departure, form.scheduledDeparture, form.passengerCategory],
+  () => {
+    if (!hasSearchedTrip.value) return
+    if (!departureAt()) {
+      tripPlan.reset()
+      return
+    }
+    void findJourneys()
   },
 )
 
@@ -115,8 +158,12 @@ function departureAt() {
 }
 
 function validateSearch() {
-  if (!originLocation.value || !destinationLocation.value) {
-    toast.add({ title: 'Select resolved locations', description: 'Choose both places from the suggestions before searching.', color: 'warning' })
+  if (!originLocation.value) {
+    toast.add({ title: 'Choose a pickup point', description: 'Search for a place and select one of the suggestions.', color: 'warning' })
+    return false
+  }
+  if (!destinationLocation.value) {
+    toast.add({ title: 'Choose a destination', description: 'Search for a place and select one of the suggestions.', color: 'warning' })
     return false
   }
   if (originLocation.value.lat === destinationLocation.value.lat && originLocation.value.lng === destinationLocation.value.lng) {
@@ -140,6 +187,7 @@ async function findJourneys() {
   const requestedDeparture = departureAt()
   if (!requestedDeparture) return
   journeyExplanation.reset()
+  hasSearchedTrip.value = true
   await updateSearchQuery()
   await tripPlan.search(buildTripPlanRequest(originLocation.value, destinationLocation.value, requestedDeparture, passengerCategories[form.passengerCategory] || 'REGULAR'))
 }
@@ -151,11 +199,15 @@ async function explainSelectedJourney() {
 }
 
 onMounted(() => {
+  document.addEventListener('pointerdown', closePreferenceMenu)
   if (loadLocationsFromQuery()) {
     // Query text is resolved to coordinates; planning remains explicitly user initiated.
   }
 })
-onBeforeUnmount(() => queryLocationAbort?.abort())
+onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', closePreferenceMenu)
+  queryLocationAbort?.abort()
+})
 </script>
 
 <template>
@@ -178,18 +230,66 @@ onBeforeUnmount(() => queryLocationAbort?.abort())
             </div>
             <LocationPamanaLocationSearch v-model="destinationLocation" mode="destination" placeholder="Search destination" :initial-query="form.destination" @text-updated="updateLocationText('destination', $event)" />
 
-            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-              <USelect v-model="form.departure" :items="departureOptions" aria-label="Departure preference" class="w-full" />
-              <USelect v-model="form.passengerCategory" :items="passengerCategoryOptions" aria-label="Passenger fare category" class="w-full" />
+            <div ref="preferenceMenuRoot" class="grid grid-cols-1 gap-3 sm:grid-cols-2" @keydown="handlePreferenceKeydown">
+              <div class="relative grid min-w-0 gap-1.5">
+                <span class="text-xs font-semibold text-neutral-700">When do you want to leave?</span>
+                <button type="button" class="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-3 text-left text-sm font-medium text-neutral-800 shadow-sm outline-none transition hover:border-lime-400 hover:bg-lime-50/50 focus-visible:border-lime-500 focus-visible:ring-2 focus-visible:ring-lime-500/20 disabled:cursor-wait disabled:opacity-60" :aria-expanded="openPreference === 'departure'" aria-haspopup="listbox" aria-controls="departure-preference-options" aria-label="Departure preference" :disabled="tripPlan.loading.value" @click="togglePreference('departure')">
+                  <span class="flex min-w-0 items-center gap-2">
+                    <UIcon name="i-lucide-clock-3" class="size-4 shrink-0 text-lime-700" />
+                    <span class="truncate">{{ form.departure }}</span>
+                  </span>
+                  <UIcon name="i-lucide-chevron-down" class="size-4 shrink-0 text-neutral-500 transition-transform" :class="{ 'rotate-180': openPreference === 'departure' }" />
+                </button>
+                <div v-if="openPreference === 'departure'" id="departure-preference-options" class="absolute inset-x-0 top-full z-40 mt-2 rounded-2xl border border-lime-900/10 bg-white p-1.5 shadow-[0_16px_40px_-16px_rgba(22,48,30,0.35)] ring-1 ring-black/5" role="listbox" aria-label="Departure preference options">
+                  <button v-for="option in departureOptions" :key="option" type="button" role="option" class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition hover:bg-lime-50 focus-visible:bg-lime-50 focus-visible:outline-none" :class="form.departure === option ? 'bg-lime-50 font-semibold text-lime-900' : 'text-neutral-700'" :aria-selected="form.departure === option" @click="selectDeparturePreference(option)">
+                    <span class="flex items-center gap-2.5">
+                      <UIcon :name="option === 'Depart now' ? 'i-lucide-zap' : 'i-lucide-calendar-clock'" class="size-4 text-lime-700" />
+                      {{ option }}
+                    </span>
+                    <UIcon v-if="form.departure === option" name="i-lucide-check" class="size-4 text-lime-700" />
+                  </button>
+                </div>
+              </div>
+              <div class="relative grid min-w-0 gap-1.5">
+                <span class="text-xs font-semibold text-neutral-700">Passenger fare</span>
+                <button type="button" class="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-3 text-left text-sm font-medium text-neutral-800 shadow-sm outline-none transition hover:border-lime-400 hover:bg-lime-50/50 focus-visible:border-lime-500 focus-visible:ring-2 focus-visible:ring-lime-500/20 disabled:cursor-wait disabled:opacity-60" :aria-expanded="openPreference === 'fare'" aria-haspopup="listbox" aria-controls="passenger-category-options" aria-label="Passenger fare category" :disabled="tripPlan.loading.value" @click="togglePreference('fare')">
+                  <span class="flex min-w-0 items-center gap-2">
+                    <UIcon name="i-lucide-ticket-percent" class="size-4 shrink-0 text-lime-700" />
+                    <span class="truncate">{{ form.passengerCategory }}</span>
+                  </span>
+                  <UIcon name="i-lucide-chevron-down" class="size-4 shrink-0 text-neutral-500 transition-transform" :class="{ 'rotate-180': openPreference === 'fare' }" />
+                </button>
+                <div v-if="openPreference === 'fare'" id="passenger-category-options" class="absolute inset-x-0 top-full z-40 mt-2 rounded-2xl border border-lime-900/10 bg-white p-1.5 shadow-[0_16px_40px_-16px_rgba(22,48,30,0.35)] ring-1 ring-black/5" role="listbox" aria-label="Passenger fare options">
+                  <button v-for="option in passengerCategoryOptions" :key="option" type="button" role="option" class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition hover:bg-lime-50 focus-visible:bg-lime-50 focus-visible:outline-none" :class="form.passengerCategory === option ? 'bg-lime-50 font-semibold text-lime-900' : 'text-neutral-700'" :aria-selected="form.passengerCategory === option" @click="selectFarePreference(option)">
+                    <span class="flex items-center gap-2.5">
+                      <UIcon :name="option === 'Regular fare' ? 'i-lucide-user-round' : option === 'Student' ? 'i-lucide-graduation-cap' : option === 'Senior citizen' ? 'i-lucide-accessibility' : 'i-lucide-heart-handshake'" class="size-4 text-lime-700" />
+                      {{ option }}
+                    </span>
+                    <UIcon v-if="form.passengerCategory === option" name="i-lucide-check" class="size-4 text-lime-700" />
+                  </button>
+                </div>
+              </div>
             </div>
             <label v-if="form.departure === 'Schedule for later'" class="grid gap-1 text-xs font-medium text-neutral-600">
               Departure date and time
-              <input v-model="form.scheduledDeparture" type="datetime-local" :min="minimumDeparture" class="min-h-11 border border-neutral-200 bg-white px-3 text-sm text-neutral-900 outline-none focus:border-lime-500" required>
+              <input v-model="form.scheduledDeparture" type="datetime-local" :min="minimumDeparture" :disabled="tripPlan.loading.value" class="min-h-11 border border-neutral-200 bg-white px-3 text-sm text-neutral-900 outline-none focus:border-lime-500 disabled:cursor-wait disabled:opacity-60" required>
             </label>
+            <p class="flex items-center gap-1.5 text-xs text-neutral-500" aria-live="polite">
+              <UIcon name="i-lucide-sliders-horizontal" class="size-3.5 shrink-0 text-lime-700" />
+              {{ form.departure === 'Depart now' ? 'Depart now' : form.scheduledDeparture ? `Scheduled for ${new Date(form.scheduledDeparture).toLocaleString()}` : 'Choose a departure time' }}
+              <span aria-hidden="true">·</span>
+              {{ form.passengerCategory }}
+              <span v-if="!hasSearchedTrip">· Preferences apply to your route search.</span>
+              <span v-else-if="form.departure === 'Schedule for later' && !departureAt()">· Choose a future time to refresh routes.</span>
+              <span v-else>· Route options update automatically.</span>
+            </p>
 
-            <UButton type="submit" block size="lg" icon="i-lucide-search" class="search-button rounded-full font-semibold" :loading="tripPlan.loading.value" :disabled="!canSearch">
+            <UButton type="submit" block size="lg" icon="i-lucide-search" class="search-button rounded-full font-semibold" :loading="tripPlan.loading.value" :disabled="tripPlan.loading.value">
               {{ tripPlan.loading.value ? 'Finding the best routes…' : 'Find Best Route' }}
             </UButton>
+            <p v-if="!originLocation || !destinationLocation" class="text-center text-xs leading-relaxed text-neutral-600">
+              Select both places from the suggestions to find available routes.
+            </p>
           </form>
         </UCard>
         <section class="min-w-0 space-y-3" aria-label="Route options" aria-live="polite" :aria-busy="tripPlan.loading.value">
@@ -235,5 +335,6 @@ onBeforeUnmount(() => queryLocationAbort?.abort())
 <style scoped>
 .search-button { background-color: #84cc16 !important; color: #171717 !important; }
 .search-button:hover { background-color: #65a30d !important; color: #ffffff !important; }
-.search-button:disabled { cursor: not-allowed; opacity: 0.65; }
+.search-button:disabled { cursor: not-allowed; opacity: 1; background-color: #d9efb0 !important; color: #3f6212 !important; box-shadow: none; }
+:deep(button[data-slot='base']:focus-visible) { outline: none; outline-offset: 0; }
 </style>

@@ -203,17 +203,18 @@ onMounted(() => {
 
     <div class="mb-5 grid gap-5 lg:grid-cols-3">
       <UCard class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 class="font-display text-sm font-semibold text-neutral-900">Stop-by-Stop Supply Table</h2>
-          <div class="flex items-center gap-2">
+
+          <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
             <USelect
               v-model="selectedRouteDocumentId"
               :items="routeOptions"
               placeholder="Select route"
-              class="w-56"
+              class="w-full sm:w-56"
               aria-label="Route for prediction dashboard"
             />
-            <USelect v-model="previewHour" :items="HOUR_OPTIONS" class="w-28" />
+            <USelect v-model="previewHour" :items="HOUR_OPTIONS" class="w-full sm:w-28" />
             <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-teal-100 text-teal-700">
               <UIcon name="i-lucide-map" class="size-4" />
             </span>
