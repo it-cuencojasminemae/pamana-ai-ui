@@ -5,6 +5,7 @@ export const MAP_TOKENS = {
   'origin-location': { color: '#16a34a', label: 'Geographic origin', glyph: 'circle' },
   'destination-location': { color: '#dc2626', label: 'Geographic destination', glyph: 'flag' },
   pickup: { color: '#15803d', label: 'PAMANA pickup', glyph: 'up' },
+  'roadside-pickup': { color: '#0891b2', label: 'Temporary roadside pickup', glyph: 'roadside' },
   stop: { color: '#7c3aed', label: 'PAMANA stop', glyph: 'dot' },
   dropoff: { color: '#0f766e', label: 'PAMANA drop-off', glyph: 'exit' },
   transfer: { color: '#c2410c', label: 'PAMANA transfer', glyph: 'transfer' },
@@ -68,12 +69,13 @@ export function legacyMarkerFeatures(markers: Record<string, any>[]): MapPointFe
     const semantic = markerSemantic(item.kind ?? item.node_type ?? (item.vehicle_number || item.vehicle || item.vehicle_id ? 'vehicle' : item.stop_type))
     const details = Array.isArray(item.popupLines) ? item.popupLines.slice(1).map(String) : semantic === 'vehicle' ? [
       item.plate_number, item.route?.route_name, item.route_variant?.display_name,
-      item.direction, item.occupancy_level ? `Occupancy: ${item.occupancy_level}` : 'Occupancy unknown',
+      item.direction, item.availability ? null : item.data_mode === 'SIMULATED' && item.occupancy_level ? `Simulated occupancy: ${item.occupancy_level}` : 'Availability Unknown',
       item.recorded_at ? `Position recorded: ${item.recorded_at}` : null,
     ].filter(Boolean).map(String) : []
     return [{ type: 'Feature', id, geometry: { type: 'Point', coordinates: [lng, lat] }, properties: {
       semantic, label: String(item.label ?? item.name ?? item.title ?? item.vehicle_number ?? item.plate_number ?? 'Transport point'), source: 'PAMANA', recordId: id,
       details,
+      availability: item.availability,
       dataMode: item.data_mode ?? (['simulation', 'SIMULATED'].includes(item.source) ? 'SIMULATED' : undefined),
       verificationStatus: item.verification_status, planningEnabled: item.planning_enabled,
     } } as MapPointFeature]

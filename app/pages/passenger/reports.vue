@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { formatReportTitle } from '~/services/reportPresentation'
+
 definePageMeta({ middleware: ['auth', 'passenger'] })
 useHead({ title: 'My Reports | PAMANA' })
 
@@ -43,7 +45,7 @@ const submitting = ref(false)
 const loading = ref(true)
 const reports = ref<ReportRecord[]>([])
 
-const categoryFor = (value: string) => categories.find(item => item.value === value)
+const categoryFor = (value: string) => categories.find(item => item.value === value.toUpperCase())
 const statusMeta: Record<string, { label: string; classes: string }> = {
   PENDING: { label: 'Pending review', classes: 'bg-amber-100 text-amber-800' },
   REVIEWED: { label: 'Reviewed', classes: 'bg-blue-100 text-blue-700' },
@@ -139,23 +141,29 @@ onMounted(loadReports)
         </div>
 
         <form class="mt-5 space-y-4" @submit.prevent="submitReport">
-          <fieldset>
-            <legend class="text-xs font-semibold text-neutral-700">What did you observe?</legend>
-            <div class="mt-2 grid grid-cols-2 gap-2">
-              <button v-for="category in categories" :key="category.value" type="button" class="flex min-h-20 flex-col items-center justify-center rounded-xl border px-2 py-2 text-center text-xs font-semibold transition focus-visible:outline-3 focus-visible:outline-blue-600" :class="selectedCategory === category.value ? 'border-lime-500 bg-lime-50 text-lime-800' : 'border-neutral-200 bg-white/70 text-neutral-600 hover:border-lime-300'" @click="selectedCategory = category.value">
-                <UIcon :name="category.icon" class="mb-1 size-5" />{{ category.label }}
-              </button>
-            </div>
-          </fieldset>
-
           <label class="grid gap-1 text-xs font-semibold text-neutral-700">Description
-            <textarea v-model="description" rows="4" maxlength="500" required class="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-normal outline-none focus:border-lime-500" placeholder="Describe what you observed and when." />
-            <span class="text-right text-[10px] font-normal text-neutral-400">{{ description.length }}/500</span>
+            <textarea v-model="description" rows="4" maxlength="500" required aria-describedby="report-description-help" class="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm font-normal outline-none focus:border-lime-500" placeholder="Describe what you observed and when." />
+            <span class="flex items-start justify-between gap-3 font-normal">
+              <span id="report-description-help" aria-live="polite" class="text-[11px]" :class="description.trim().length > 0 && description.trim().length < 10 ? 'text-amber-700' : 'text-neutral-500'">
+                <template v-if="description.trim().length > 0 && description.trim().length < 10">Add {{ 10 - description.trim().length }} more {{ 10 - description.trim().length === 1 ? 'character' : 'characters' }} to submit (minimum 10).</template>
+                <template v-else>Use 10 to 500 characters.</template>
+              </span>
+              <span class="shrink-0 text-[10px] text-neutral-400">{{ description.length }}/500</span>
+            </span>
           </label>
 
           <label class="grid gap-1 text-xs font-semibold text-neutral-700">Location description <span class="font-normal text-neutral-400">optional</span>
             <input v-model="locationNote" maxlength="160" class="min-h-11 rounded-xl border border-neutral-200 bg-white px-3 text-sm font-normal outline-none focus:border-lime-500" placeholder="Stop, road, barangay, or landmark">
           </label>
+
+          <fieldset>
+            <legend class="text-xs font-semibold text-neutral-700">What did you observe?</legend>
+            <div class="mt-2 grid grid-cols-2 gap-2">
+              <button v-for="category in categories" :key="category.value" type="button" class="flex min-h-16 sm:min-h-20 flex-col items-center justify-center rounded-xl border px-2 py-2 text-center text-xs font-semibold transition focus-visible:outline-3 focus-visible:outline-blue-600" :class="selectedCategory === category.value ? 'border-lime-500 bg-lime-50 text-lime-800' : 'border-neutral-200 bg-white/70 text-neutral-600 hover:border-lime-300'" @click="selectedCategory = category.value">
+                <UIcon :name="category.icon" class="mb-1 size-5" />{{ category.label }}
+              </button>
+            </div>
+          </fieldset>
 
           <div class="rounded-2xl border border-neutral-200 bg-white/70 p-3">
             <div class="flex items-center justify-between gap-3">
@@ -178,7 +186,7 @@ onMounted(loadReports)
           <div class="flex items-start gap-3">
             <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-lime-100 text-lime-700"><UIcon :name="categoryFor(report.report_type)?.icon || 'i-lucide-info'" class="size-5" /></span>
             <div class="min-w-0 flex-1">
-              <div class="flex flex-wrap items-center gap-2"><h3 class="text-sm font-semibold text-neutral-900">{{ categoryFor(report.report_type)?.label || report.report_type }}</h3><span class="pill normal-case" :class="statusMeta[report.review_status || 'PENDING']?.classes">{{ statusMeta[report.review_status || 'PENDING']?.label }}</span></div>
+              <div class="flex flex-wrap items-center gap-2"><h3 class="text-sm font-semibold text-neutral-900">{{ formatReportTitle(categoryFor(report.report_type)?.label || report.report_type) }}</h3><span class="pill normal-case" :class="statusMeta[report.review_status || 'PENDING']?.classes">{{ statusMeta[report.review_status || 'PENDING']?.label }}</span></div>
               <p class="mt-1 text-sm text-neutral-700">{{ report.description || report.location_note || 'Legacy passenger observation' }}</p>
               <p class="mt-2 text-xs text-neutral-400">{{ formatDate(report.reported_at || report.createdAt) }}<span v-if="report.location_note"> · {{ report.location_note }}</span></p>
               <p v-if="report.route_variant || report.transport_node" class="mt-2 rounded-xl bg-neutral-50 px-3 py-2 text-xs text-neutral-600">Context: {{ report.route_variant?.display_name || report.route_variant?.variant_code || report.route?.route_code || 'Journey' }}<span v-if="report.transport_node"> · {{ report.transport_node.name || report.transport_node.node_code }}</span></p>

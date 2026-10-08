@@ -37,7 +37,7 @@ export const useTripPlan = () => {
       return null
     }
     response.value = result.data
-    journeys.value = validRouteOptions(result.data.journeys)
+    journeys.value = validRouteOptions(result.data.journeys, request.planningMode)
     selectedJourneyId.value = defaultRouteOption(result.data)
     return result.data
   }

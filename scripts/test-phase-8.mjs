@@ -124,7 +124,7 @@ test('passenger integration still requires resolved coordinates and maps geograp
   assert.equal((planner.match(/<LocationPamanaLocationSearch/g) ?? []).length, 2)
   assert.match(planner, /!originLocation\.value \|\| !destinationLocation\.value/)
   assert.match(planner, /journeyMapPresentation\(tripPlan\.selectedJourney\.value, originLocation\.value, destinationLocation\.value\)/)
-  assert.match(planner, /:nodes="mapPresentation\.nodes"/)
+  assert.match(planner, /:nodes="\[\.\.\.mapPresentation\.nodes, \.\.\.researchMarkers\]"/)
   assert.match(planner, /forwardGeocodeLocations/)
   assert.doesNotMatch(planner, /routeGeography|searchPlaces|nearest pickup|transfer calculation/i)
   const geoapify = read('app/services/geoapify.ts')

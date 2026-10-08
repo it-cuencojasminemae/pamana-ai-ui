@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { formatReportTitle } from '~/services/reportPresentation'
+
 definePageMeta({ middleware: ['auth', 'lgu'] })
 useHead({ title: 'Passenger Reports | PAMANA' })
 
@@ -75,7 +77,7 @@ onMounted(loadReports)
       <UCard v-if="loading" class="glass rounded-30 animate-pulse" :ui="{ root: 'ring-0 rounded-30' }"><div class="h-32" /></UCard>
       <UCard v-else-if="!filteredReports.length" class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }"><p class="py-8 text-center text-sm text-neutral-500">No passenger reports match this filter.</p></UCard>
       <UCard v-for="report in filteredReports" :key="report.documentId" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
-        <div class="flex flex-wrap items-center gap-2"><h2 class="text-sm font-semibold text-neutral-900">{{ label(report.report_type) }}</h2><span class="pill bg-amber-100 text-amber-800">{{ label(report.review_status || 'PENDING') }}</span></div>
+        <div class="flex flex-wrap items-center gap-2"><h2 class="text-sm font-semibold text-neutral-900">{{ formatReportTitle(report.report_type) }}</h2><span class="pill bg-amber-100 text-amber-800">{{ label(report.review_status || 'PENDING') }}</span></div>
         <p class="mt-2 text-sm text-neutral-700">{{ report.description || report.location_note || 'Legacy passenger observation' }}</p>
         <p class="mt-2 text-xs text-neutral-500">{{ contextLabel(report) }}</p>
         <p v-if="report.location_note" class="mt-1 text-xs text-neutral-500">Location note: {{ report.location_note }}</p>

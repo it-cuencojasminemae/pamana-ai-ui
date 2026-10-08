@@ -1,0 +1,373 @@
+{
+  "environment": "Isolated localhost fixture API; production frontend build",
+  "screens": [
+    {
+      "name": "desktop-passenger-dashboard",
+      "bodyScrollWidth": 1430,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1430,
+      "width": 1440
+    },
+    {
+      "name": "desktop-planner-empty",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [
+        "INITIALIZING"
+      ],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "desktop-planner-journey",
+      "bodyScrollWidth": 1430,
+      "height": 1000,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 1430,
+      "width": 1440
+    },
+    {
+      "name": "mobile-planner-journey",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-navigation",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-map-feature-panel",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-live-map",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-live-map-pin",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-passenger-reports",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "desktop-passenger-reports",
+      "bodyScrollWidth": 1430,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1430,
+      "width": 1440
+    },
+    {
+      "name": "authenticated-home-redirect",
+      "url": "http://localhost:3030/passenger"
+    },
+    {
+      "name": "desktop-live-map",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "desktop-login",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "desktop-register",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "mobile-register",
+      "bodyScrollWidth": 390,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 390,
+      "width": 390
+    },
+    {
+      "name": "mobile-landing",
+      "bodyScrollWidth": 390,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 390,
+      "width": 390
+    },
+    {
+      "name": "desktop-landing",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "mobile-login",
+      "bodyScrollWidth": 390,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 390,
+      "width": 390
+    },
+    {
+      "name": "mobile-login-error",
+      "bodyScrollWidth": 390,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 390,
+      "width": 390
+    },
+    {
+      "name": "mobile-driver-dashboard",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "desktop-driver-dashboard",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "desktop-driver-current-trip",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "mobile-driver-current-trip",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-driver-demand-map",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "INITIALIZING"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "desktop-driver-demand-map",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [
+        "INITIALIZING"
+      ],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "desktop-lgu-dashboard",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "mobile-lgu-dashboard",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-lgu-live-mobility",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [
+        "INITIALIZING"
+      ],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "desktop-lgu-live-mobility",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [
+        "INITIALIZING"
+      ],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "desktop-lgu-reports",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "mobile-lgu-reports",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-admin-directory",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "desktop-admin-directory",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "desktop-admin-details",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "desktop-admin-role-filter",
+      "bodyScrollWidth": 1440,
+      "height": 1000,
+      "mapStates": [],
+      "scrollWidth": 1440,
+      "width": 1440
+    },
+    {
+      "name": "mobile-admin-details",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "mobile-admin-invite-preview",
+      "bodyScrollWidth": 380,
+      "height": 844,
+      "mapStates": [],
+      "scrollWidth": 380,
+      "width": 390
+    },
+    {
+      "name": "canonical-url-restoration-and-swap",
+      "pinLat": 15.11742964899399,
+      "pinLng": 120.70240589138075,
+      "landmark": "csf-st-nicolas",
+      "passed": true
+    },
+    {
+      "name": "clear-pin-removes-query-and-disables-search",
+      "passed": true
+    },
+    {
+      "name": "outside-boundary-keyboard-pin-feedback",
+      "passed": true
+    },
+    {
+      "name": "canonical-url-refresh-restores-both-landmarks",
+      "passed": true
+    },
+    {
+      "name": "settled-lgu-refresh",
+      "passed": true
+    },
+    {
+      "name": "final-map-feature-click",
+      "bodyScrollWidth": 1309,
+      "height": 909,
+      "mapStates": [
+        "READY"
+      ],
+      "scrollWidth": 1309,
+      "width": 1309
+    },
+    {
+      "name": "map-feature-click-opens-details",
+      "passed": true
+    }
+  ],
+  "console": {
+    "errorCount": 2,
+    "expectedInvalidLoginErrorCount": 1,
+    "hydrationErrorCount": 1,
+    "hydrationObservation": "One generic mismatch during a rapid planner refresh followed by login redirect; not repeated on settled canonical planner and LGU refreshes. Cause not established.",
+    "basemapSpriteWarningsObserved": true
+  }
+}

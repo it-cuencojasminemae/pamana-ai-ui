@@ -3,6 +3,9 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "test:connected-research": "node --test scripts/test-connected-research.mjs",
+    "test:san-fernando": "node --test scripts/test-san-fernando-landmarks.mjs",
+    "test:local-pins-time": "node --test scripts/test-local-pins-travel-time.mjs",
     "test": "node scripts/run-portable-tests.mjs",
     "test:map-markers": "node --test scripts/test-map-markers.mjs",
     "test:integration:backend": "node --test scripts/test-integration-batch-a.mjs scripts/test-integration-access-control.mjs",

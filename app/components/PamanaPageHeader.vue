@@ -32,22 +32,24 @@ const roleMeta = computed(() => ({
 </script>
 
 <template>
-  <div class="mb-5 flex flex-wrap items-center gap-2">
-    <span class="pill normal-case" :class="roleMeta.classes">
-      <UIcon :name="roleMeta.icon" class="size-3.5" />
-      {{ roleMeta.label }}
-    </span>
+  <div class="mb-6 rounded-[28px] border border-neutral-900/6 bg-white/70 p-4 shadow-[0_22px_50px_-28px_rgba(15,23,42,0.25)] backdrop-blur-xl sm:p-5">
+    <div class="flex flex-wrap items-center gap-2 sm:gap-3">
+      <span class="pill normal-case shadow-sm" :class="roleMeta.classes">
+        <UIcon :name="roleMeta.icon" class="size-3.5" />
+        {{ roleMeta.label }}
+      </span>
 
-    <h1 class="font-display text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
-      {{ title }}
-    </h1>
+      <h1 class="font-display text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
+        {{ title }}
+      </h1>
 
-    <p v-if="subtitle" class="w-full text-sm text-neutral-500 sm:ml-auto sm:w-auto">
+      <div v-if="$slots.actions" class="w-full sm:ml-auto sm:w-auto">
+        <slot name="actions" />
+      </div>
+    </div>
+
+    <p v-if="subtitle" class="mt-3 text-sm text-neutral-600 sm:text-[15px]">
       {{ subtitle }}
     </p>
-
-    <div v-if="$slots.actions" class="ml-auto">
-      <slot name="actions" />
-    </div>
   </div>
 </template>

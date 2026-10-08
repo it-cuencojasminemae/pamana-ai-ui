@@ -1,0 +1,420 @@
+[
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 54 min of walking and road travel\n\nWalking\n8 min\nApproximate road travel\n47 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "PSU Mexico frontage",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via SM City Pampanga Main Gate Drop-off Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱41\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 64 min · simulated total journey time\n\nWalking: 519 m",
+    "steps": "1\n\nTake a jeep to SM City Pampanga Main Gate Drop-off Area.\n\nLook for: SM Pampanga\n\nBoard the SM Pampanga jeepney at PSU Mexico frontage.\n\nFare: ₱27\n\n2\n\nTransfer walk: walk to SM Pampanga jeepney terminal (392 m).\n\nResearch walking connection: confirm safe pedestrian access and the terminal entrance. Exact gate and crossing rules are not field verified.\n\nWalk west on SM Loading and Unloading Bay.\nBear right onto 3/Jose Abad Santos Avenue.\nTurn right onto SM City Pampanga Entrance Gate 1.\nTurn left onto SM City Pampanga Driveway.\nTurn left.\nTurn left.\nYour destination is on the left.\n3\n\nTransfer to a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke, JBL, Makabali, SM Downtown.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱14\n\n4\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-PSU-MEXICO-FRONT&toLandmark=csf-st-nicolas&from=PSU+Mexico+frontage&to=St.+Nicolas+College",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "A",
+    "size": "desktop",
+    "screenshot": "A-desktop.jpg",
+    "capturedAt": "2026-10-08T10:28:50.945Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 54 min of walking and road travel\n\nWalking\n8 min\nApproximate road travel\n47 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "PSU Mexico frontage",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via SM City Pampanga Main Gate Drop-off Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱41\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 64 min · simulated total journey time\n\nWalking: 519 m",
+    "steps": "1\n\nTake a jeep to SM City Pampanga Main Gate Drop-off Area.\n\nLook for: SM Pampanga\n\nBoard the SM Pampanga jeepney at PSU Mexico frontage.\n\nFare: ₱27\n\n2\n\nTransfer walk: walk to SM Pampanga jeepney terminal (392 m).\n\nResearch walking connection: confirm safe pedestrian access and the terminal entrance. Exact gate and crossing rules are not field verified.\n\nWalk west on SM Loading and Unloading Bay.\nBear right onto 3/Jose Abad Santos Avenue.\nTurn right onto SM City Pampanga Entrance Gate 1.\nTurn left onto SM City Pampanga Driveway.\nTurn left.\nTurn left.\nYour destination is on the left.\n3\n\nTransfer to a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke, JBL, Makabali, SM Downtown.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱14\n\n4\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-PSU-MEXICO-FRONT&toLandmark=csf-st-nicolas&from=PSU+Mexico+frontage&to=St.+Nicolas+College",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "A",
+    "size": "mobile",
+    "screenshot": "A-mobile.jpg",
+    "capturedAt": "2026-10-08T10:28:52.536Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 34 min of walking and road travel\n\nWalking\n3 min\nApproximate road travel\n31 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "Pinned location (15.117800, 120.702900)",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via Mexico Bayan – Sta. Monica Parish Church Transfer Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱35\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 50 min · simulated total journey time\n\nWalking: 218 m",
+    "steps": "1\n\nWalking access: walk to San Juan Jeepney Terminal (91 m).\n\nWalk southwest on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.\n2\n\nTake a jeep to Mexico Bayan – Sta. Monica Parish Church Transfer Area.\n\nLook for: Mexico Bayan\n\nCheck the signboard: Mexico Bayan.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱19\n\n3\n\nTransfer to a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱16\n\n4\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromPinLat=15.1178&fromPinLng=120.7029&toLandmark=csf-st-nicolas&from=Pinned+location+(15.117800,+120.702900)&to=St.+Nicolas+College",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "B",
+    "size": "desktop",
+    "screenshot": "B-desktop.jpg",
+    "capturedAt": "2026-10-08T10:29:13.334Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 34 min of walking and road travel\n\nWalking\n3 min\nApproximate road travel\n31 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "Pinned location (15.117800, 120.702900)",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via Mexico Bayan – Sta. Monica Parish Church Transfer Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱35\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 50 min · simulated total journey time\n\nWalking: 218 m",
+    "steps": "1\n\nWalking access: walk to San Juan Jeepney Terminal (91 m).\n\nWalk southwest on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.\n2\n\nTake a jeep to Mexico Bayan – Sta. Monica Parish Church Transfer Area.\n\nLook for: Mexico Bayan\n\nCheck the signboard: Mexico Bayan.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱19\n\n3\n\nTransfer to a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱16\n\n4\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromPinLat=15.1178&fromPinLng=120.7029&toLandmark=csf-st-nicolas&from=Pinned+location+(15.117800,+120.702900)&to=St.+Nicolas+College",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "B",
+    "size": "mobile",
+    "screenshot": "B-mobile.jpg",
+    "capturedAt": "2026-10-08T10:29:14.781Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 33 min of walking and road travel\n\nWalking\n2 min\nApproximate road travel\n31 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "San Juan Jeepney Terminal",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via Mexico Bayan – Sta. Monica Parish Church Transfer Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱35\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 48 min · simulated total journey time\n\nWalking: 127 m",
+    "steps": "1\n\nTake a jeep to Mexico Bayan – Sta. Monica Parish Church Transfer Area.\n\nLook for: Mexico Bayan\n\nCheck the signboard: Mexico Bayan.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱19\n\n2\n\nTransfer to a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱16\n\n3\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&toLandmark=csf-st-nicolas&from=San+Juan+Jeepney+Terminal&to=St.+Nicolas+College",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "C",
+    "size": "desktop",
+    "screenshot": "C-desktop.jpg",
+    "capturedAt": "2026-10-08T10:29:18.510Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 33 min of walking and road travel\n\nWalking\n2 min\nApproximate road travel\n31 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "San Juan Jeepney Terminal",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via Mexico Bayan – Sta. Monica Parish Church Transfer Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱35\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 48 min · simulated total journey time\n\nWalking: 127 m",
+    "steps": "1\n\nTake a jeep to Mexico Bayan – Sta. Monica Parish Church Transfer Area.\n\nLook for: Mexico Bayan\n\nCheck the signboard: Mexico Bayan.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱19\n\n2\n\nTransfer to a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱16\n\n3\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&toLandmark=csf-st-nicolas&from=San+Juan+Jeepney+Terminal&to=St.+Nicolas+College",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "C",
+    "size": "mobile",
+    "screenshot": "C-mobile.jpg",
+    "capturedAt": "2026-10-08T10:29:19.970Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 17 min of walking and road travel\n\nWalking\n2 min\nApproximate road travel\n15 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "Mexico Bayan / Sta. Monica transfer",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nDirect Jeep to St. Nicolas roadside alighting\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\n\nEstimated fare\n\n₱16\n\nTransfers\n\n0 Transfers\n\nEst. wait: 0–8 min\nService available\n\nDemo: 23 min · simulated total journey time\n\nWalking: 127 m",
+    "steps": "1\n\nTake a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱16\n\n2\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER&toLandmark=csf-st-nicolas&from=Mexico+Bayan+/+Sta.+Monica+transfer&to=St.+Nicolas+College",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "D",
+    "size": "desktop",
+    "screenshot": "D-desktop.jpg",
+    "capturedAt": "2026-10-08T10:29:22.938Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 17 min of walking and road travel\n\nWalking\n2 min\nApproximate road travel\n15 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "Mexico Bayan / Sta. Monica transfer",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nDirect Jeep to St. Nicolas roadside alighting\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\n\nEstimated fare\n\n₱16\n\nTransfers\n\n0 Transfers\n\nEst. wait: 0–8 min\nService available\n\nDemo: 23 min · simulated total journey time\n\nWalking: 127 m",
+    "steps": "1\n\nTake a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱16\n\n2\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-MEXICO-BAYAN-STA-MONICA-TRANSFER&toLandmark=csf-st-nicolas&from=Mexico+Bayan+/+Sta.+Monica+transfer&to=St.+Nicolas+College",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "D",
+    "size": "mobile",
+    "screenshot": "D-mobile.jpg",
+    "capturedAt": "2026-10-08T10:29:24.421Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 27 min of walking and road travel\n\nWalking\n8 min\nApproximate road travel\n19 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "SM Pampanga main gate drop-off",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nDirect Jeep to St. Nicolas roadside alighting\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\n\nEstimated fare\n\n₱14\n\nTransfers\n\n0 Transfers\n\nEst. wait: 0–8 min\nService available\n\nDemo: 24 min · simulated total journey time\n\nWalking: 519 m",
+    "steps": "1\n\nWalking access: walk to SM Pampanga jeepney terminal (392 m).\n\nWalk west on SM Loading and Unloading Bay.\nBear right onto 3/Jose Abad Santos Avenue.\nTurn right onto SM City Pampanga Entrance Gate 1.\nTurn left onto SM City Pampanga Driveway.\nTurn left.\nTurn left.\nYour destination is on the left.\n2\n\nTake a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke, JBL, Makabali, SM Downtown.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱14\n\n3\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF&toLandmark=csf-st-nicolas&from=SM+Pampanga+main+gate+drop-off&to=St.+Nicolas+College",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "E",
+    "size": "desktop",
+    "screenshot": "E-desktop.jpg",
+    "capturedAt": "2026-10-08T10:29:39.275Z"
+  },
+  {
+    "destination": "St. Nicolas College",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 27 min of walking and road travel\n\nWalking\n8 min\nApproximate road travel\n19 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "SM Pampanga main gate drop-off",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nDirect Jeep to St. Nicolas roadside alighting\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\n\nEstimated fare\n\n₱14\n\nTransfers\n\n0 Transfers\n\nEst. wait: 0–8 min\nService available\n\nDemo: 24 min · simulated total journey time\n\nWalking: 519 m",
+    "steps": "1\n\nWalking access: walk to SM Pampanga jeepney terminal (392 m).\n\nWalk west on SM Loading and Unloading Bay.\nBear right onto 3/Jose Abad Santos Avenue.\nTurn right onto SM City Pampanga Entrance Gate 1.\nTurn left onto SM City Pampanga Driveway.\nTurn left.\nTurn left.\nYour destination is on the left.\n2\n\nTake a jeep to St. Nicolas roadside alighting.\n\nLook for: Palengke\n\nCheck the signboard: Palengke, JBL, Makabali, SM Downtown.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱14\n\n3\n\nFinal walk: walk to St. Nicolas College (127 m).\n\nWalk northeast on 3/Jose Abad Santos Avenue.\nTurn left.\nTurn left.\nYour destination is on the left.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF&toLandmark=csf-st-nicolas&from=SM+Pampanga+main+gate+drop-off&to=St.+Nicolas+College",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "E",
+    "size": "mobile",
+    "screenshot": "E-mobile.jpg",
+    "capturedAt": "2026-10-08T10:29:40.708Z"
+  },
+  {
+    "destination": "SM Downtown",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nOnly part of this journey can be estimated.\n\nWalking\n8 min\nKnown road travel sections\nUnavailable\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "SM Pampanga main gate drop-off",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nDirect Jeep to Palengke / SM Downtown user-reported drop-off\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\n\nEstimated fare\n\n₱18\n\nTransfers\n\n0 Transfers\n\nEst. wait: 0–8 min\nService available\n\nDemo: 33 min · simulated total journey time\n\nWalking: 515 m",
+    "steps": "1\n\nWalking access: walk to SM Pampanga jeepney terminal (392 m).\n\nWalk west on SM Loading and Unloading Bay.\nBear right onto 3/Jose Abad Santos Avenue.\nTurn right onto SM City Pampanga Entrance Gate 1.\nTurn left onto SM City Pampanga Driveway.\nTurn left.\nTurn left.\nYour destination is on the left.\n2\n\nTake a jeep to Palengke / SM Downtown user-reported drop-off.\n\nLook for: Palengke\n\nCheck the signboard: Palengke, JBL, Makabali, SM Downtown.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱18\n\n3\n\nFinal walk: walk to SM Downtown (123 m).\n\nWalk southeast on B. Mendoza Street.\nTurn right onto V. Tiomico Street.\nTurn left.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF&toLandmark=csf-sm-downtown&from=SM+Pampanga+main+gate+drop-off&to=SM+Downtown",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "F",
+    "size": "desktop",
+    "screenshot": "F-desktop.jpg",
+    "capturedAt": "2026-10-08T10:29:45.424Z"
+  },
+  {
+    "destination": "SM Downtown",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nOnly part of this journey can be estimated.\n\nWalking\n8 min\nKnown road travel sections\nUnavailable\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "SM Pampanga main gate drop-off",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nDirect Jeep to Palengke / SM Downtown user-reported drop-off\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\n\nEstimated fare\n\n₱18\n\nTransfers\n\n0 Transfers\n\nEst. wait: 0–8 min\nService available\n\nDemo: 33 min · simulated total journey time\n\nWalking: 515 m",
+    "steps": "1\n\nWalking access: walk to SM Pampanga jeepney terminal (392 m).\n\nWalk west on SM Loading and Unloading Bay.\nBear right onto 3/Jose Abad Santos Avenue.\nTurn right onto SM City Pampanga Entrance Gate 1.\nTurn left onto SM City Pampanga Driveway.\nTurn left.\nTurn left.\nYour destination is on the left.\n2\n\nTake a jeep to Palengke / SM Downtown user-reported drop-off.\n\nLook for: Palengke\n\nCheck the signboard: Palengke, JBL, Makabali, SM Downtown.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱18\n\n3\n\nFinal walk: walk to SM Downtown (123 m).\n\nWalk southeast on B. Mendoza Street.\nTurn right onto V. Tiomico Street.\nTurn left.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=research-reference-RCH-SM-PAMPANGA-MAIN-GATE-DROPOFF&toLandmark=csf-sm-downtown&from=SM+Pampanga+main+gate+drop-off&to=SM+Downtown",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "F",
+    "size": "mobile",
+    "screenshot": "F-mobile.jpg",
+    "capturedAt": "2026-10-08T10:29:46.906Z"
+  },
+  {
+    "destination": "San Juan Jeepney Terminal",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 71 min of walking and road travel\n\nWalking\n22 min\nApproximate road travel\n49 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "SM Downtown",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nJeep + Jeep via Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱42\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 82 min · simulated total journey time\n\nWalking: 1488 m",
+    "steps": "1\n\nWalking access: walk to City Proper return loading area (102 m).\n\nWalk northwest.\nTurn right onto V. Tiomico Street.\nYou have arrived at your destination.\n2\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Robinsons\n\nCheck the signboard: Robinsons.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱14\n\n3\n\nTransfer to a jeep to Pampanga State University Mexico Campus – Front Waiting Area.\n\nLook for: SAN JUAN\n\nBoard a SAN JUAN jeepney at Robinsons Starmills Arayat Gate.\n\nFare: ₱28\n\n4\n\nFinal walk: walk to San Juan Jeepney Terminal (1386 m).\n\nWalk south on Mexico-Arayat Road.\nTurn right to stay on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=csf-sm-downtown&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=SM+Downtown&to=San+Juan+Jeepney+Terminal",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "G",
+    "size": "desktop",
+    "screenshot": "G-desktop.jpg",
+    "capturedAt": "2026-10-08T10:29:51.094Z"
+  },
+  {
+    "destination": "San Juan Jeepney Terminal",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nAbout 71 min of walking and road travel\n\nWalking\n22 min\nApproximate road travel\n49 min\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "SM Downtown",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nJeep + Jeep via Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱42\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 82 min · simulated total journey time\n\nWalking: 1488 m",
+    "steps": "1\n\nWalking access: walk to City Proper return loading area (102 m).\n\nWalk northwest.\nTurn right onto V. Tiomico Street.\nYou have arrived at your destination.\n2\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Robinsons\n\nCheck the signboard: Robinsons.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\n\nEstimated fare: ₱14\n\n3\n\nTransfer to a jeep to Pampanga State University Mexico Campus – Front Waiting Area.\n\nLook for: SAN JUAN\n\nBoard a SAN JUAN jeepney at Robinsons Starmills Arayat Gate.\n\nFare: ₱28\n\n4\n\nFinal walk: walk to San Juan Jeepney Terminal (1386 m).\n\nWalk south on Mexico-Arayat Road.\nTurn right to stay on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=csf-sm-downtown&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=SM+Downtown&to=San+Juan+Jeepney+Terminal",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "G",
+    "size": "mobile",
+    "screenshot": "G-mobile.jpg",
+    "capturedAt": "2026-10-08T10:29:52.518Z"
+  },
+  {
+    "destination": "San Juan Jeepney Terminal",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nOnly part of this journey can be estimated.\n\nWalking\n23 min\nKnown road travel sections\n30 min · 1 of 2 rides\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "Victory Liner Bus Terminal",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱42\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 76 min · simulated total journey time\n\nWalking: 1517 m",
+    "steps": "1\n\nWalking access: walk to Roadside boarding point (131 m).\n\nWalk northeast.\nTurn left.\nTurn right onto 3/Jose Abad Santos Avenue.\nYou have arrived at your destination.\n2\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Robinsons\n\nCheck the signboard: Robinsons.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\nUse this research corridor boarding location only after confirming the signboard and boarding side with the driver.\n\nEstimated fare: ₱14\n\n3\n\nTransfer to a jeep to Pampanga State University Mexico Campus – Front Waiting Area.\n\nLook for: SAN JUAN\n\nBoard a SAN JUAN jeepney at Robinsons Starmills Arayat Gate.\n\nFare: ₱28\n\n4\n\nFinal walk: walk to San Juan Jeepney Terminal (1386 m).\n\nWalk south on Mexico-Arayat Road.\nTurn right to stay on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=csf-victory-liner&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=Victory+Liner+Bus+Terminal&to=San+Juan+Jeepney+Terminal",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "H",
+    "size": "desktop",
+    "screenshot": "H-desktop.jpg",
+    "capturedAt": "2026-10-08T10:30:24.344Z"
+  },
+  {
+    "destination": "San Juan Jeepney Terminal",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nOnly part of this journey can be estimated.\n\nWalking\n23 min\nKnown road travel sections\n30 min · 1 of 2 rides\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "Victory Liner Bus Terminal",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱42\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 76 min · simulated total journey time\n\nWalking: 1517 m",
+    "steps": "1\n\nWalking access: walk to Roadside boarding point (131 m).\n\nWalk northeast.\nTurn left.\nTurn right onto 3/Jose Abad Santos Avenue.\nYou have arrived at your destination.\n2\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Robinsons\n\nCheck the signboard: Robinsons.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\nUse this research corridor boarding location only after confirming the signboard and boarding side with the driver.\n\nEstimated fare: ₱14\n\n3\n\nTransfer to a jeep to Pampanga State University Mexico Campus – Front Waiting Area.\n\nLook for: SAN JUAN\n\nBoard a SAN JUAN jeepney at Robinsons Starmills Arayat Gate.\n\nFare: ₱28\n\n4\n\nFinal walk: walk to San Juan Jeepney Terminal (1386 m).\n\nWalk south on Mexico-Arayat Road.\nTurn right to stay on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=csf-victory-liner&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=Victory+Liner+Bus+Terminal&to=San+Juan+Jeepney+Terminal",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "H",
+    "size": "mobile",
+    "screenshot": "H-mobile.jpg",
+    "capturedAt": "2026-10-08T10:30:25.774Z"
+  },
+  {
+    "destination": "San Juan Jeepney Terminal",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nOnly part of this journey can be estimated.\n\nWalking\n21 min\nKnown road travel sections\n30 min · 1 of 2 rides\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "McDonald's",
+    "overflow": false,
+    "selected": "OPTION B\nSelected\nFASTEST\nMOST RELIABLE\nJeep + Jeep via Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱42\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 73 min · simulated total journey time\n\nWalking: 1386 m",
+    "steps": "1\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Robinsons\n\nCheck the signboard: Robinsons.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\nUse this research corridor boarding location only after confirming the signboard and boarding side with the driver.\n\nEstimated fare: ₱14\n\n2\n\nTransfer to a jeep to Pampanga State University Mexico Campus – Front Waiting Area.\n\nLook for: SAN JUAN\n\nBoard a SAN JUAN jeepney at Robinsons Starmills Arayat Gate.\n\nFare: ₱28\n\n3\n\nFinal walk: walk to San Juan Jeepney Terminal (1386 m).\n\nWalk south on Mexico-Arayat Road.\nTurn right to stay on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=csf-mcdonalds&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=McDonald%27s&to=San+Juan+Jeepney+Terminal",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "I",
+    "size": "desktop",
+    "screenshot": "I-desktop.jpg",
+    "capturedAt": "2026-10-08T10:30:30.026Z"
+  },
+  {
+    "destination": "San Juan Jeepney Terminal",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nOnly part of this journey can be estimated.\n\nWalking\n21 min\nKnown road travel sections\n30 min · 1 of 2 rides\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "McDonald's",
+    "overflow": false,
+    "selected": "OPTION B\nSelected\nFASTEST\nMOST RELIABLE\nJeep + Jeep via Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱42\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 73 min · simulated total journey time\n\nWalking: 1386 m",
+    "steps": "1\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Robinsons\n\nCheck the signboard: Robinsons.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\nUse this research corridor boarding location only after confirming the signboard and boarding side with the driver.\n\nEstimated fare: ₱14\n\n2\n\nTransfer to a jeep to Pampanga State University Mexico Campus – Front Waiting Area.\n\nLook for: SAN JUAN\n\nBoard a SAN JUAN jeepney at Robinsons Starmills Arayat Gate.\n\nFare: ₱28\n\n3\n\nFinal walk: walk to San Juan Jeepney Terminal (1386 m).\n\nWalk south on Mexico-Arayat Road.\nTurn right to stay on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=csf-mcdonalds&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=McDonald%27s&to=San+Juan+Jeepney+Terminal",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "I",
+    "size": "mobile",
+    "screenshot": "I-mobile.jpg",
+    "capturedAt": "2026-10-08T10:30:31.434Z"
+  },
+  {
+    "destination": "Robinsons Starmills – Arayat Gate Return Loading Area",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nTravel time is currently unavailable. Your route instructions and fares remain available.",
+    "origin": "McDonald's",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFEWEST TRANSFERS\nDirect Jeep to Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\n\nEstimated fare\n\n₱14\n\nTransfers\n\n0 Transfers\n\nEst. wait: 0–15 min\nService available\n\nDemo: 15 min · simulated total journey time\n\nWalking: 0 m",
+    "steps": "1\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Arayat\n\nCheck the signboard: Arayat.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\nUse this research corridor boarding location only after confirming the signboard and boarding side with the driver.\n\nEstimated fare: ₱14",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=csf-mcdonalds&toLandmark=research-reference-RCH-ROB-STARMILLS-ARAYAT-GATE-LOAD&from=McDonald%27s&to=Robinsons+Starmills+%E2%80%93+Arayat+Gate+Return+Loading+Area",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "J",
+    "size": "desktop",
+    "screenshot": "J-desktop.jpg",
+    "capturedAt": "2026-10-08T10:31:21.778Z"
+  },
+  {
+    "destination": "Robinsons Starmills – Arayat Gate Return Loading Area",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nTravel time is currently unavailable. Your route instructions and fares remain available.",
+    "origin": "McDonald's",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFEWEST TRANSFERS\nDirect Jeep to Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\n\nEstimated fare\n\n₱14\n\nTransfers\n\n0 Transfers\n\nEst. wait: 0–15 min\nService available\n\nDemo: 15 min · simulated total journey time\n\nWalking: 0 m",
+    "steps": "1\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Arayat\n\nCheck the signboard: Arayat.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\nUse this research corridor boarding location only after confirming the signboard and boarding side with the driver.\n\nEstimated fare: ₱14",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromLandmark=csf-mcdonalds&toLandmark=research-reference-RCH-ROB-STARMILLS-ARAYAT-GATE-LOAD&from=McDonald%27s&to=Robinsons+Starmills+%E2%80%93+Arayat+Gate+Return+Loading+Area",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "J",
+    "size": "mobile",
+    "screenshot": "J-mobile.jpg",
+    "capturedAt": "2026-10-08T10:31:23.222Z"
+  },
+  {
+    "destination": "San Juan Jeepney Terminal",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nOnly part of this journey can be estimated.\n\nWalking\n23 min\nKnown road travel sections\n30 min · 1 of 2 rides\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "Pinned location (15.039400, 120.683200)",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱42\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 76 min · simulated total journey time\n\nWalking: 1531 m",
+    "steps": "1\n\nWalking access: walk to Roadside boarding point (145 m).\n\nWalk southwest.\nTurn right.\nTurn right onto 3/Jose Abad Santos Avenue.\nYou have arrived at your destination.\n2\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Robinsons\n\nCheck the signboard: Robinsons.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\nUse this research corridor boarding location only after confirming the signboard and boarding side with the driver.\n\nEstimated fare: ₱14\n\n3\n\nTransfer to a jeep to Pampanga State University Mexico Campus – Front Waiting Area.\n\nLook for: SAN JUAN\n\nBoard a SAN JUAN jeepney at Robinsons Starmills Arayat Gate.\n\nFare: ₱28\n\n4\n\nFinal walk: walk to San Juan Jeepney Terminal (1386 m).\n\nWalk south on Mexico-Arayat Road.\nTurn right to stay on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromPinLat=15.0394&fromPinLng=120.6832&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=Pinned+location+(15.039400,+120.683200)&to=San+Juan+Jeepney+Terminal",
+    "viewport": [
+      1309,
+      909
+    ],
+    "id": "K",
+    "size": "desktop",
+    "screenshot": "K-desktop.jpg",
+    "capturedAt": "2026-10-08T10:31:28.233Z"
+  },
+  {
+    "destination": "San Juan Jeepney Terminal",
+    "mapCanvas": 1,
+    "mode": "RESEARCH_PREVIEW",
+    "movingTime": "Approximate travel time\n\nOnly part of this journey can be estimated.\n\nWalking\n23 min\nKnown road travel sections\n30 min · 1 of 2 rides\n\nWaiting, boarding, and transfer delays not included.\n\nGeoapify road estimate. Frequent jeepney stops may add time. Uses approximated traffic, not live conditions or a jeepney arrival prediction.",
+    "origin": "Pinned location (15.039400, 120.683200)",
+    "overflow": false,
+    "selected": "OPTION A\nSelected\nRECOMMENDED\nCHEAPEST\nFASTEST\nFEWEST TRANSFERS\nMOST RELIABLE\nJeep + Jeep via Robinsons Starmills – Arayat Gate Return Loading Area\n\nRESEARCH PREVIEW — LOCAL ROUTE RESEARCH\n\nSIMULATED DEMO — waits, vehicle observations, duration and category comparisons\n\nJeep\nJeep\n\nEstimated fare\n\n₱42\n\nTransfers\n\n1 Transfer\n\nEst. wait: 0–8 min\nService available\n\nDemo: 76 min · simulated total journey time\n\nWalking: 1531 m",
+    "steps": "1\n\nWalking access: walk to Roadside boarding point (145 m).\n\nWalk southwest.\nTurn right.\nTurn right onto 3/Jose Abad Santos Avenue.\nYou have arrived at your destination.\n2\n\nTake a jeep to Robinsons Starmills – Arayat Gate Return Loading Area.\n\nLook for: Robinsons\n\nCheck the signboard: Robinsons.\nBefore boarding, ask the driver whether this service passes your intended landmark and confirm the boarding side and final drop-off.\nLocal research evidence; operating availability and formal termini are not field verified.\nUse this research corridor boarding location only after confirming the signboard and boarding side with the driver.\n\nEstimated fare: ₱14\n\n3\n\nTransfer to a jeep to Pampanga State University Mexico Campus – Front Waiting Area.\n\nLook for: SAN JUAN\n\nBoard a SAN JUAN jeepney at Robinsons Starmills Arayat Gate.\n\nFare: ₱28\n\n4\n\nFinal walk: walk to San Juan Jeepney Terminal (1386 m).\n\nWalk south on Mexico-Arayat Road.\nTurn right to stay on Mexico-Arayat Road.\nTurn right onto Centro III.\nYou have arrived at your destination.",
+    "url": "http://127.0.0.1:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=WALK_ONLY&fromPinLat=15.0394&fromPinLng=120.6832&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=Pinned+location+(15.039400,+120.683200)&to=San+Juan+Jeepney+Terminal",
+    "viewport": [
+      355,
+      767
+    ],
+    "id": "K",
+    "size": "mobile",
+    "screenshot": "K-mobile.jpg",
+    "capturedAt": "2026-10-08T10:31:29.747Z"
+  }
+]

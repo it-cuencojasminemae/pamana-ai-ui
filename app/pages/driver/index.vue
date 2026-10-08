@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { ActiveDriverTrip, DriverTripOptions } from '../../types/driverTrip'
-import { normalizedOccupancy, routeVariantLabel } from '../../services/driverTrip'
+import { routeVariantLabel } from '../../services/driverTrip'
 
 definePageMeta({ middleware: ['auth', 'driver'] })
 useHead({ title: 'Driver Dashboard | PAMANA' })
@@ -35,10 +35,6 @@ const variantItems = computed(() => (selectedRoute.value?.variants || []).map(va
   label: routeVariantLabel(variant),
   value: variant.documentId
 })))
-const vehicleCapacity = computed(() => activeTrip.value?.vehicle?.capacity ?? tripOptions.value?.vehicle?.capacity ?? 0)
-const occupancyCount = computed(() => activeTrip.value?.vehicle?.current_occupancy ?? 0)
-const occupancyPercent = computed(() => vehicleCapacity.value ? Math.round(occupancyCount.value / vehicleCapacity.value * 100) : 0)
-const occupancyStatus = computed(() => normalizedOccupancy(activeTrip.value?.vehicle?.occupancy_level))
 const emptyMessage = computed(() => {
   if (tripOptions.value?.emptyReason === 'NO_ASSIGNED_VEHICLE') return 'No vehicle is assigned to this driver account.'
   if (tripOptions.value?.emptyReason === 'NO_ASSIGNED_ROUTE') return 'The assigned vehicle has no route.'
@@ -85,7 +81,7 @@ async function startTrip() {
       method: 'POST',
       body: { data: { route_variant: selectedVariantDocumentId.value } }
     })
-    toast.add({ title: 'Trip started', description: 'GPS and occupancy updates are now available in Current Trip.', color: 'success' })
+    toast.add({ title: 'Trip started', description: 'GPS sharing and optional availability updates are now available in Current Trip.', color: 'success' })
     await loadActiveTrip()
   } catch (error: any) {
     toast.add({ title: 'Unable to start trip', description: error?.data?.error?.message || 'Please try again.', color: 'error' })
@@ -104,15 +100,22 @@ onMounted(async () => {
     <PamanaPageHeader title="Dashboard" role="driver" />
 
     <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div>
+      <div class="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_13rem] sm:items-center">
+        <div class="min-w-0">
           <h2 class="font-display text-xl font-bold capitalize text-neutral-900">Good morning, {{ firstName }}!</h2>
           <p class="mt-1 text-sm text-neutral-500">Have a safe and productive day.</p>
         </div>
-        <label class="pill normal-case bg-emerald-100 text-emerald-700 ring-1 ring-emerald-300/40">
-          <span class="badge-dot" :class="online ? 'bg-emerald-500' : 'bg-neutral-400'" />
-          {{ online ? 'Online · Available' : 'Offline' }}
-          <USwitch v-model="online" size="xs" color="success" />
+        <label
+          class="pill flex w-full items-center justify-between normal-case ring-1 sm:w-52"
+          :class="online
+            ? 'bg-emerald-100 text-emerald-800 ring-emerald-300/50'
+            : 'bg-neutral-100 text-neutral-700 ring-neutral-300/70'"
+        >
+          <span class="flex min-w-0 items-center gap-2 whitespace-nowrap">
+            <span class="badge-dot shrink-0" :class="online ? 'bg-emerald-500' : 'bg-neutral-400'" />
+            {{ online ? 'Online · Available' : 'Offline' }}
+          </span>
+          <USwitch v-model="online" size="xs" color="success" aria-label="Driver availability" />
         </label>
       </div>
     </UCard>
@@ -173,21 +176,17 @@ onMounted(async () => {
 
       <UCard class="glass glow-lime rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
         <div class="flex items-center justify-between gap-2">
-          <h2 class="font-display text-sm font-semibold text-neutral-900">Vehicle Occupancy</h2>
-          <span class="pill bg-neutral-100 text-neutral-600">{{ occupancyStatus }}</span>
+          <h2 class="font-display text-sm font-semibold text-neutral-900">Vehicle Availability</h2>
         </div>
-        <p class="stat-num mt-3 text-3xl text-neutral-900">{{ occupancyCount }}<span class="text-base font-medium text-neutral-400"> / {{ vehicleCapacity }} seats</span></p>
-        <p class="mt-1 text-xs text-neutral-400">{{ occupancyPercent }}% occupied</p>
-        <div class="mt-4 h-2 w-full overflow-hidden rounded-full bg-neutral-900/[0.06]">
-          <div class="h-full bg-gradient-to-r from-lime-400 to-amber-500" :style="{ width: `${occupancyPercent}%` }" />
-        </div>
+        <PamanaVehicleAvailability class="mt-3" :availability="activeTrip?.availability" driver />
+        <p class="mt-3 text-xs text-neutral-500">Report an optional status in Current Trip while safely stopped.</p>
       </UCard>
     </div>
 
     <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <NuxtLink v-for="action in quickActions" :key="action.label" :to="action.to || '/driver'" class="glass card-lift flex flex-col items-center gap-1.5 rounded-2xl p-4 text-xs font-semibold text-neutral-800">
+      <NuxtLink v-for="action in quickActions" :key="action.label" :to="action.to || '/driver'" class="glass card-lift flex min-h-[88px] flex-col items-center justify-center gap-1.5 rounded-2xl p-3 text-center text-xs font-semibold text-neutral-800 sm:p-4">
         <UIcon :name="action.icon" class="size-5" :class="action.classes" />
-        {{ action.label }}
+        <span class="leading-tight">{{ action.label }}</span>
       </NuxtLink>
     </div>
   </div>

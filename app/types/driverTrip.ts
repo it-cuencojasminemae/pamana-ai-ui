@@ -58,6 +58,7 @@ export interface DriverVariantStop {
 }
 
 export interface ActiveDriverTrip {
+  availability?: import('./vehicleAvailability').VehicleAvailability
   documentId: string
   direction: 'outbound' | 'inbound'
   data_mode: DataMode

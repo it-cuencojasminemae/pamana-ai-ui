@@ -1,0 +1,47 @@
+{
+  "branch": "feature/ui-refresh-integration",
+  "incomingCommit": "4cec1b0b3cc601b9e768fbb6956677289b4f25bb",
+  "changes": [
+    "app/assets/css/main.css",
+    "app/components/location/PamanaLocationSearch.vue",
+    "app/components/PamanaMapLibreMap.vue",
+    "app/components/PamanaPageHeader.vue",
+    "app/components/PamanaStatCard.vue",
+    "app/layouts/default.vue",
+    "app/pages/admin/users.vue",
+    "app/pages/driver/index.vue",
+    "app/pages/index.vue",
+    "app/pages/lgu/index.vue",
+    "app/pages/login.vue",
+    "app/pages/passenger/index.vue",
+    "app/pages/passenger/reports.vue",
+    "app/pages/passenger/trip-planner.vue",
+    "app/pages/register.vue",
+    "public/pamana-logo.png",
+    "scripts/test-batch-c-guide.mjs"
+  ],
+  "missing": [],
+  "backendChanged": [],
+  "preservedScripts": [
+    {
+      "file": "app/pages/login.vue",
+      "preserved": true
+    },
+    {
+      "file": "app/pages/register.vue",
+      "preserved": true
+    },
+    {
+      "file": "app/pages/driver/index.vue",
+      "preserved": true
+    },
+    {
+      "file": "app/pages/passenger/reports.vue",
+      "preserved": true
+    },
+    {
+      "file": "app/layouts/default.vue",
+      "preserved": true
+    }
+  ]
+}

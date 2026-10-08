@@ -2,17 +2,20 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import vm from 'node:vm'
 import test from 'node:test'
+import { validPinBoundary } from '../app/services/mapPins.ts'
 import { stripTypeScriptTypes } from 'node:module'
 import * as Vue from 'vue'
 import { renderToString } from '@vue/server-renderer'
 import { parse, compileScript, compileTemplate } from '@vue/compiler-sfc'
 import * as markerData from '../app/services/mapPresentation.ts'
+import * as passengerCamera from '../app/services/passengerMapCamera.ts'
 import * as disruptionLabels from '../app/services/disruption.ts'
 import { disruptionMapFeatures } from '../app/services/disruptionMapFeatures.ts'
 import { createMapPresentation } from '../app/services/mapLibrePresentation.ts'
 import { createDisruptionMapPresentation, DISRUPTION_SOURCE_ID } from '../app/services/disruptionMapPresentation.ts'
 import { createTransportNodePresentation, TRANSPORT_NODE_SOURCE_ID } from '../app/services/transportNodePresentation.ts'
 import { resolveMapConfiguration } from '../app/services/mapConfiguration.ts'
+import * as landmarkPresentation from '../app/services/landmarkMapPresentation.ts'
 
 const read = file => fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
 const synthetic = { documentId: 'fixture', title: 'Synthetic advisory', type: 'road_closure', description: 'Test only',
@@ -35,7 +38,10 @@ function component(file, overrides = {}, imports = {}) {
     useDemoVehicleFeed: () => ({ enabled: Vue.ref(false), snapshot: Vue.ref(null), loading: Vue.ref(false), error: Vue.ref(''), elapsedSeconds: Vue.ref(null), features: Vue.ref([]), refresh: async () => {}, cancel() {}, sample() {} }),
     require(name) {
       if (name === 'vue') return Vue
+      if (name.endsWith('/mapPins')) return { validPinBoundary }
+      if (name.endsWith('/landmarkMapPresentation')) return landmarkPresentation
       if (name.endsWith('/mapPresentation')) return markerData
+      if (name.endsWith('/passengerMapCamera')) return passengerCamera
       if (name.endsWith('/disruption')) return disruptionLabels
       if (name.endsWith('/disruptionMapFeatures')) return { disruptionMapFeatures }
       if (name === '~/utils/constants') return { PILOT_CORRIDOR: { name: 'Test corridor' } }
@@ -59,7 +65,7 @@ async function rendered(component, props = {}, slots = {}) {
 
 test('all remaining production consumers render MapLibre with preserved map dimensions and overlays', async () => {
   for (const [file, height, text] of [
-    ['driver/demand-map.vue', '420px', 'AI-predicted demand'],
+    ['driver/demand-map.vue', '420px', 'No demand data available'],
     ['lgu/index.vue', '160px', 'Command Center'],
     ['lgu/live-mobility.vue', '460px', 'Live API positions'],
     ['lgu/disruptions.vue', '340px', 'Record a structured disruption'],
@@ -70,7 +76,10 @@ test('all remaining production consumers render MapLibre with preserved map dime
     assert.equal(result.maps[0].height, height, file)
     if (file === 'lgu/index.vue') assert.equal(result.maps[0].compact, '')
     if (file !== 'lgu/index.vue') assert.ok(result.html.includes(text), file)
-    if (file === 'driver/demand-map.vue') assert.match(result.html, /simulated demo data/)
+    if (file === 'driver/demand-map.vue') {
+      assert.equal(result.maps[0].compact, '')
+      assert.doesNotMatch(result.html, /Demo Terminal A|Santo Tomas Stop|OGC Stop|Santos Cooperative|\d+ waiting|simulated demo data|AI-predicted demand|bg-red-400\/25|bg-amber-400\/25/)
+    }
   }
 })
 
@@ -97,7 +106,7 @@ test('vehicle metadata preserves REAL/SIMULATED, exact variant, occupancy and po
     assert.equal(feature.properties.semantic, 'vehicle')
     assert.equal(feature.properties.dataMode, mode)
     assert.ok(feature.properties.details.includes('Exact test variant'))
-    assert.ok(feature.properties.details.includes('Occupancy: UNKNOWN'))
+    assert.ok(feature.properties.details.includes(mode === 'SIMULATED' ? 'Simulated occupancy: UNKNOWN' : 'Availability Unknown'))
     assert.ok(feature.properties.details.some(text => text.includes('2026-01-01')))
   }
   assert.equal(markerData.legacyMarkerFeatures([{ ...vehicle('SIMULATED'), latitude: null, longitude: null }]).length, 0)
@@ -199,7 +208,7 @@ test('actual MapLibre lifecycle preserves polling camera, disruption selection, 
   const events = new Map(), updates = [], emitted = []
   class FakeMap {
     constructor() { instances++ }
-    addControl() {} getCanvas() { return { setAttribute() {} } }
+    addControl() {} getCanvas() { return { setAttribute() {}, addEventListener() {}, removeEventListener() {}, style: {} } }
     on(name, fn) { events.set(name, fn) } off(name) { events.delete(name) }
     getLayer() { return true } queryRenderedFeatures() { return [{ properties: { featureId: 'disruption-fixture' } }] }
     remove() { removed++ } resize() { resized++ } getZoom() { return 12 } easeTo() { recentered++ }

@@ -1,0 +1,76 @@
+[
+  {
+    "case": "Mobile outbound layout",
+    "status": "PASS",
+    "viewport": "390x844",
+    "layout": {
+      "scrollWidth": 380,
+      "width": 390
+    },
+    "screenshot": "mobile-outbound-research.jpg"
+  },
+  {
+    "case": "San Fernando pin near Victory Liner to San Juan",
+    "status": "PASS",
+    "kind": "ACTUAL_PASSENGER_UI",
+    "url": "http://localhost:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=AUTO&fromPinLat=15.0394&fromPinLng=120.6832&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=Pinned+location+(15.039400,+120.683200)&to=San+Juan+Jeepney+Terminal",
+    "result": "2 inbound options; roadside access 145m, Robinsons 14 pesos + SAN JUAN 28 pesos = 42 pesos; egress 1386m; moving estimate partial (23min walking, 30min known road, 1 of 2 rides); no console errors",
+    "screenshot": "mobile-return-research.jpg"
+  },
+  {
+    "case": "Live Map initial San Juan focus",
+    "status": "PASS",
+    "screenshot": "desktop-live-san-juan.jpg"
+  },
+  {
+    "case": "Curated map icon selection",
+    "status": "PASS",
+    "result": "S&R map icon opens category and Plan from here / Plan to here actions without the landmark dropdown",
+    "screenshot": "desktop-landmark-actions.jpg"
+  },
+  {
+    "case": "Mobile landmark handoff and refresh",
+    "status": "PASS",
+    "url": "http://localhost:3000/passenger/trip-planner?toLandmark=csf-snr&planningMode=RESEARCH_PREVIEW&accessPreference=AUTO",
+    "result": "Canonical csf-snr restored; no display-label geocoding"
+  },
+  {
+    "case": "Immediate exact pin handoff after startup",
+    "status": "PASS",
+    "url": "http://localhost:3000/passenger/trip-planner?fromPinLat=15.0394&fromPinLng=120.6832&planningMode=RESEARCH_PREVIEW&accessPreference=AUTO",
+    "result": "15.0394,120.6832 preserved; preview and AUTO normalized before handoff link enabled"
+  },
+  {
+    "case": "Swap and clear exact pin",
+    "status": "PASS",
+    "result": "Full-precision pin moves to destination; empty origin label clears; clearing restores San Juan viewport",
+    "url": "http://localhost:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=AUTO&from="
+  },
+  {
+    "case": "Final outbound recheck after startup/swap fixes",
+    "status": "PASS",
+    "url": "http://localhost:3000/passenger/trip-planner?fromPinLat=15.117429648993976&fromPinLng=120.7024058913807&toLandmark=csf-st-nicolas&planningMode=RESEARCH_PREVIEW&accessPreference=AUTO&from=Pinned+location+(15.117430,+120.702406)&to=St.+Nicolas+College",
+    "screenshot": "mobile-outbound-final.jpg"
+  },
+  {
+    "case": "Final inbound recheck after startup/swap fixes",
+    "status": "PASS",
+    "url": "http://localhost:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=AUTO&fromPinLat=15.0394&fromPinLng=120.6832&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=Pinned+location+(15.039400,+120.683200)&to=San+Juan+Jeepney+Terminal",
+    "result": "2 options; 14 + 28 = PHP42; 1531m walking; partial Geoapify estimate correctly identifies 1 of 2 rides",
+    "screenshot": "desktop-return-final.jpg"
+  },
+  {
+    "case": "Final return refresh",
+    "status": "PASS",
+    "url": "http://localhost:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=AUTO&fromPinLat=15.0394&fromPinLng=120.6832&toLandmark=research-reference-RCH-SAN-JUAN-TERMINAL&from=Pinned+location+(15.039400,+120.683200)&to=San+Juan+Jeepney+Terminal",
+    "result": "Exact 15.0394,120.6832 pin and San Juan landmark ID restored; Research Preview/AUTO reauthorized; incompatible old results absent"
+  },
+  {
+    "case": "Final mobile San Juan pin replacement",
+    "status": "PASS",
+    "before": "http://localhost:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=AUTO&from=Pinned+location+%C2%B7+Zae+Oil&to=&fromPinLat=15.11742964899399&fromPinLng=120.70240589138075",
+    "after": "http://localhost:3000/passenger/trip-planner?planningMode=RESEARCH_PREVIEW&accessPreference=AUTO&from=Pinned+location+%C2%B7+Greg+Rose+Litsong+Manok&to=&fromPinLat=15.11846540115286&fromPinLng=120.70240589138075",
+    "result": "ArrowUp then Enter replaced origin latitude 15.11742964899399 with 15.11846540115286; labels may change while exact coordinates persist",
+    "screenshot": "mobile-pin-replacement-final.jpg"
+  }
+]

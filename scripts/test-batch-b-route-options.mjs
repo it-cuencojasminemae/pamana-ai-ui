@@ -43,6 +43,21 @@ function registerUi(app) {
 const renderCard = (journey, props = {}) => renderToString(registerUi(Vue.createSSRApp(Card, { journey, optionNumber: 1, ...props })))
 const renderDetails = journey => renderToString(registerUi(Vue.createSSRApp(Details, { journey })))
 
+test('walking instructions surround the existing ride steps in planner order without AI or extra fare', async () => {
+  const journey = structuredClone(direct)
+  const walk = (sequence, label, text) => ({ type: 'WALK', sequence, from: { label: 'Pinned location' }, to: { label },
+    distanceMeters: 200, durationSeconds: 180, instructions: [{ text }] })
+  journey.legs = [walk(0, 'the verified pickup', 'Turn left onto the pedestrian path.'), ...journey.legs, walk(2, 'your destination', 'Walk east along the sidewalk.')]
+  const before = JSON.stringify(journey)
+  const html = await renderDetails(journey)
+  assert.ok(html.indexOf('Turn left onto the pedestrian path.') < html.indexOf('Take a jeep'))
+  assert.ok(html.indexOf('Walk east along the sidewalk.') > html.indexOf('Take a jeep'))
+  assert.equal((html.match(/<strong>₱27<\/strong>/g) || []).length, 1)
+  assert.equal(JSON.stringify(journey), before)
+  journey.legs[0].instructions = []
+  assert.match(await renderDetails(journey), /Walking directions are unavailable/)
+})
+
 function planner(apiFetch) {
   const source = stripTypeScriptTypes(read('app/composables/useTripPlan.ts'))
     .replace(/^import .+$/gm, '').replace('export const useTripPlan', 'const useTripPlan')
@@ -201,8 +216,8 @@ test('responsive structure retains tap targets, wrapping cards and existing map 
   const card = read('app/components/journey/PamanaJourneyCard.vue'), page = read('app/pages/passenger/trip-planner.vue')
   assert.match(card, /w-full min-w-0 p-4/); assert.match(card, /grid-cols-2/); assert.match(card, /break-words/)
   assert.match(page, /lg:grid-cols-5/); assert.match(page, /min-h-12 min-w-0/)
-  assert.match(page, /:fit-key="mapFitKey"/); assert.match(page, /:nodes="mapPresentation.nodes"/)
-  assert.match(page, /if \(tripPlan.loading.value\) return/)
+  assert.match(page, /:fit-key="mapFitKey"/); assert.match(page, /:nodes="\[\.\.\.mapPresentation.nodes, \.\.\.researchMarkers\]"/)
+  assert.match(page, /if \(!pageReady.value \|\| tripPlan.loading.value\) return/)
   assert.match(page, /passengerCategory: 'Regular fare'/)
   assert.doesNotMatch(page.match(/async function findJourneys\(\)[\s\S]*?\n}/)?.[0] || '', /journeyExplanation\.explain/)
 })

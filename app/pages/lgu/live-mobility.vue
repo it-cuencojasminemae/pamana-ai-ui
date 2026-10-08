@@ -15,6 +15,7 @@ const cooperative = ref('All cooperatives')
 const route = ref('All routes')
 
 interface LiveVehicle {
+  availability?: import('../../types/vehicleAvailability').VehicleAvailability
   vehicle_id: number
   documentId: string
   plate_number: string
@@ -29,7 +30,8 @@ const vehicles = computed(() =>
     plate: vehicle.plate_number,
     speed: typeof vehicle.speed === 'number' && vehicle.speed > 0 ? `${vehicle.speed} km/h` : 'Stopped',
     status: typeof vehicle.speed === 'number' && vehicle.speed > 0 ? 'moving' : 'stopped',
-    dataMode: vehicle.data_mode === 'REAL' ? 'REAL' : 'SIMULATED'
+    dataMode: vehicle.data_mode === 'REAL' ? 'REAL' : 'SIMULATED',
+    availability: vehicle.availability
   }))
 )
 
@@ -112,12 +114,15 @@ onUnmounted(() => {
 
         <div class="mt-4 max-h-[390px] divide-y divide-neutral-900/5 overflow-y-auto pr-1">
           <div v-for="vehicle in vehicles" :key="vehicle.plate" class="flex items-center justify-between gap-3 py-3 first:pt-0">
+            <div class="min-w-0">
             <span class="flex items-center gap-2 text-sm font-medium text-neutral-700">
               <span class="flex size-8 items-center justify-center rounded-xl bg-teal-100 text-teal-700">
                 <UIcon name="i-lucide-bus-front" class="size-4" />
               </span>
               {{ vehicle.plate }}
             </span>
+            <PamanaVehicleAvailability class="mt-2" :availability="vehicle.availability" />
+            </div>
             <span class="text-right text-xs" :class="vehicle.status === 'stopped' ? 'text-amber-600' : 'text-neutral-400'">
               {{ vehicle.speed }}<br>{{ vehicle.dataMode }}
             </span>

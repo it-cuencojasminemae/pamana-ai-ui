@@ -2,6 +2,8 @@ import type { LineString, MultiLineString, Point, Polygon, MultiPolygon } from '
 import type { SelectedLocation } from './location'
 
 export type PassengerCategory = 'REGULAR' | 'STUDENT' | 'SENIOR' | 'PWD'
+export type PlanningMode = 'OPERATIONAL' | 'RESEARCH_PREVIEW'
+export type AccessPreference = 'AUTO' | 'WALK_ONLY' | 'FEEDER'
 export type TripPlanStatus = 'JOURNEYS_FOUND' | 'NO_ELIGIBLE_ACCESS_NODES' | 'NO_TRANSPORT_JOURNEY' | 'ROUTING_PROVIDER_UNAVAILABLE'
 export type KnowledgeStatus = 'KNOWN' | 'PARTIAL' | 'UNKNOWN' | 'NOT_APPLICABLE'
 export type FareStatus = KnowledgeStatus | 'FARE_DISTANCE_UNAVAILABLE'
@@ -25,10 +27,13 @@ export interface TripPlanPoint {
   lat: number
   lng: number
   label?: string
-  source?: 'USER_GPS' | 'GEOAPIFY' | null
+  source?: 'USER_GPS' | 'GEOAPIFY' | 'MAP_PIN' | 'PILOT_LANDMARK' | null
+  landmarkId?: string
 }
 
 export interface TripPlanRequest {
+  planningMode?: PlanningMode
+  accessPreference?: AccessPreference
   origin: TripPlanPoint
   destination: TripPlanPoint
   departureAt: string
@@ -36,6 +41,8 @@ export interface TripPlanRequest {
 }
 
 export interface JourneyNodeReference {
+  connector?: { temporary: boolean; role: string; sectionId: string; evidenceClass: string; direction: string; serviceLabel?: string; fieldBoardingSideVerified?: boolean }
+  nodeType?: string | null
   nodeId?: string | null
   nodeCode?: string | null
   name?: string | null
@@ -74,6 +81,7 @@ export interface JourneyService {
 }
 
 export interface JourneyAvailability {
+  evidenceClass?: 'SIMULATED'
   status: 'LIVE_ACTIVE' | 'SERVICE_EXPECTED' | 'LIMITED' | 'OUTSIDE_SERVICE' | 'UNKNOWN'
   wait: {
     status: 'SERVICE_INTERVAL_ONLY' | 'ESTIMATED_WINDOW' | 'UNKNOWN' | 'NOT_APPLICABLE'
@@ -95,6 +103,8 @@ interface JourneyLegBase {
 }
 
 export interface JourneyWalkLeg extends JourneyLegBase {
+  purpose?: 'ACCESS' | 'TRANSFER' | 'EGRESS'
+  connectionId?: string
   type: 'WALK'
   from: TripPlanPoint
   to: TripPlanPoint
@@ -117,13 +127,20 @@ export interface JourneyTransitLeg extends JourneyLegBase {
   alightAt: JourneyNodeReference | null
   intermediateNodes: JourneyNodeReference[]
   signboard: string | null
+  signboardAliases?: string[]
+  boardingInstructions?: string[]
   segmentDistanceMeters: number | null
-  roadDistanceSource?: 'STORED_ROUTE_STOP_DISTANCE' | 'STORED_ROAD_GEOMETRY' | null
-  durationSeconds: null
+  roadDistanceSource?: 'STORED_ROUTE_STOP_DISTANCE' | 'STORED_ROAD_GEOMETRY' | 'RESEARCH_DERIVED_GEOMETRY' | null
+  durationSeconds: number | null
+  evidenceClass?: 'USER_REPORTED' | 'VERIFIED_OPERATIONAL'
+  geometrySource?: 'RESEARCH_PREVIEW'
+  durationEvidenceClass?: 'SIMULATED'
   geometry: LineString | MultiLineString | null
 }
 
 export interface JourneyTransferLeg extends JourneyLegBase {
+  to?: JourneyNodeReference | null
+  connectionId?: string
   type: 'TRANSFER'
   at: JourneyNodeReference | null
   fromRouteVariantId: string | null
@@ -153,15 +170,18 @@ export interface PamanaJourney {
     warnings: string[]
   }
   durationSummary: {
-    status: 'PARTIAL' | 'UNKNOWN'
+    status: 'KNOWN' | 'PARTIAL' | 'UNKNOWN'
     knownWalkingDurationSeconds: number | null
-    totalJourneyDurationSeconds: null
+    totalJourneyDurationSeconds: number | null
+    evidenceClass?: 'SIMULATED'
   }
   warnings: JourneyWarning[]
   dataQuality: {
     planningEligible: boolean
     verificationStatuses: string[]
     dataModes: string[]
+    researchPreview?: boolean
+    evidenceClass?: string
   }
 }
 
@@ -176,13 +196,17 @@ export interface TripPlanResponse {
     generatedAt: string
     dataMode: 'REAL'
     maxJourneys: number
+    planningMode?: PlanningMode
+    pendingAccessConnections?: number
+    researchPreview?: boolean
+    evidenceClass?: string
   }
 }
 
-export type RouteOptionCategory = 'recommended' | 'cheapest' | 'fastest' | 'fewestTransfers'
+export type RouteOptionCategory = 'recommended' | 'cheapest' | 'fastest' | 'fewestTransfers' | 'mostReliable'
 export type JourneyRecommendations = Record<RouteOptionCategory, {
   journeyId: string | null
-  unavailableReason: 'NO_VALID_JOURNEY' | 'FARE_DATA_UNAVAILABLE' | 'TIME_DATA_UNAVAILABLE' | null
+  unavailableReason: 'NO_VALID_JOURNEY' | 'FARE_DATA_UNAVAILABLE' | 'TIME_DATA_UNAVAILABLE' | 'RELIABILITY_EVIDENCE_INSUFFICIENT' | null
 }>
 
 export type TripPlanClientError = 'INVALID_INPUT' | 'AUTH_REQUIRED' | 'PROVIDER_UNAVAILABLE' | 'SERVICE_UNAVAILABLE' | 'INVALID_RESPONSE' | 'CANCELLED'

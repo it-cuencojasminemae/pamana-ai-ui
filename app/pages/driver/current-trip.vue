@@ -4,7 +4,6 @@ import {
   DRIVER_GPS_PUBLISH_INTERVAL_MS,
   driverStopFeatures,
   driverVariantLines,
-  normalizedOccupancy,
   orderedVariantStops
 } from '../../services/driverTrip'
 
@@ -30,14 +29,12 @@ const publishingGps = ref(false)
 const gpsLastPublishedAt = ref<string | null>(null)
 const gpsPublishError = ref<string | null>(null)
 const activeTrip = ref<ActiveDriverTrip | null>(null)
-const occupancy = ref(0)
+const confirmingEnd = ref(false)
 let lastPublishStartedAt = 0
 
-const capacity = computed(() => activeTrip.value?.vehicle?.capacity || 0)
 const variantStops = computed(() => orderedVariantStops(activeTrip.value?.route_variant?.route_variant_stops))
 const mapNodes = computed(() => driverStopFeatures(variantStops.value))
 const mapLines = computed(() => driverVariantLines(activeTrip.value))
-const occupancyStatus = computed(() => normalizedOccupancy(activeTrip.value?.vehicle?.occupancy_level))
 const routeLabel = computed(() => {
   const trip = activeTrip.value
   if (!trip?.route_variant) return 'Directional route unavailable'
@@ -56,7 +53,6 @@ async function loadActiveTrip() {
   try {
     const response = await apiFetch<{ data: ActiveDriverTrip | null }>('/api/driver-active-trip')
     activeTrip.value = response.data
-    occupancy.value = activeTrip.value?.vehicle?.current_occupancy || 0
     if (activeTrip.value) startTracking()
   } catch {
     activeTrip.value = null
@@ -95,26 +91,8 @@ async function publishGps() {
 
 watch(observedAt, () => publishGps())
 
-async function changeOccupancy(amount: number) {
-  const vehicle = activeTrip.value?.vehicle
-  if (!vehicle || capacity.value < 1) return
-  const next = Math.min(capacity.value, Math.max(0, occupancy.value + amount))
-  try {
-    const response = await apiFetch<{ data: ActiveDriverTrip['vehicle']; meta?: { occupancy?: string } }>(`/api/vehicles/${vehicle.documentId}`, {
-      method: 'PUT',
-      body: { data: { current_occupancy: next } }
-    })
-    occupancy.value = next
-    if (activeTrip.value?.vehicle && response.data) {
-      activeTrip.value.vehicle.current_occupancy = response.data.current_occupancy
-      activeTrip.value.vehicle.occupancy_level = response.data.occupancy_level
-    }
-  } catch (error: any) {
-    toast.add({ title: 'Unable to update occupancy', description: error?.data?.error?.message || 'Please try again.', color: 'error' })
-  }
-}
-
 async function endTrip() {
+  if (ending.value) return
   if (!activeTrip.value) {
     toast.add({ title: 'No active trip found', description: 'Start a trip before trying to end one.', color: 'warning' })
     return
@@ -154,13 +132,13 @@ onBeforeUnmount(stopTracking)
       <UButton to="/driver" class="mt-5 rounded-full" icon="i-lucide-arrow-left">Driver dashboard</UButton>
     </div>
 
-    <div v-else class="grid gap-5 lg:grid-cols-3">
+    <div v-else class="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
       <PamanaMapPanel
         provider="maplibre"
-        class="lg:col-span-2"
+        class="driver-trip-map min-w-0 self-start"
         icon="i-lucide-navigation"
         label="Live driver navigation"
-        height="380px"
+        height="var(--driver-trip-map-height)"
         tone="emerald"
         :transport-nodes="mapNodes"
         :lines="mapLines"
@@ -173,9 +151,9 @@ onBeforeUnmount(stopTracking)
         </div>
       </PamanaMapPanel>
 
-      <div class="space-y-4">
+      <div class="min-w-0 space-y-4">
         <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
-          <div class="flex items-center justify-between gap-2">
+          <div class="flex flex-wrap items-center justify-between gap-2">
             <h2 class="font-display text-sm font-semibold text-neutral-900">{{ activeTrip.route_variant?.display_name || 'Directional trip' }}</h2>
             <div class="flex items-center gap-2">
               <span class="pill" :class="activeTrip.data_mode === 'SIMULATED' ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'">{{ activeTrip.data_mode }}</span>
@@ -195,22 +173,27 @@ onBeforeUnmount(stopTracking)
           <p v-else class="mt-4 text-sm text-neutral-500">No ordered stop sequence is available for this exact variant.</p>
         </UCard>
 
-        <UCard class="glass glow-lime rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
-          <div class="flex items-center justify-between gap-2">
-            <h2 class="font-display text-sm font-semibold text-neutral-900">Update occupancy</h2>
-            <span class="pill bg-neutral-100 text-neutral-600">{{ occupancyStatus }}</span>
-          </div>
-          <div class="mt-4 flex items-center justify-between gap-4">
-            <button type="button" class="btn-soft" aria-label="Remove one passenger" @click="changeOccupancy(-1)">− 1</button>
-            <p class="stat-num text-2xl text-neutral-900">{{ occupancy }} / {{ capacity }}</p>
-            <button type="button" class="btn-soft" aria-label="Add one passenger" @click="changeOccupancy(1)">+ 1</button>
-          </div>
-        </UCard>
+        <DriverPamanaAvailabilityControls :key="activeTrip.documentId" :trip-id="activeTrip.documentId" :availability="activeTrip.availability" :disabled="ending" @updated="activeTrip.availability = $event" />
 
-        <UButton block size="lg" color="error" icon="i-lucide-square" class="rounded-full font-semibold" :loading="ending" @click="endTrip">
+        <UButton v-if="!confirmingEnd" block size="lg" color="error" icon="i-lucide-square" class="min-h-12 rounded-full font-semibold" @click="confirmingEnd = true">
           End Trip
         </UButton>
+        <section v-else class="rounded-2xl border border-red-200 bg-red-50 p-4" aria-label="Confirm ending trip">
+          <p class="text-sm font-semibold text-neutral-900">End this trip?</p>
+          <p class="mt-1 text-xs text-neutral-600">GPS sharing for this trip will stop.</p>
+          <div class="mt-3 flex gap-2">
+            <UButton class="min-h-12 flex-1 justify-center rounded-xl" color="neutral" variant="soft" :disabled="ending" @click="confirmingEnd = false">Keep trip</UButton>
+            <UButton class="min-h-12 flex-1 justify-center rounded-xl" color="error" :loading="ending" :disabled="ending" @click="endTrip">End Trip</UButton>
+          </div>
+        </section>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.driver-trip-map { --driver-trip-map-height: 340px; }
+@media (min-width: 1024px) {
+  .driver-trip-map { --driver-trip-map-height: 560px; }
+}
+</style>

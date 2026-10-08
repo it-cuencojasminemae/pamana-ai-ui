@@ -17,8 +17,8 @@ export function buildTripPlanRequest(
   passengerCategory: PassengerCategory,
 ): TripPlanRequest {
   return {
-    origin: { lat: origin.lat, lng: origin.lng, label: origin.label, source: origin.source },
-    destination: { lat: destination.lat, lng: destination.lng, label: destination.label, source: destination.source },
+    origin: { lat: origin.lat, lng: origin.lng, label: origin.label, source: origin.source, ...(origin.source === 'PILOT_LANDMARK' ? { landmarkId: origin.landmarkId } : {}) },
+    destination: { lat: destination.lat, lng: destination.lng, label: destination.label, source: destination.source, ...(destination.source === 'PILOT_LANDMARK' ? { landmarkId: destination.landmarkId } : {}) },
     departureAt,
     passengerCategory,
   }
@@ -37,8 +37,8 @@ function providerFailure(error: unknown) {
   return candidate.data?.status === 'ROUTING_PROVIDER_UNAVAILABLE'
 }
 
-function validResponse(value: unknown): value is TripPlanResponse {
-  return validTripPlanResponse(value)
+function validResponse(value: unknown, request: TripPlanRequest): value is TripPlanResponse {
+  return validTripPlanResponse(value, request.planningMode || 'OPERATIONAL')
 }
 
 export async function fetchTripPlan(
@@ -51,8 +51,9 @@ export async function fetchTripPlan(
       method: 'POST',
       body: request,
       signal,
+      timeout: 12000,
     })
-    if (!validResponse(response)) return { ok: false, error: 'INVALID_RESPONSE' }
+    if (!validResponse(response, request)) return { ok: false, error: 'INVALID_RESPONSE' }
     return { ok: true, data: response }
   } catch (error: unknown) {
     if (signal?.aborted) return { ok: false, error: 'CANCELLED' }

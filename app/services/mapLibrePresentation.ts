@@ -28,7 +28,8 @@ export function markerImage(semantic: keyof typeof MAP_TOKENS, selected = false)
     ctx.strokeRect(19, 19, 26, 25); ctx.strokeRect(24, 24, 16, 10)
     path([[23, 44], [23, 49]]); path([[41, 44], [41, 49]])
     if (glyph === 'terminal') path([[14, 17], [32, 9], [50, 17]])
-  } else if (glyph === 'transfer') { path([[16, 25], [46, 25], [39, 18]]); path([[48, 39], [18, 39], [25, 46]]) }
+  } else if (glyph === 'roadside') { path([[22, 49], [22, 15], [44, 15], [44, 31], [22, 31]]); path([[30, 23], [36, 23]]); path([[16, 49], [45, 49]]) }
+  else if (glyph === 'transfer') { path([[16, 25], [46, 25], [39, 18]]); path([[48, 39], [18, 39], [25, 46]]) }
   else if (glyph === 'up' || glyph === 'down') { const d = glyph === 'up' ? -1 : 1; path([[32, 32 - d * 14], [32, 32 + d * 14]]); path([[22, 32 + d * 4], [32, 32 + d * 14], [42, 32 + d * 4]]) }
   else if (glyph === 'flag') { path([[23, 49], [23, 16], [45, 16], [40, 25], [45, 33], [23, 33]]) }
   else if (glyph === 'exit') { path([[28, 18], [18, 18], [18, 46], [28, 46]]); path([[27, 32], [47, 32], [39, 24]]); path([[47, 32], [39, 40]]) }
@@ -62,7 +63,7 @@ export function presentationLayers(): LayerSpecification[] {
   const point = ['==', ['geometry-type'], 'Point'] as any
   return [
     { id: LAYER_IDS[0]!, type: 'line', source: SOURCE_ID, filter: line, paint: { 'line-color': '#ffffff', 'line-width': 10, 'line-opacity': 0.9 } },
-    { id: LAYER_IDS[1]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['==', ['get', 'semantic'], 'transport-route']], paint: { 'line-color': MAP_TOKENS['transport-route'].color, 'line-width': 7 } },
+    { id: LAYER_IDS[1]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['==', ['get', 'semantic'], 'transport-route']], paint: { 'line-color': ['case', ['==', ['get', 'geometryClassification'], 'RESEARCH_TRANSIT_GEOMETRY'], '#b45309', MAP_TOKENS['transport-route'].color], 'line-width': 7 } },
     { id: LAYER_IDS[2]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['==', ['get', 'semantic'], 'approximate-road-path']], paint: { 'line-color': MAP_TOKENS['approximate-road-path'].color, 'line-width': 6 } },
     { id: LAYER_IDS[3]!, type: 'line', source: SOURCE_ID, filter: ['all', line, ['==', ['get', 'semantic'], 'walking-route']], paint: { 'line-color': MAP_TOKENS['walking-route'].color, 'line-width': 4, 'line-dasharray': [2, 2] } },
     ...markerLayers(SOURCE_ID, ['pamana-points', 'pamana-icons', 'pamana-selection'], point),
@@ -100,8 +101,9 @@ export function createMapPresentation(map: LibreMap, images: (semantic: keyof ty
     return Array.isArray(value) ? value.flatMap(positions) : []
   }
   function fit(additional: MapDisruptionFeature[] = [], includeVehicles = false) {
-    const coordinates = [...features, ...additional].filter(f => f.properties.semantic !== 'passenger' && (includeVehicles || f.properties.semantic !== 'vehicle'))
-      .flatMap(f => positions(f.geometry.coordinates))
+    const candidates = [...features, ...additional].filter(f => f.properties.semantic !== 'passenger' && (includeVehicles || f.properties.semantic !== 'vehicle'))
+    const journeyFeatures = candidates.filter(f => !f.properties.contextualReference)
+    const coordinates = (journeyFeatures.length ? journeyFeatures : candidates).flatMap(f => positions(f.geometry.coordinates))
     if (!coordinates.length) return
     const lngs = coordinates.map(p => p[0]!), lats = coordinates.map(p => p[1]!)
     map.fitBounds([[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]], { padding: 65, maxZoom: 16, duration: 500 })

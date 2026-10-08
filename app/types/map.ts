@@ -4,16 +4,17 @@ import type { DataMode, VerificationStatus } from './transportation'
 /** Presentation interchange only, NOT a journey response or routing decision model.
  * GeoJSON positions use [longitude, latitude]. Unknown coordinates produce no feature.
  */
-export type MapSemantic = 'passenger' | 'origin-location' | 'destination-location' | 'pickup' | 'dropoff' | 'stop' | 'transfer' | 'terminal'
+export type MapSemantic = 'passenger' | 'origin-location' | 'destination-location' | 'pickup' | 'roadside-pickup' | 'dropoff' | 'stop' | 'transfer' | 'terminal'
   | 'vehicle' | 'destination' | 'essential-service' | 'walking-route' | 'approximate-road-path' | 'transport-route' | 'disruption'
 export interface MapFeatureProperties {
+  availability?: import('./vehicleAvailability').VehicleAvailability
   [key: string]: unknown
   semantic: MapSemantic
   label: string
   source: 'PAMANA' | 'PAMANA_TRANSPORT_DB' | 'GEOAPIFY' | 'DEVICE'
   recordId?: string
   legId?: string
-  geometryClassification?: 'WALK' | 'APPROXIMATE_ROAD_PATH' | 'VERIFIED_TRANSIT_GEOMETRY'
+  geometryClassification?: 'WALK' | 'APPROXIMATE_ROAD_PATH' | 'VERIFIED_TRANSIT_GEOMETRY' | 'RESEARCH_TRANSIT_GEOMETRY'
   dataMode?: DataMode
   verificationStatus?: VerificationStatus
   planningEnabled?: boolean

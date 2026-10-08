@@ -1,6 +1,6 @@
 import type { Position } from 'geojson'
 import type { MapDisruptionFeature, MapLineFeature, MapPointFeature } from '../types/map.ts'
-import type { JourneyDisruptionWarning, JourneyLeg, JourneyTransitLeg, JourneyWalkLeg, PamanaJourney } from '../types/tripPlan.ts'
+import type { JourneyDisruptionWarning, JourneyLeg, JourneyNodeReference, JourneyTransitLeg, JourneyWalkLeg, PamanaJourney } from '../types/tripPlan.ts'
 import type { SelectedLocation } from '../types/location.ts'
 import { locationMapFeature } from './locationPresentation.ts'
 import { validPosition } from './mapPresentation.ts'
@@ -19,12 +19,16 @@ function geometryLines(leg: JourneyWalkLeg | JourneyTransitLeg): Position[][] {
   return []
 }
 
-function pointFeature(id: string, point: { lat?: number; lng?: number; label?: string }, semantic: 'pickup' | 'dropoff'): MapPointFeature[] {
+function pointFeature(id: string, point: JourneyNodeReference & { label?: string }, semantic: 'pickup' | 'dropoff'): MapPointFeature[] {
   if (!Number.isFinite(point.lat) || !Number.isFinite(point.lng) || !validPosition([point.lng, point.lat])) return []
+  const roadside = semantic === 'pickup' && point.connector?.temporary && point.connector.role === 'ACCESS'
   return [{
     type: 'Feature', id,
     geometry: { type: 'Point', coordinates: [point.lng as number, point.lat as number] },
-    properties: { semantic, label: point.label || (semantic === 'pickup' ? 'Boarding point' : 'Drop-off point'), source: 'PAMANA' },
+    properties: { semantic: roadside ? 'roadside-pickup' : semantic === 'pickup' && point.nodeType === 'TERMINAL' ? 'terminal' : semantic,
+      label: point.label || (semantic === 'pickup' ? 'Boarding point' : 'Drop-off point'), source: 'PAMANA',
+      ...(roadside ? { temporaryRoadside: true, serviceLabel: point.connector?.serviceLabel,
+        evidenceClass: 'USER_REPORTED', details: ['Jeepneys pass this corridor. Confirm a safe boarding position and the correct road side locally.'] } : {}) },
   }]
 }
 
@@ -41,10 +45,12 @@ export function journeyMapPresentation(
 
   const lines: MapLineFeature[] = []
   const walkLegs = journey.legs.filter((leg): leg is JourneyWalkLeg => leg.type === 'WALK')
-  const firstWalk = walkLegs[0]
-  const lastWalk = walkLegs[walkLegs.length - 1]
-  if (firstWalk) nodes.push(...pointFeature(`${journey.id}-pickup`, firstWalk.to, 'pickup'))
-  if (lastWalk) nodes.push(...pointFeature(`${journey.id}-dropoff`, lastWalk.from, 'dropoff'))
+  const firstTransit = journey.legs.findIndex(leg => leg.type === 'TRANSIT')
+  const lastTransit = journey.legs.findLastIndex(leg => leg.type === 'TRANSIT')
+  const firstWalk = walkLegs.find(leg => leg.purpose === 'ACCESS' || (!leg.purpose && journey.legs.indexOf(leg) < firstTransit))
+  const lastWalk = walkLegs.find(leg => leg.purpose === 'EGRESS' || (!leg.purpose && journey.legs.indexOf(leg) > lastTransit))
+  if (firstWalk && !(journey.legs[firstTransit] as JourneyTransitLeg | undefined)?.boardAt) nodes.push(...pointFeature(`${journey.id}-pickup`, firstWalk.to, 'pickup'))
+  if (lastWalk && !(journey.legs[lastTransit] as JourneyTransitLeg | undefined)?.alightAt) nodes.push(...pointFeature(`${journey.id}-dropoff`, lastWalk.from, 'dropoff'))
   journey.legs.filter((leg): leg is JourneyTransitLeg => leg.type === 'TRANSIT').forEach(leg => {
     if (leg.boardAt) nodes.push(...pointFeature(`${journey.id}-board-${leg.sequence}`, { ...leg.boardAt, label: leg.boardAt.name || 'Pickup' }, 'pickup'))
     if (leg.alightAt) nodes.push(...pointFeature(`${journey.id}-alight-${leg.sequence}`, { ...leg.alightAt, label: leg.alightAt.name || 'Drop-off' }, 'dropoff'))
@@ -63,7 +69,8 @@ export function journeyMapPresentation(
           label: leg.type === 'WALK' ? 'Walking connector' : `Ride to ${leg.alightAt?.name || 'the drop-off point'}`,
           source: leg.type === 'WALK' ? 'GEOAPIFY' : 'PAMANA',
           legId: `${leg.sequence}`,
-          geometryClassification: leg.type === 'WALK' ? 'WALK' : 'VERIFIED_TRANSIT_GEOMETRY',
+          geometryClassification: leg.type === 'WALK' ? 'WALK' : leg.geometrySource === 'RESEARCH_PREVIEW' ? 'RESEARCH_TRANSIT_GEOMETRY' : 'VERIFIED_TRANSIT_GEOMETRY',
+          evidenceClass: leg.type === 'WALK' ? 'PROVIDER_PEDESTRIAN_ROUTING' : leg.evidenceClass,
         },
       })
     })

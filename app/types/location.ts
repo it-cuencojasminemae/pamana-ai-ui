@@ -1,4 +1,4 @@
-export type LocationSource = 'GEOAPIFY' | 'USER_GPS'
+export type LocationSource = 'GEOAPIFY' | 'USER_GPS' | 'MAP_PIN' | 'PILOT_LANDMARK'
 
 /** A resolved geographic point. It is never a verified PAMANA transport node. */
 export interface SelectedLocation {
@@ -9,6 +9,7 @@ export interface SelectedLocation {
   lng: number
   placeId?: string
   category?: string
+  landmarkId?: string
   source: LocationSource
 }
 

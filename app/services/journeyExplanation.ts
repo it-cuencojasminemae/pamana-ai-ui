@@ -46,9 +46,10 @@ export function deterministicTripGuide(journey: PamanaJourney) {
 
 /** Defense in depth even if an older backend returns unvalidated provider text. */
 export function safeJourneyGuide(text: string, request: JourneyExplanationRequest) {
-  if (!text || text.length > 1200 || text.split(/\s+/).length > 120 || forbiddenText.test(text) || internalFields.test(text) || /[<>`]|https?:\/\//i.test(text)) return false
+  const threeRides = Array.isArray(request.journey.legs) && request.journey.legs.filter(leg => leg.type === 'TRANSIT').length === 3
+  if (!text || text.length > (threeRides ? 1800 : 1200) || text.split(/\s+/).length > (threeRides ? 180 : 120) || forbiddenText.test(text) || internalFields.test(text) || /[<>`]|https?:\/\//i.test(text)) return false
   const sentences = text.trim().replace(/\b(Sta|St|Dr|Mr|Mrs|Ms|Jr|Sr)\./gi, '$1').split(/[.!?]+(?:\s+|$)/).filter(Boolean)
-  if (sentences.length < 2 || sentences.length > 4) return false
+  if (sentences.length < 2 || sentences.length > (threeRides ? 6 : 4)) return false
   const journey = request.journey as { transferCount: number; legs: any[]; fareSummary: { totalStatus: string; totalFare: number | null; currency: string | null }; availabilitySummary?: { status: string } }
   const transit = journey.legs.filter(leg => leg.type === 'TRANSIT')
   if (transit.every(leg => !leg.availability?.wait) && /\b(?:minutes?|wait(?:ing)?\s+(?:time|for|\d)|arrives? (?:in|soon|shortly))\b/i.test(text)) return false

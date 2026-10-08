@@ -333,29 +333,24 @@ watch(
     >
       <!-- Desktop PAMANA logo -->
       <div
-        class="glow-lime flex h-28 items-center justify-center border-b border-neutral-900/10 px-5"
+        class="glow-lime flex h-24 shrink-0 items-center border-b border-neutral-900/10 px-4 py-3"
       >
         <NuxtLink
           :to="workspaceHome"
-          class="relative z-10 inline-flex flex-col items-center"
+          class="relative z-10 inline-flex w-full min-w-0 flex-col items-start"
         >
           <div
-            class="flex h-14 w-44 items-center justify-center rounded-xl border border-white/80 bg-white/90 px-3 py-1.5 shadow-md backdrop-blur-sm"
+            class="flex h-14 w-48 max-w-full items-center justify-start rounded-xl bg-transparent px-1 py-1 shadow-none"
           >
             <img
               src="/pamana-logo.png"
               alt="PAMANA"
-              width="176"
+              width="192"
               height="56"
-              class="h-full w-full object-contain object-center"
+              class="h-full w-full object-contain object-left drop-shadow-none"
             >
           </div>
 
-          <p
-            class="mt-1 w-full text-center text-[10px] font-medium text-neutral-700"
-          >
-            Pampanga AI-powered Mobility Access and Navigation Assistant
-          </p>
         </NuxtLink>
       </div>
 
@@ -456,181 +451,115 @@ watch(
 
     <!-- Mobile header -->
     <header
-      class="glass-solid sticky top-0 z-30 flex h-16 items-center justify-between border-x-0 border-t-0 px-4 lg:hidden"
+      class="glass-solid sticky top-0 z-30 flex h-16 items-center border-x-0 border-t-0 px-3 py-1.5 sm:px-4 lg:hidden"
     >
-      <!-- Mobile PAMANA logo -->
-      <NuxtLink
-        :to="workspaceHome"
-        class="inline-flex flex-col items-center"
+      <button
+        type="button"
+        :aria-expanded="isSidebarOpen"
+        aria-controls="mobile-workspace-navigation"
+        :aria-label="isSidebarOpen ? 'Close navigation' : 'Open navigation'"
+        class="flex size-11 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-900/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-700"
+        @click="isSidebarOpen = !isSidebarOpen"
       >
-        <div
-          class="flex h-10 w-32 items-center justify-center rounded-lg border border-white/80 bg-white/90 px-2 py-1 shadow-sm"
-        >
-          <img
-            src="/pamana-logo.png"
-            alt="PAMANA"
-            width="128"
-            height="40"
-            class="h-full w-full object-contain object-center"
-          >
-        </div>
-
-        <p
-          class="mt-0.5 text-center text-[8px] font-medium leading-none text-neutral-600"
-        >
-          {{ roleLabel }} workspace
-        </p>
-      </NuxtLink>
-
-      <UButton
-        color="neutral"
-        variant="ghost"
-        icon="i-lucide-menu"
-        aria-label="Open navigation"
-        class="text-neutral-600 hover:bg-neutral-900/[0.06] hover:text-neutral-900"
-        @click="isSidebarOpen = true"
-      />
+        <UIcon :name="isSidebarOpen ? 'i-lucide-x' : 'i-lucide-menu'" class="size-6" />
+      </button>
     </header>
 
     <!-- Mobile navigation drawer -->
-    <USlideover
-      v-model:open="isSidebarOpen"
-      side="left"
-    >
+    <USlideover v-model:open="isSidebarOpen" side="left" title="Workspace navigation" description="Navigate your PAMANA workspace" :ui="{ content: 'w-[min(21rem,calc(100vw-2.5rem))] max-w-none' }">
       <template #content>
-        <div
-          class="glass-solid flex h-full flex-col"
-        >
-          <!-- Drawer header -->
-          <div
-            class="flex min-h-24 items-center justify-between border-b border-neutral-900/10 px-5 py-3"
-          >
-            <NuxtLink
-              :to="workspaceHome"
-              class="inline-flex flex-col items-center"
-              @click="isSidebarOpen = false"
-            >
-              <div
-                class="flex h-12 w-40 items-center justify-center rounded-xl border border-white/80 bg-white/90 px-2.5 py-1 shadow-sm"
-              >
-                <img
-                  src="/pamana-logo.png"
-                  alt="PAMANA"
-                  width="160"
-                  height="48"
-                  class="h-full w-full object-contain object-center"
+        <div id="mobile-workspace-navigation" class="glass-solid flex h-full min-h-0 flex-col overflow-y-auto">
+              <div class="flex min-h-16 items-center justify-between border-b border-neutral-900/10 px-4">
+                <NuxtLink
+                  :to="workspaceHome"
+                  class="flex min-w-0 items-center"
+                  @click="isSidebarOpen = false"
                 >
+                  <img
+                    src="/pamana-logo.png"
+                    alt="PAMANA"
+                    width="144"
+                    height="44"
+                    class="h-10 w-36 object-contain object-left"
+                  >
+                </NuxtLink>
+
+                <button
+                  type="button"
+                  aria-label="Close navigation"
+                  class="flex size-11 shrink-0 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-900/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-700"
+                  @click="isSidebarOpen = false"
+                >
+                  <UIcon name="i-lucide-x" class="size-5" />
+                </button>
               </div>
 
-              <p
-                class="mt-1 text-center text-[9px] font-medium text-neutral-600"
-              >
-                Rural Mobility Coordinator
-              </p>
-            </NuxtLink>
-
-            <UButton
-              color="neutral"
-              variant="ghost"
-              icon="i-lucide-x"
-              aria-label="Close navigation"
-              class="text-neutral-600 hover:bg-neutral-900/[0.06] hover:text-neutral-900"
-              @click="isSidebarOpen = false"
-            />
-          </div>
-
-          <!-- Mobile role badge -->
-          <div class="px-4 pb-2 pt-4">
-            <span
-              class="pill ring-1"
-              :class="roleMeta.badge"
-            >
-              <UIcon
-                :name="roleMeta.icon"
-                class="size-3.5"
-              />
-
-              {{ roleLabel }} workspace
-            </span>
-          </div>
-
-          <!-- Mobile navigation -->
-          <nav
-            class="flex-1 space-y-1 overflow-y-auto p-4"
-            aria-label="Mobile workspace navigation"
-          >
-            <NuxtLink
-              v-for="item in navigationItems"
-              :key="item.to"
-              :to="item.to"
-              class="flex items-center gap-3 rounded-xl border px-3 py-3 text-sm font-medium transition"
-              :class="
-                isActive(item.to)
-                  ? roleMeta.active
-                  : 'border-transparent text-neutral-500 hover:bg-neutral-900/[0.04] hover:text-neutral-900'
-              "
-              @click="isSidebarOpen = false"
-            >
-              <span
-                class="flex size-8 items-center justify-center rounded-xl"
-                :class="
-                  isActive(item.to)
-                    ? roleMeta.iconBox
-                    : 'bg-neutral-900/[0.035] text-neutral-400'
-                "
-              >
-                <UIcon
-                  :name="item.icon"
-                  class="size-4"
-                />
-              </span>
-
-              {{ item.label }}
-            </NuxtLink>
-          </nav>
-
-          <!-- Mobile user account -->
-          <div
-            class="border-t border-neutral-900/10 p-4"
-          >
-            <div
-              class="mb-3 flex items-center gap-3 rounded-2xl border border-neutral-900/[0.06] bg-white/65 p-3"
-            >
-              <span
-                class="flex size-9 shrink-0 items-center justify-center rounded-xl font-display text-sm font-bold"
-                :class="roleMeta.iconBox"
-              >
-                {{ userInitial }}
-              </span>
-
-              <div class="min-w-0">
-                <p
-                  class="truncate text-sm font-semibold text-neutral-900"
-                >
-                  {{ visibleUser?.username || 'PAMANA User' }}
-                </p>
-
-                <p
-                  class="truncate text-xs text-neutral-500"
-                >
-                  {{ visibleUser?.email || roleLabel }}
-                </p>
+              <div class="px-4 pb-2 pt-4">
+                <span class="pill ring-1" :class="roleMeta.badge">
+                  <UIcon :name="roleMeta.icon" class="size-3.5" />
+                  {{ roleLabel }} workspace
+                </span>
               </div>
-            </div>
 
-            <UButton
-              block
-              color="neutral"
-              variant="soft"
-              icon="i-lucide-log-out"
-              class="rounded-full bg-neutral-900/[0.04] text-neutral-700 hover:bg-neutral-900/[0.06]"
-              :loading="loggingOut"
-              :disabled="loggingOut"
-              @click="handleLogout"
-            >
-              Logout
-            </UButton>
-          </div>
+              <nav
+                class="flex-1 space-y-1 overflow-y-auto p-4"
+                aria-label="Mobile workspace navigation"
+              >
+                <NuxtLink
+                  v-for="item in navigationItems"
+                  :key="item.to"
+                  :to="item.to"
+                  class="flex min-h-12 items-center gap-3 rounded-xl border px-3 py-2.5 text-sm font-semibold transition"
+                  :class="isActive(item.to)
+                    ? roleMeta.active
+                    : 'border-transparent text-neutral-700 hover:border-neutral-900/10 hover:bg-neutral-900/[0.04]'"
+                  @click="isSidebarOpen = false"
+                >
+                  <span
+                    class="flex size-9 shrink-0 items-center justify-center rounded-xl"
+                    :class="isActive(item.to)
+                      ? roleMeta.iconBox
+                      : 'bg-neutral-900/[0.05] text-neutral-600'"
+                  >
+                    <UIcon :name="item.icon" class="size-4" />
+                  </span>
+                  <span>{{ item.label }}</span>
+                  <UIcon name="i-lucide-chevron-right" class="ml-auto size-4 text-neutral-400" />
+                </NuxtLink>
+              </nav>
+
+              <div class="border-t border-neutral-900/10 p-4">
+                <div class="mb-3 flex min-w-0 items-center gap-3 rounded-2xl border border-neutral-900/[0.06] bg-white/75 p-3">
+                  <span
+                    class="flex size-10 shrink-0 items-center justify-center rounded-xl font-display text-sm font-bold"
+                    :class="roleMeta.iconBox"
+                  >
+                    {{ userInitial }}
+                  </span>
+                  <div class="min-w-0">
+                    <p class="truncate text-sm font-semibold text-neutral-900">
+                      {{ visibleUser?.username || 'PAMANA User' }}
+                    </p>
+                    <p class="truncate text-xs text-neutral-600">
+                      {{ visibleUser?.email || roleLabel }}
+                    </p>
+                  </div>
+                </div>
+
+                <UButton
+                  block
+                  color="neutral"
+                  variant="soft"
+                  icon="i-lucide-log-out"
+                  class="min-h-11 rounded-xl bg-neutral-900/[0.05] font-semibold text-neutral-800 hover:bg-neutral-900/[0.08]"
+                  :loading="loggingOut"
+                  :disabled="loggingOut"
+                  @click="handleLogout"
+                >
+                  Logout
+                </UButton>
+              </div>
+
         </div>
       </template>
     </USlideover>
@@ -692,7 +621,7 @@ watch(
 
       <!-- Page content -->
       <main
-        class="mx-auto min-h-[calc(100vh-4rem)] max-w-[1500px] p-4 sm:p-6 lg:min-h-[calc(100vh-5rem)] lg:p-8"
+        class="workspace-main page-surface mx-auto min-h-[calc(100vh-4rem)] max-w-[1500px] rounded-[30px] p-4 sm:p-6 lg:min-h-[calc(100vh-5rem)] lg:p-8"
       >
         <slot v-if="hydrated" />
         <p v-else role="status" class="text-sm text-neutral-500">Loading your workspace…</p>

@@ -1,0 +1,122 @@
+[
+  {
+    "level": "warn",
+    "message": "Image \"parking_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.651Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"doctors_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.663Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"multi_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.663Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"sports_centre_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.664Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"pitch_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.665Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"toll_booth_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.665Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"recycling_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.665Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"swimming_pool_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.665Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"lift_gate_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:38.901Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"toilets_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:29:39.387Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"parking_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.207Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"doctors_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.211Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"multi_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.211Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"sports_centre_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.211Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"pitch_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.211Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"toll_booth_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.212Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"recycling_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.212Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"swimming_pool_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.212Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"toilets_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.507Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  },
+  {
+    "level": "warn",
+    "message": "Image \"lift_gate_11\" could not be loaded. Please make sure you have added the image before it is needed with map.addImage(), resolved it with map.setMissingStyleImageResolver(), or included it in a \"sprite\" property in your style.",
+    "timestamp": "2026-10-08T10:30:57.523Z",
+    "url": "http://127.0.0.1:3000/_nuxt/Bx7a-a1w.js"
+  }
+]

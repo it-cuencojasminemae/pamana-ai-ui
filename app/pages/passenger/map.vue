@@ -1,6 +1,11 @@
 <script setup lang="ts">
 // @ts-nocheck
 import { sortTransportNodesByGeographicDistance, transportNodeFeatureCollection, transportNodeTypeLabel } from '../../services/transportNodes'
+import { locationMapFeature } from '../../services/locationPresentation'
+import { pinQuery, readPinQuery } from '../../services/mapPins'
+import { landmarkQuery, readLandmarkQuery, landmarkLocation } from '../../services/pilotLandmarks'
+import type { SelectedLocation } from '../../types/location'
+import { researchReferenceFeatures } from '../../services/researchPlanningPresentation'
 
 definePageMeta({
   middleware: ['auth', 'passenger']
@@ -11,6 +16,39 @@ useHead({
 })
 
 const { apiFetch } = useApi()
+const pins = useMapPins()
+const landmarks = usePilotLandmarks()
+const planning = usePlanningCapabilities()
+const researchMarkers = computed(() => researchReferenceFeatures(planning.referenceLocations.value))
+const mapLandmarks = computed(() => landmarks.items.value.filter(item => !item.nodeType))
+const pageRoute = useRoute()
+const router = useRouter()
+const selectedPin = ref<SelectedLocation | null>(null)
+const pageReady = ref(false)
+let viewActive = true
+const pinFeatures = computed(() => selectedPin.value ? [locationMapFeature(selectedPin.value, pins.mode.value || 'origin')] : [])
+function selectMapCoordinate(point: { lat: number; lng: number }) {
+  if (!pins.mode.value) return
+  const pin = pins.choose(point)
+  if (!pin) return
+  selectedPin.value = pin
+  void router.replace({ query: { ...pageRoute.query, ...pinQuery('origin', pin) } })
+  void pins.enrich(pin, value => { if (selectedPin.value?.id === pin.id) selectedPin.value = value })
+}
+function plannerLink(mode: 'origin' | 'destination') {
+  return { path: '/passenger/trip-planner', query: { ...pinQuery(mode, selectedPin.value), planningMode: planning.mode.value, accessPreference: 'AUTO' } }
+}
+function clearPin() {
+  selectedPin.value = null
+  void router.replace({ query: { ...pageRoute.query, ...pinQuery('origin', null) } })
+}
+function chooseLandmark(id: string, mode: 'origin' | 'destination') {
+  const item = landmarks.items.value.find(i => i.id === id)
+  if (item) void navigateTo({ path: '/passenger/trip-planner', query: { ...landmarkQuery(mode, landmarkLocation(item)), planningMode: planning.mode.value, accessPreference: 'AUTO' } })
+}
+watch(planning.mode, () => {
+  pins.mode.value = null
+})
 const simulation = useDemoVehicleFeed()
 const simulatedFeedConfigured = simulation.enabled
 const { location: userLocation, error: locationError, loading: locationLoading } = useGeolocation()
@@ -29,6 +67,7 @@ const locationStatusLabel = computed(() => {
 })
 
 interface LiveVehicle {
+  availability?: import('../../types/vehicleAvailability').VehicleAvailability
   vehicle_id: number
   documentId: string
   vehicle_number: string
@@ -64,14 +103,6 @@ const transportNodeStatusMessage = computed(() => {
   return ''
 })
 
-const OCCUPANCY_LABELS: Record<string, string> = {
-  empty: 'Empty',
-  low: 'Low occupancy',
-  moderate: 'Moderate occupancy',
-  near_full: 'Near full',
-  full: 'Full'
-}
-
 const rawVehicles = ref<LiveVehicle[]>([])
 const simulatedSnapshot = simulation.snapshot
 const loadingSimulation = simulation.loading
@@ -86,13 +117,6 @@ let pollTimer:
 
 const vehicles = computed(() => {
   const realOrLegacy = rawVehicles.value.map(vehicle => {
-    const occupancyKey =
-      vehicle.occupancy_level || 'unknown'
-
-    const occupancy =
-      OCCUPANCY_LABELS[occupancyKey] ||
-      'Unknown occupancy'
-
     return {
       id:
         vehicle.documentId ||
@@ -100,8 +124,7 @@ const vehicles = computed(() => {
       vehicleNumber:
         vehicle.vehicle_number ||
         `Vehicle ${vehicle.vehicle_id}`,
-      occupancy,
-      occupancyKey,
+      availability: vehicle.availability,
       dataMode: vehicle.data_mode === 'REAL' ? 'REAL' : 'SIMULATED',
       direction:
         vehicle.direction === 'inbound'
@@ -226,7 +249,7 @@ function handleVisibilityChange() {
   } else simulation.cancel()
 }
 
-onMounted(() => {
+onMounted(async () => {
   refreshVehicleFeeds()
   loadTransportNodes()
   startPolling()
@@ -235,9 +258,18 @@ onMounted(() => {
     'visibilitychange',
     handleVisibilityChange
   )
+  await Promise.all([planning.load(), landmarks.load(), pins.load()])
+  if (!viewActive) return
+  planning.restore()
+  await router.replace({ query: { ...pageRoute.query, planningMode: planning.mode.value, accessPreference: 'AUTO' } })
+  if (!viewActive) return
+  const saved = readPinQuery(pageRoute.query, 'origin')
+  if (saved.present && saved.location) selectedPin.value = pins.choose(saved.location)
+  pageReady.value = true
 })
 
 onBeforeUnmount(() => {
+  viewActive = false
   stopPolling()
 
   document.removeEventListener(
@@ -329,8 +361,16 @@ onBeforeUnmount(() => {
     <div class="grid gap-5 lg:grid-cols-3">
       <!-- Live map -->
       <div class="space-y-3 lg:col-span-2">
+        <LocationPamanaPinControls :area-label="pins.area.value?.label" :enabled="pageReady && pins.enabled.value" :loading="!pageReady || pins.loading.value" :mode="pins.mode.value" :error="pins.error.value" @choose="pins.start" @retry="pins.load" />
+        <div v-if="pageReady && selectedPin" class="flex flex-wrap items-center gap-2 rounded-2xl bg-lime-50 p-3">
+          <p class="w-full text-sm text-neutral-700">{{ selectedPin.label }}</p>
+          <UButton :to="plannerLink('origin')" size="sm" class="rounded-full">Plan from here</UButton>
+          <UButton :to="plannerLink('destination')" size="sm" color="neutral" variant="soft" class="rounded-full">Plan to here</UButton>
+          <UButton size="sm" color="neutral" variant="ghost" @click="clearPin">Clear pin</UButton>
+        </div>
         <PamanaMapPanel
           provider="maplibre"
+          passenger-focus
           icon="i-lucide-map"
           label="Live transport map"
           height="460px"
@@ -339,6 +379,13 @@ onBeforeUnmount(() => {
           :vehicles="simulatedMapFeatures"
           :transport-nodes="transportNodeFeatures"
           :user-location="userLocation"
+          :nodes="[...pinFeatures, ...researchMarkers]"
+          :fit-key="selectedPin ? `${selectedPin.lat}|${selectedPin.lng}` : ''"
+          :pin-boundary="pins.displayBoundary.value"
+          :pin-selection-active="Boolean(pins.mode.value)"
+          :landmarks="pageReady ? mapLandmarks : []"
+          @landmark-chosen="chooseLandmark"
+          @coordinate-selected="selectMapCoordinate"
         >
           <div
             v-if="hasSimulatedVehicles"
@@ -514,7 +561,8 @@ onBeforeUnmount(() => {
                 >
                   {{ vehicle.dataMode }}
                 </span>
-                <span
+                <PamanaVehicleAvailability v-if="vehicle.dataMode === 'REAL'" :availability="vehicle.availability" />
+                <span v-else
                   class="pill normal-case"
                   :class="getOccupancyClasses(vehicle.occupancyKey)"
                 >

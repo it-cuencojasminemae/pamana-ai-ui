@@ -1,4 +1,5 @@
 import test from 'node:test'
+import { validPinBoundary } from '../app/services/mapPins.ts'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import vm from 'node:vm'
@@ -6,6 +7,7 @@ import { stripTypeScriptTypes } from 'node:module'
 import * as Vue from 'vue'
 import { resolveMapConfiguration } from '../app/services/mapConfiguration.ts'
 import * as presentationData from '../app/services/mapPresentation.ts'
+import * as passengerCamera from '../app/services/passengerMapCamera.ts'
 import { parse, compileScript, compileTemplate } from '@vue/compiler-sfc'
 import { legacyMarkerFeatures, suppliedLine, renderableFeatures, markerSemantic, createFitPolicy, MAP_TOKENS } from '../app/services/mapPresentation.ts'
 import { createMapPresentation, presentationLayers, SOURCE_ID, LAYER_IDS } from '../app/services/mapLibrePresentation.ts'
@@ -99,27 +101,37 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
   const compiled = stripTypeScriptTypes(compileScript(descriptor, { id: 'lifecycle' }).content)
     .replace(/import\s+\{([^}]+)\}\s+from\s+(['"])(.*?)\2;?/g, (_match, names, _quote, source) => `const {${names.replace(/\s+as\s+/g, ': ')}} = require(${JSON.stringify(source)});`)
     .replace('export default', 'exports.default =')
-  async function harness({ configured = true, failLoad = false, deferred = false, stalled = false, failConstructor = false, failRender = false } = {}) {
+  async function harness({ configured = true, failLoad = false, deferred = false, stalled = false, failConstructor = false, failRender = false, withPinArea = false, passengerFocus = false } = {}) {
     let mounted, unmount, resolveImport, instances = 0, removed = 0, disconnected = 0
     const events = new Map(), emitted = [], fitTokens = []
+    const sources = new Map(), layers = new Map()
+    const camera = [], initial = []
     const timers = new Set()
     class FakeMap {
-      constructor() { if (failConstructor) throw new Error('sensitive constructor URL'); instances++ }
-      addControl() {} getCanvas() { return { setAttribute() {} } }
+      constructor(options) { if (failConstructor) throw new Error('sensitive constructor URL'); instances++; initial.push(options) }
+      addControl() {} getCanvas() { return { setAttribute() {}, addEventListener() {}, removeEventListener() {}, style: {} } }
       on(name, handler) { events.set(name, handler) } off(name) { events.delete(name) }
-      remove() { removed++ } resize() {} getZoom() { return 11 } easeTo() {}
-      isStyleLoaded() { return true } areTilesLoaded() { return true }
+      remove() { removed++ } resize() {} getZoom() { return 11 } easeTo(options) { camera.push(options) }
+      fitBounds(bounds, options) { camera.push({ bounds, ...options }) }
+      isStyleLoaded() { return !withPinArea } areTilesLoaded() { return true }
+      getStyle() { return { layers: [...layers.values()] } }
+      getSource(id) { return sources.get(id) }
+      addSource(id, value) { sources.set(id, { data: value.data, setData(data) { this.data = data } }) }
+      getLayer(id) { return layers.get(id) } addLayer(layer) { layers.set(layer.id, layer) }
     }
     const module = { Map: FakeMap, NavigationControl: class {}, AttributionControl: class {} }
     const context = {
       exports: {}, setTimeout: fn => { timers.add(fn); return fn }, clearTimeout: fn => timers.delete(fn),
       require(name) {
         if (name === 'vue') return Vue
+        if (name.endsWith('/mapPins')) return { validPinBoundary }
         if (name.endsWith('/mapConfiguration')) return { resolveMapConfiguration }
         if (name.endsWith('/mapPresentation')) return presentationData
+        if (name.endsWith('/passengerMapCamera')) return passengerCamera
         if (name.endsWith('/mapLibrePresentation')) return { LAYER_IDS: [], createMapPresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') }, fitOnIntent: token => fitTokens.push(token), select() {} }) }
         if (name.endsWith('/transportNodePresentation')) return { TRANSPORT_NODE_LAYER_IDS: [], createTransportNodePresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') }, select() {} }) }
         if (name.endsWith('/disruptionMapPresentation')) return { DISRUPTION_LAYER_IDS: [], createDisruptionMapPresentation: () => ({ update() { if (failRender) throw new Error('private-render-error') } }) }
+        if (name.endsWith('/landmarkMapPresentation')) return { LANDMARK_LAYERS: [], createLandmarkPresentation: () => ({ update() {} }) }
         throw Error(`Unexpected import: ${name}`)
       },
       ref: Vue.ref, computed: Vue.computed, watch: Vue.watch,
@@ -130,7 +142,8 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
     }
     vm.runInNewContext(compiled, context)
     const scope = Vue.effectScope()
-    const props = Vue.reactive({ height: '420px', zoom: 11, userLocation: null, nodes: [], transportNodes: [], lines: [], vehicles: [], disruptions: [], selectedFeatureId: null, fitToFeatures: true, fitKey: null })
+    const props = Vue.reactive({ height: '420px', zoom: 11, passengerFocus, userLocation: passengerFocus ? { lat: 16, lng: 121 } : null, nodes: [], transportNodes: [], lines: [], vehicles: [], disruptions: [], selectedFeatureId: null, fitToFeatures: true, fitKey: null, pinSelectionActive: false })
+    if (withPinArea) props.pinBoundary = JSON.parse(read('scripts/fixtures/san-juan-pin-area.json')).boundary
     const setup = scope.run(() => context.exports.default.setup(props, { emit: (...args) => emitted.push(args), expose() {} }))
     assert.equal(instances, 0, 'SSR setup must not initialize map')
     setup.container.value = {}
@@ -142,7 +155,7 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
       resolveImport(module)
     }
     await pending
-    return { setup, props, events, emitted, fitTokens, counts: () => ({ instances, removed, disconnected }), close() { unmount(); scope.stop() } }
+    return { setup, props, events, emitted, fitTokens, sources, layers, camera, initial, counts: () => ({ instances, removed, disconnected }), close() { unmount(); scope.stop() } }
   }
   const missing = await harness({ configured: false })
   assert.equal(missing.setup.status.value, 'MISSING_CONFIG'); missing.close()
@@ -181,4 +194,31 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
   live.close()
   assert.deepEqual(live.counts(), { instances: 1, removed: 1, disconnected: 1 })
   assert.equal(live.events.size, 0)
+  const local = await harness({ withPinArea: true })
+  local.events.get('load')()
+  assert.equal(local.sources.get('pamana-pin-area').data.features.length, 1, 'Loading transport layers must not hide the boundary when isStyleLoaded becomes false')
+  assert.equal(local.layers.size, 2)
+  local.sources.clear(); local.layers.clear()
+  local.events.get('style.load')()
+  assert.equal(local.sources.get('pamana-pin-area').data.features.length, 1, 'A new style restores the verified overlay')
+  local.props.pinBoundary = null; await Vue.nextTick()
+  assert.equal(local.sources.get('pamana-pin-area').data.features.length, 0, 'Disabling pins clears the area without replacing transport layers')
+  local.close()
+  const passenger = await harness({ withPinArea: true, passengerFocus: true })
+  assert.deepEqual(passenger.initial[0].center, passengerCamera.SAN_JUAN_CENTER)
+  assert.equal(passenger.initial[0].zoom, 14.5)
+  passenger.events.get('load')()
+  assert.equal(passenger.camera.length, 1)
+  passenger.props.pinSelectionActive = true; await Vue.nextTick()
+  assert.equal(passenger.camera.length, 1, 'Pin controls never fit the authorization union')
+  passenger.props.nodes = [{ ...point('sf'), geometry: { type: 'Point', coordinates: [120.6832, 15.0394] }, properties: { semantic: 'origin-location' } }]
+  passenger.props.fitKey = '15.0394|120.6832'; await Vue.nextTick()
+  assert.equal(passenger.camera.length, 2)
+  assert.deepEqual(passenger.camera[1].bounds, [[120.6832, 15.0394], passengerCamera.SAN_JUAN_CENTER])
+  passenger.props.userLocation = { lat: 15.2, lng: 120.8 }; await Vue.nextTick()
+  passenger.sources.clear(); passenger.layers.clear(); passenger.events.get('style.load')()
+  assert.equal(passenger.camera.length, 2, 'Style/GPS updates keep the passenger camera')
+  passenger.setup.recenter()
+  assert.deepEqual(Array.from(passenger.camera[2].center), [120.8, 15.2], 'My Location remains an explicit camera action')
+  passenger.close()
 })

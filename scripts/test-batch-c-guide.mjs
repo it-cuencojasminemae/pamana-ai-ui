@@ -1,4 +1,5 @@
 import test from 'node:test'
+import { planningRuntimeStubs } from './helpers/planning-runtime-stubs.mjs'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import vm from 'node:vm'
@@ -10,6 +11,9 @@ import * as guide from '../app/services/journeyExplanation.ts'
 import * as options from '../app/services/routeOptionsPresentation.ts'
 import * as trip from '../app/services/tripPlan.ts'
 import { journeyMapPresentation } from '../app/services/tripPlanPresentation.ts'
+import * as pins from '../app/services/mapPins.ts'
+import * as travelTime from '../app/services/travelTime.ts'
+import * as landmarks from '../app/services/pilotLandmarks.ts'
 
 const read = file => fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
 const payloads = JSON.parse(fs.readFileSync(new URL('./fixtures/passenger-route-options.json', import.meta.url), 'utf8'))
@@ -25,12 +29,15 @@ const deferred = () => { let resolve; const promise = new Promise(r => { resolve
 
 function runtime(apiFetch) {
   const timers = new Map(); let id = 0
-  const context = { ...Vue, ...guide, ...options, ...trip, journeyMapPresentation, AbortController,
+  const states = new Map()
+  const context = { ...Vue, ...guide, ...options, ...trip, ...pins, ...travelTime, ...landmarks, journeyMapPresentation, AbortController,
+    useState: (key, init) => { if (!states.has(key)) states.set(key, Vue.ref(init())); return states.get(key) },
     useApi: () => ({ apiFetch }), onBeforeUnmount: () => {},
     setTimeout: fn => { timers.set(++id, fn); return id }, clearTimeout: key => timers.delete(key),
   }
+  Object.assign(context, planningRuntimeStubs())
   vm.createContext(context)
-  for (const file of ['app/composables/useJourneyExplanation.ts', 'app/composables/useTripPlan.ts']) {
+  for (const file of ['app/composables/useJourneyExplanation.ts', 'app/composables/useTripPlan.ts', 'app/composables/useMapPins.ts', 'app/composables/useTravelTime.ts', 'app/composables/usePilotLandmarks.ts']) {
     const source = stripTypeScriptTypes(read(file)).replace(/^import .+$/gm, '').replace(/export (function|const)/g, '$1')
     vm.runInContext(source, context)
   }
@@ -45,7 +52,8 @@ function page(apiFetch) {
     useApproximateJourneyPaths: () => ({ lines: Vue.ref([]) }), onMounted: () => {},
   })
   const source = stripTypeScriptTypes(parse(read('app/pages/passenger/trip-planner.vue')).descriptor.scriptSetup.content).replace(/^import .+$/gm, '')
-  scope.run(() => vm.runInContext(`${source}\npageState = {findJourneys,explainSelectedJourney,form,originLocation,destinationLocation,tripPlan,journeyExplanation,mapPresentation,fallbackGuide,resultState}`, env.context))
+  // This guide-only fixture starts after authenticated page initialization.
+  scope.run(() => vm.runInContext(`${source}\npageReady.value = true;\npageState = {findJourneys,explainSelectedJourney,form,originLocation,destinationLocation,tripPlan,journeyExplanation,mapPresentation,fallbackGuide,resultState}`, env.context))
   const state = env.context.pageState
   state.originLocation.value = { ...regular.request.origin, id: 'origin' }
   state.destinationLocation.value = { ...regular.request.destination, id: 'destination' }
@@ -97,6 +105,33 @@ test('actual Find Best Route selects Recommended and starts only its guide witho
   assert.equal(calls.at(-1).settings.body.journey.fareSummary.totalFare,27)
   pending.resolve(response(direct)); await finishSelected(app)
   app.stop()
+})
+
+test('fare and departure preferences remain manual and the next search uses their values', async () => {
+  const requests = []
+  const app = page(async (endpoint, settings) => {
+    if (endpoint.endsWith('trip-plan')) { requests.push(settings.body); return structuredClone(regular) }
+    return response(direct)
+  })
+  try {
+    await app.state.findJourneys()
+    assert.equal(requests.length, 1)
+    const selectedId = app.state.tripPlan.selectedJourneyId.value
+    app.state.form.passengerCategory = 'Student'
+    app.state.form.departure = 'Schedule for later'
+    const future = new Date(Date.now() + 60 * 60 * 1000)
+    app.state.form.scheduledDeparture = new Date(future.getTime() - future.getTimezoneOffset() * 60_000).toISOString().slice(0, 16)
+    await Vue.nextTick()
+    await new Promise(resolve => setImmediate(resolve))
+    assert.equal(requests.length, 1, 'preference edits must not trigger another trip-plan request')
+    assert.equal(app.state.tripPlan.selectedJourneyId.value, selectedId)
+    await app.state.findJourneys()
+    assert.equal(requests.length, 2)
+    assert.equal(requests.at(-1).passengerCategory, 'STUDENT')
+    assert.ok(Date.parse(requests.at(-1).departureAt) > Date.now())
+    assert.equal(requests.at(-1).planningMode, 'OPERATIONAL')
+    assert.equal(requests.at(-1).accessPreference, 'AUTO')
+  } finally { app.stop() }
 })
 
 test('only the compact guide area renders loading, valid text or friendly fallback', async () => {
