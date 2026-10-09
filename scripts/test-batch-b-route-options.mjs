@@ -156,6 +156,23 @@ test('frontend reads category IDs without sorting fares or inventing fastest', (
   assert.doesNotMatch(read('app/services/routeOptionsPresentation.ts'), /\.sort\(|Math\.min|totalFare\s*[+-]/)
 })
 
+test('a single returned journey renders one card with all five applicable badges and its own geometry', async () => {
+  const data = responseFor(regular)
+  data.journeys = [data.journeys[0]]; data.meta.journeyCount = 1
+  for (const key of ['recommended', 'cheapest', 'fastest', 'fewestTransfers', 'mostReliable'])
+    data.recommendations[key] = { journeyId: direct.id, unavailableReason: null }
+  const current = planner(async () => data)
+  await current.search(data.request)
+  assert.equal(current.journeys.value.length, 1)
+  assert.equal(current.selectedJourney.value.id, direct.id)
+  const badges = presentation.routeCategories(data, current.journeys.value)
+    .filter(category => category.journeyId === direct.id).map(category => category.label)
+  assert.equal(badges.length, 5)
+  const html = await renderCard(current.selectedJourney.value, { badges })
+  for (const badge of badges) assert.ok(html.includes(badge))
+  assert.deepEqual(journeyMapPresentation(current.selectedJourney.value, null, null), journeyMapPresentation(direct, null, null))
+})
+
 test('actual composable auto-selects Recommended, synchronizes selected map and clears loading', async () => {
   const data = responseFor(regular); data.recommendations.recommended.journeyId = transfer.id
   const current = planner(async () => data)

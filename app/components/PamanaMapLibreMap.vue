@@ -12,6 +12,7 @@ import { SAN_JUAN_CENTER, PASSENGER_INITIAL_ZOOM, passengerCameraBounds } from '
 import { createMapPresentation, LAYER_IDS } from '../services/mapLibrePresentation'
 import { createTransportNodePresentation, TRANSPORT_NODE_LAYER_IDS } from '../services/transportNodePresentation'
 import { createDisruptionMapPresentation, DISRUPTION_LAYER_IDS } from '../services/disruptionMapPresentation'
+import { createTrafficPresentation, trafficProtocol, TRAFFIC_SOURCE_ID } from '../services/trafficMapPresentation'
 
 type Status = 'INITIALIZING' | 'READY' | 'MISSING_CONFIG' | 'TILE_ERROR' | 'INITIALIZATION_ERROR'
 const props = withDefaults(defineProps<{
@@ -44,6 +45,37 @@ const emit = defineEmits<{
 }>()
 const config = useRuntimeConfig()
 const loader = useMapLibre()
+const { apiFetch } = useApi()
+const trafficEnabled = ref(false)
+const trafficStatus = ref<'OFF' | 'LOADING' | 'ACTIVE' | 'UNAVAILABLE'>('OFF')
+const trafficProtocolName = `pamana-traffic-${useId().replace(/[^a-z0-9-]/gi, '')}`
+let trafficPresentation: ReturnType<typeof createTrafficPresentation> | null = null
+let detachTraffic: (() => void) | null = null
+let trafficTimer: ReturnType<typeof setInterval> | undefined
+let trafficGeneration = 0
+async function toggleTraffic() {
+  const version = ++trafficGeneration
+  if (trafficEnabled.value) {
+    trafficEnabled.value = false; trafficStatus.value = 'OFF'; clearInterval(trafficTimer)
+    trafficPresentation?.update(false); return
+  }
+  trafficEnabled.value = true; trafficStatus.value = 'LOADING'
+  try {
+    const capability = await apiFetch<{ configured: boolean; source: string }>('/api/pamana-ai/traffic', { timeout: 5000 })
+    if (version !== trafficGeneration || unmounted || !map) return
+    if (!capability.configured || capability.source !== 'TOMTOM') throw new Error('Unavailable')
+    trafficPresentation?.update(true, true)
+    trafficTimer = setInterval(() => {
+      if (!trafficEnabled.value || !hasLoaded.value) return
+      try { trafficStatus.value = 'LOADING'; trafficPresentation?.update(true, true) }
+      catch { trafficStatus.value = 'UNAVAILABLE'; trafficPresentation?.update(false) }
+    }, 60_000)
+  } catch {
+    if (version === trafficGeneration && !unmounted) {
+      trafficEnabled.value = false; trafficStatus.value = 'UNAVAILABLE'
+    }
+  }
+}
 const container = ref<HTMLElement | null>(null)
 const status = ref<Status>('INITIALIZING')
 const hasLoaded = ref(false)
@@ -166,10 +198,13 @@ function focusPinArea() {
   map.fitBounds([[Math.min(...lngs), Math.min(...lats)], [Math.max(...lngs), Math.max(...lats)]], { padding: 48, duration: 500, maxZoom: 15 })
 }
 function cleanup() {
+  clearInterval(trafficTimer); trafficGeneration++
+  trafficEnabled.value = false; trafficStatus.value = 'OFF'
   clearTimeout(timeout)
   resizeObserver?.disconnect(); resizeObserver = null
   detach?.(); detach = null
   map?.remove(); map = null
+  detachTraffic?.(); detachTraffic = null; trafficPresentation = null
   presentation = null
   transportPresentation = null
   disruptionPresentation = null
@@ -205,6 +240,16 @@ async function initialize() {
     transportPresentation = createTransportNodePresentation(map)
     disruptionPresentation = createDisruptionMapPresentation(map)
     landmarkPresentation = createLandmarkPresentation(map)
+    trafficPresentation = createTrafficPresentation(map, trafficProtocolName)
+    lib.addProtocol(trafficProtocolName, trafficProtocol(apiFetch, () => {
+      if (!unmounted && current === generation && trafficEnabled.value) trafficStatus.value = 'ACTIVE'
+    }, () => {
+      if (!unmounted && current === generation && trafficEnabled.value) {
+        trafficEnabled.value = false; trafficGeneration++; clearInterval(trafficTimer)
+        trafficStatus.value = 'UNAVAILABLE'; trafficPresentation?.update(false)
+      }
+    }))
+    detachTraffic = () => lib.removeProtocol(trafficProtocolName)
     const onLoad = () => {
       try {
         if (!updateFeaturePresentation() || !updateTransportPresentation() || !updateDisruptionPresentation()) return
@@ -218,8 +263,11 @@ async function initialize() {
         if (props.pinSelectionActive) focusPinArea()
       } catch { setError('INITIALIZATION_ERROR') }
     }
-    const onStyle = () => { updateFeaturePresentation(); updateTransportPresentation(); updateDisruptionPresentation(); updatePinBoundary(true); updateLandmarks() }
-    const onError = () => { clearTimeout(timeout); setError('TILE_ERROR') }
+    const onStyle = () => { updateFeaturePresentation(); updateTransportPresentation(); updateDisruptionPresentation(); updatePinBoundary(true); updateLandmarks(); if (trafficEnabled.value) trafficPresentation?.update(true) }
+    const onError = (event: { sourceId?: string; error?: { message?: string } }) => {
+      if (event.sourceId === TRAFFIC_SOURCE_ID || event.error?.message === 'Traffic unavailable') return
+      clearTimeout(timeout); setError('TILE_ERROR')
+    }
     const onIdle = () => {
       // Successful subsequent tile loads recover without rebuilding or refitting.
       if (hasLoaded.value && status.value === 'TILE_ERROR' && map?.isStyleLoaded() && map.areTilesLoaded()) {
@@ -291,6 +339,17 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
 <template>
   <section class="pamana-libre" :class="{ 'pamana-libre--compact': compact, 'pamana-libre--roadside': selected?.properties.temporaryRoadside === true }" :style="{ height, '--map-tools-top': toolsOffset }" :data-map-state="status" aria-label="PAMANA transport map" :aria-busy="status === 'INITIALIZING'">
     <div ref="container" class="pamana-libre__canvas" />
+    <div v-if="passengerFocus && hasLoaded" class="absolute left-3 top-3 z-20 max-w-[220px] rounded-xl bg-white/95 px-3 py-2 shadow-sm">
+      <button type="button" class="flex min-h-9 items-center gap-2 text-xs font-semibold text-neutral-800" :aria-pressed="trafficEnabled" @click="toggleTraffic">
+        <UIcon name="i-lucide-car" class="size-4 text-lime-700" /> {{ trafficEnabled ? 'Hide traffic' : 'Show traffic' }}
+      </button>
+      <p v-if="trafficStatus === 'LOADING'" class="text-[11px] text-neutral-500" role="status">Loading current road traffic…</p>
+      <p v-else-if="trafficStatus === 'UNAVAILABLE'" class="text-[11px] text-neutral-500" role="status">Traffic unavailable</p>
+      <div v-else-if="trafficStatus === 'ACTIVE'" class="space-y-1 text-[11px] text-neutral-600" aria-label="TomTom road traffic legend">
+        <p>Current road traffic · TomTom</p>
+        <p><span class="text-green-700">●</span> Free flow <span class="text-yellow-600">●</span> Slower <span class="text-red-600">●</span> Congested</p>
+      </div>
+    </div>
     <div v-if="pinSelectionActive" class="pointer-events-none absolute inset-0 z-10 flex items-center justify-center" aria-hidden="true"><span class="flex size-6 items-center justify-center rounded-full border-2 border-lime-800 bg-white/70 text-lime-900">+</span></div>
     <div v-if="status !== 'READY'" class="pamana-libre__state" :class="{ 'pamana-libre__state--notice': hasLoaded && status === 'TILE_ERROR' }" role="status" aria-live="polite">
       <span class="pamana-libre__state-icon" aria-hidden="true">{{ status === 'INITIALIZING' ? '◌' : '!' }}</span>

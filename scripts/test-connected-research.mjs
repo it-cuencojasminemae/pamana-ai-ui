@@ -9,7 +9,7 @@ import { validTripPlanResponse, validJourneyDetails } from '../app/services/trip
 import { routeCategories, validRouteOptions, journeyNavigationSteps } from '../app/services/routeOptionsPresentation.ts'
 import { journeyMapPresentation } from '../app/services/tripPlanPresentation.ts'
 import { researchReferenceFeatures } from '../app/services/researchPlanningPresentation.ts'
-const read = name => fs.readFileSync(new URL(`../${name}`, import.meta.url), 'utf8')
+const read = name => fs.readFileSync(new URL(`../${name}`, import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 const fixture = JSON.parse(read('scripts/fixtures/passenger-route-options.json')).results.find(item => item.response.journeys.length === 2).response
 function preview() {
   const response = structuredClone(fixture)

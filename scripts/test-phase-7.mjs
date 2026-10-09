@@ -1,4 +1,5 @@
 import test from 'node:test'
+import * as trafficPresentation from '../app/services/trafficMapPresentation.ts'
 import { validPinBoundary } from '../app/services/mapPins.ts'
 import assert from 'node:assert/strict'
 import fs from 'node:fs'
@@ -119,11 +120,12 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
       addSource(id, value) { sources.set(id, { data: value.data, setData(data) { this.data = data } }) }
       getLayer(id) { return layers.get(id) } addLayer(layer) { layers.set(layer.id, layer) }
     }
-    const module = { Map: FakeMap, NavigationControl: class {}, AttributionControl: class {} }
+    const module = { Map: FakeMap, NavigationControl: class {}, AttributionControl: class {}, addProtocol() {}, removeProtocol() {} }
     const context = {
-      exports: {}, setTimeout: fn => { timers.add(fn); return fn }, clearTimeout: fn => timers.delete(fn),
+      exports: {}, setTimeout: fn => { timers.add(fn); return fn }, clearTimeout: fn => timers.delete(fn), clearInterval() {},
       require(name) {
         if (name === 'vue') return Vue
+        if (name.endsWith('/trafficMapPresentation')) return trafficPresentation
         if (name.endsWith('/mapPins')) return { validPinBoundary }
         if (name.endsWith('/mapConfiguration')) return { resolveMapConfiguration }
         if (name.endsWith('/mapPresentation')) return presentationData
@@ -137,6 +139,7 @@ test('actual SFC setup is SSR safe, handles failures, late imports and removes l
       ref: Vue.ref, computed: Vue.computed, watch: Vue.watch,
       onMounted: fn => { mounted = fn }, onBeforeUnmount: fn => { unmount = fn },
       useRuntimeConfig: () => ({ public: configured ? { geoapifyApiKey: 'unit-test-only-key' } : {} }),
+      useApi: () => ({ apiFetch: async () => ({ configured: false }) }),
       useMapLibre: () => ({ reportRenderFailure() {}, load: () => deferred || stalled ? new Promise(resolve => { resolveImport = resolve }) : Promise.resolve(failLoad ? null : module) }),
       ResizeObserver: class { observe() {} disconnect() { disconnected++ } },
     }

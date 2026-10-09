@@ -2,6 +2,7 @@ import assert from 'node:assert/strict'
 import fs from 'node:fs'
 import vm from 'node:vm'
 import test from 'node:test'
+import * as trafficPresentation from '../app/services/trafficMapPresentation.ts'
 import { validPinBoundary } from '../app/services/mapPins.ts'
 import { stripTypeScriptTypes } from 'node:module'
 import * as Vue from 'vue'
@@ -216,10 +217,11 @@ test('actual MapLibre lifecycle preserves polling camera, disruption selection, 
   const map = component('app/components/PamanaMapLibreMap.vue', {
     onMounted: fn => { mounted = fn }, onBeforeUnmount: fn => { unmount = fn },
     useRuntimeConfig: () => ({ public: { geoapifyApiKey: 'synthetic-test-only' } }),
-    useMapLibre: () => ({ load: async () => ({ Map: FakeMap, NavigationControl: class {}, AttributionControl: class {} }), reportRenderFailure() {} }),
-    ResizeObserver: class { constructor(fn) { observer = fn } observe() {} disconnect() { disconnected++ } }, setTimeout, clearTimeout,
+    useMapLibre: () => ({ load: async () => ({ Map: FakeMap, NavigationControl: class {}, AttributionControl: class {}, addProtocol() {}, removeProtocol() {} }), reportRenderFailure() {} }),
+    ResizeObserver: class { constructor(fn) { observer = fn } observe() {} disconnect() { disconnected++ } }, setTimeout, clearTimeout, clearInterval,
   }, {
     '../services/mapConfiguration': { resolveMapConfiguration },
+    '../services/trafficMapPresentation': trafficPresentation,
     '../services/mapLibrePresentation': { LAYER_IDS: [], createMapPresentation: () => ({ update() {}, select() {}, fitOnIntent() { fits++ }, fit() { fits++ } }) },
     '../services/transportNodePresentation': { TRANSPORT_NODE_LAYER_IDS: [], createTransportNodePresentation: () => ({ update() {}, select() {} }) },
     '../services/disruptionMapPresentation': { DISRUPTION_LAYER_IDS: ['pamana-disruption-fill'], createDisruptionMapPresentation: () => ({ update: features => updates.push(features) }) },

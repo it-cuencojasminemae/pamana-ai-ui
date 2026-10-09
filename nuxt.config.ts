@@ -3,6 +3,14 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxt/ui', 'motion-v/nuxt'],
+  // Keep the existing browser font import and system fallbacks. Builds must
+  // not depend on downloading Google Fonts through Nuxt UI's font module.
+  ui: { fonts: false },
+  nitro: {
+    // Limit dependency tracing to the project rather than the filesystem root.
+    // Isolated validation copies can include their shared dependency directory.
+    externals: { traceOptions: { base: process.env.PAMANA_BUILD_TRACE_ROOT || process.cwd() } }
+  },
   app: {
     pageTransition: { name: 'pamana-page', mode: 'out-in' }
   },

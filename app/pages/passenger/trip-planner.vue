@@ -311,6 +311,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="min-w-0">
     <PamanaPageHeader title="Trip Planner" role="passenger" />
+    <PamanaWeather :location="originLocation" class="mb-5" />
     <div class="grid min-w-0 items-start gap-5 lg:grid-cols-5">
       <div class="min-w-0 space-y-5 lg:col-span-2">
         <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">

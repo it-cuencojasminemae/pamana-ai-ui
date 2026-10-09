@@ -9,7 +9,7 @@ import { createLocationSearchController } from '../app/services/locationSearch.t
 import { createLocationRequestCache } from '../app/services/locationRequestCache.ts'
 import { createApproximateRoadPathResolver } from '../app/services/approximateRoadPath.ts'
 
-const read = file => fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8')
+const read = file => fs.readFileSync(new URL(`../${file}`, import.meta.url), 'utf8').replace(/\r\n/g, '\n')
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms))
 const result = { ok: true, source: 'GEOAPIFY', authority: 'EXTERNAL_GEOGRAPHY', data: [{ id: 'synthetic', label: 'Synthetic place', lat: 14, lng: 119, source: 'GEOAPIFY' }] }
 const ref = value => ({ value })
