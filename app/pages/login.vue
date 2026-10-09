@@ -84,7 +84,7 @@ const onSubmit = async (
     <section class="auth-app auth-app--login">
       <div class="auth-sheet">
         <div class="form-container">
-          <div class="form-brand">
+          <div v-pamana-reveal class="form-brand">
             <img
               src="/pamana-logo.png"
               alt="PAMANA"
@@ -93,7 +93,7 @@ const onSubmit = async (
             <span class="brand-meaning">Pampanga AI-powered Mobility Access and Navigation Assistant</span>
           </div>
 
-          <header class="form-header">
+          <header v-pamana-reveal class="form-header">
             <div>
               <p class="form-kicker">Welcome back</p>
               <h2>Sign in to PAMANA</h2>
@@ -104,7 +104,7 @@ const onSubmit = async (
             </div>
           </header>
 
-          <UForm
+          <UForm v-pamana-reveal="{ preset: 'fade' }"
             :schema="schema"
             :state="state"
             class="auth-form"
@@ -144,7 +144,7 @@ const onSubmit = async (
                 class="w-full"
               >
                 <template #trailing>
-                  <UButton
+                  <UButton data-pamana-feedback
                     type="button"
                     color="neutral"
                     variant="ghost"
@@ -158,7 +158,7 @@ const onSubmit = async (
               </UInput>
             </UFormField>
 
-            <UButton
+            <UButton data-pamana-feedback
               type="submit"
               block
               size="xl"
@@ -439,12 +439,7 @@ const onSubmit = async (
 
 .primary-action:hover:not(:disabled) {
   filter: brightness(0.98);
-  transform: translateY(-1px);
   box-shadow: 0 15px 30px rgba(101, 163, 13, 0.27);
-}
-
-.primary-action:active:not(:disabled) {
-  transform: translateY(0);
 }
 
 .primary-action:disabled {
@@ -494,7 +489,6 @@ const onSubmit = async (
 .secondary-action:hover {
   border-color: #b7d88d;
   background: #fbfef7;
-  transform: translateY(-1px);
 }
 
 .secondary-icon {

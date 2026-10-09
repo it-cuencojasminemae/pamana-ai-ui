@@ -202,7 +202,7 @@ onBeforeUnmount(() => {
     />
 
     <!-- Trip search -->
-    <UCard
+    <UCard v-pamana-reveal
       class="glass glow-sunset rounded-30"
       :ui="{
         root: 'ring-0 rounded-[1.75rem]',
@@ -270,7 +270,7 @@ onBeforeUnmount(() => {
         <div class="flex items-center gap-3 pl-[1.15rem]">
           <div class="h-5 w-px border-l border-dashed border-neutral-900/15" />
 
-          <button
+          <button data-pamana-feedback
             type="button"
             class="flex size-8 items-center justify-center rounded-full text-neutral-500 transition hover:bg-lime-100 hover:text-lime-700"
             aria-label="Swap starting point and destination"
@@ -326,7 +326,7 @@ onBeforeUnmount(() => {
             Today · next available departure
           </div>
 
-          <UButton
+          <UButton data-pamana-feedback
             type="submit"
             size="lg"
             trailing-icon="i-lucide-arrow-right"
@@ -339,7 +339,7 @@ onBeforeUnmount(() => {
     </UCard>
 
     <!-- Quick Places -->
-    <UCard
+    <UCard v-pamana-reveal
       class="glass rounded-30"
       :ui="{ root: 'ring-0 rounded-[1.75rem]' }"
     >
@@ -348,7 +348,7 @@ onBeforeUnmount(() => {
           Quick Places
         </p>
 
-        <button
+        <button data-pamana-feedback
           type="button"
           class="flex items-center gap-1 text-xs font-medium text-lime-600 transition hover:text-lime-700"
           @click="showAllPlaces = true"
@@ -363,7 +363,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <button
+        <button data-pamana-feedback
           v-for="place in quickPlaces"
           :key="place.name"
           type="button"
@@ -394,7 +394,7 @@ onBeforeUnmount(() => {
 
     <!-- Main dashboard shortcuts -->
     <div class="grid gap-4 md:grid-cols-3">
-      <UCard
+      <UCard v-pamana-reveal
         class="glass glow-lime card-lift rounded-30"
         :ui="{
           root: 'ring-0 rounded-[1.75rem]',
@@ -418,7 +418,7 @@ onBeforeUnmount(() => {
         </div>
 
         <template #footer>
-          <UButton
+          <UButton data-pamana-feedback
             to="/passenger/trip-planner"
             variant="soft"
             block
@@ -429,7 +429,7 @@ onBeforeUnmount(() => {
         </template>
       </UCard>
 
-      <UCard
+      <UCard v-pamana-reveal
         class="glass glow-lime card-lift rounded-30"
         :ui="{
           root: 'ring-0 rounded-[1.75rem]',
@@ -453,7 +453,7 @@ onBeforeUnmount(() => {
         </div>
 
         <template #footer>
-          <UButton
+          <UButton data-pamana-feedback
             to="/passenger/map"
             variant="soft"
             block
@@ -464,7 +464,7 @@ onBeforeUnmount(() => {
         </template>
       </UCard>
 
-      <UCard
+      <UCard v-pamana-reveal
         class="glass glow-lime card-lift rounded-30"
         :ui="{
           root: 'ring-0 rounded-[1.75rem]',
@@ -488,7 +488,7 @@ onBeforeUnmount(() => {
         </div>
 
         <template #footer>
-          <UButton
+          <UButton data-pamana-feedback
             to="/passenger/reports"
             variant="soft"
             block
@@ -533,7 +533,7 @@ onBeforeUnmount(() => {
               </p>
             </div>
 
-            <button
+            <button data-pamana-feedback
               type="button"
               class="flex size-10 shrink-0 items-center justify-center rounded-full border border-neutral-200 text-neutral-600 transition hover:bg-neutral-100 hover:text-neutral-900"
               aria-label="Close destinations"
@@ -548,7 +548,7 @@ onBeforeUnmount(() => {
 
           <div class="max-h-[70vh] overflow-y-auto p-5 sm:p-6">
             <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              <button
+              <button data-pamana-feedback
                 v-for="place in allPlaces"
                 :key="place.destination"
                 type="button"

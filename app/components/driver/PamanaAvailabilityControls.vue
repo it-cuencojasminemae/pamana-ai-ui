@@ -35,14 +35,14 @@ async function report(status: VehicleAvailabilityStatus) {
 </script>
 
 <template>
-  <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+  <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
     <div class="flex flex-wrap items-center justify-between gap-2">
       <h2 class="font-display text-sm font-semibold text-neutral-900">Vehicle Availability</h2>
       <span class="text-xs text-neutral-500">Optional</span>
     </div>
     <PamanaVehicleAvailability class="mt-3" :availability="availability" driver />
     <div class="mt-3 grid grid-cols-2 gap-2" role="group" aria-label="Report vehicle availability" :aria-busy="saving">
-      <button v-for="option in AVAILABILITY_OPTIONS" :key="option.status" type="button"
+      <button data-pamana-feedback v-for="option in AVAILABILITY_OPTIONS" :key="option.status" type="button"
         class="flex min-h-12 min-w-0 items-center justify-center gap-1 rounded-xl border px-2 py-2 text-sm font-semibold transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 disabled:cursor-default"
         :class="[option.classes, current.status === option.status ? 'ring-2 ring-neutral-700 ring-offset-2' : 'opacity-80', (saving || disabled) ? 'opacity-50' : '']"
         :aria-pressed="current.status === option.status" :disabled="saving || disabled || sameReport(option.status)" @click="report(option.status)">

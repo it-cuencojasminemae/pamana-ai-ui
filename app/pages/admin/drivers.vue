@@ -175,7 +175,7 @@ const performDelete = async () => {
 
 <template>
   <div class="space-y-6">
-    <div class="glass glow-lime rounded-30 flex flex-wrap items-start justify-between gap-4 p-5 sm:p-6">
+    <div v-pamana-reveal class="glass glow-lime rounded-30 flex flex-wrap items-start justify-between gap-4 p-5 sm:p-6">
       <div>
         <p class="text-sm font-medium text-lime-600">
           Transportation Management
@@ -190,7 +190,7 @@ const performDelete = async () => {
         </p>
       </div>
 
-      <UButton
+      <UButton data-pamana-feedback
         icon="i-lucide-plus"
         class="rounded-full font-semibold text-neutral-950 shadow-[0_12px_24px_-16px_rgba(77,124,15,0.8)]"
         @click="openCreate"
@@ -199,7 +199,7 @@ const performDelete = async () => {
       </UButton>
     </div>
 
-    <UCard
+    <UCard v-pamana-reveal
       class="glass rounded-30"
       :ui="{ root: 'ring-0 rounded-3xl', body: 'relative z-10 p-0' }"
     >
@@ -292,7 +292,7 @@ const performDelete = async () => {
 
               <td class="px-6 py-4">
                 <div class="flex justify-end gap-2">
-                  <UButton
+                  <UButton data-pamana-feedback
                     icon="i-lucide-pencil"
                     color="neutral"
                     variant="soft"
@@ -301,7 +301,7 @@ const performDelete = async () => {
                     @click="openEdit(driver)"
                   />
 
-                  <UButton
+                  <UButton data-pamana-feedback
                     icon="i-lucide-trash-2"
                     color="error"
                     variant="soft"
@@ -324,7 +324,7 @@ const performDelete = async () => {
               {{ isEditing ? 'Edit Driver' : 'Add Driver' }}
             </h2>
 
-            <UButton
+            <UButton data-pamana-feedback
               color="neutral"
               variant="ghost"
               icon="i-lucide-x"
@@ -436,7 +436,7 @@ const performDelete = async () => {
               </UFormField>
 
               <div class="flex gap-3 pt-2">
-                <UButton
+                <UButton data-pamana-feedback
                   type="submit"
                   block
                   class="font-semibold text-neutral-950"
@@ -468,7 +468,7 @@ const performDelete = async () => {
 
           <template #footer>
             <div class="flex justify-end gap-3">
-              <UButton
+              <UButton data-pamana-feedback
                 color="neutral"
                 variant="soft"
                 :disabled="deleting"
@@ -477,7 +477,7 @@ const performDelete = async () => {
                 Cancel
               </UButton>
 
-              <UButton
+              <UButton data-pamana-feedback
                 color="error"
                 :loading="deleting"
                 :disabled="deleting"

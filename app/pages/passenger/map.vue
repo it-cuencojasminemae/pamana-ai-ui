@@ -342,7 +342,7 @@ onBeforeUnmount(() => {
           {{ lastUpdatedText }}
         </p>
 
-        <UButton
+        <UButton data-pamana-feedback
           type="button"
           color="neutral"
           variant="soft"
@@ -364,9 +364,9 @@ onBeforeUnmount(() => {
         <LocationPamanaPinControls :area-label="pins.area.value?.label" :enabled="pageReady && pins.enabled.value" :loading="!pageReady || pins.loading.value" :mode="pins.mode.value" :error="pins.error.value" @choose="pins.start" @retry="pins.load" />
         <div v-if="pageReady && selectedPin" class="flex flex-wrap items-center gap-2 rounded-2xl bg-lime-50 p-3">
           <p class="w-full text-sm text-neutral-700">{{ selectedPin.label }}</p>
-          <UButton :to="plannerLink('origin')" size="sm" class="rounded-full">Plan from here</UButton>
-          <UButton :to="plannerLink('destination')" size="sm" color="neutral" variant="soft" class="rounded-full">Plan to here</UButton>
-          <UButton size="sm" color="neutral" variant="ghost" @click="clearPin">Clear pin</UButton>
+          <UButton data-pamana-feedback :to="plannerLink('origin')" size="sm" class="rounded-full">Plan from here</UButton>
+          <UButton data-pamana-feedback :to="plannerLink('destination')" size="sm" color="neutral" variant="soft" class="rounded-full">Plan to here</UButton>
+          <UButton data-pamana-feedback size="sm" color="neutral" variant="ghost" @click="clearPin">Clear pin</UButton>
         </div>
         <PamanaMapPanel
           provider="maplibre"
@@ -435,7 +435,7 @@ onBeforeUnmount(() => {
       <!-- Side information -->
       <div class="space-y-3">
         <!-- Nearby stops -->
-        <UCard
+        <UCard v-pamana-reveal
           class="glass rounded-30"
           :ui="{ root: 'ring-0 rounded-30' }"
         >
@@ -487,7 +487,7 @@ onBeforeUnmount(() => {
         </UCard>
 
         <!-- Active vehicles -->
-        <UCard
+        <UCard v-pamana-reveal
           class="glass glow-lime rounded-30"
           :ui="{
             root: 'ring-0 rounded-30',

@@ -67,7 +67,7 @@ watch(() => props.landmarks, items => { if (!items.some(i => i.id === selectedLa
 </script>
 
 <template>
-  <div class="relative overflow-hidden rounded-[24px] border border-neutral-200/80 shadow-xl shadow-neutral-900/10" :style="{ minHeight: height }">
+  <div v-pamana-reveal="{ preset: 'fade' }" class="relative overflow-hidden rounded-[24px] border border-neutral-200/80 shadow-xl shadow-neutral-900/10" :style="{ minHeight: height }">
     <PamanaMapLibreMap :height="height" :compact="compact" :passenger-focus="passengerFocus" :tools-offset="toolsOffset" :nodes="mapNodes" :transport-nodes="transportNodes" :vehicles="vehicles" :lines="mapLines" :disruptions="disruptions" :user-location="mapUserLocation" :fit-key="fitKey" :pin-boundary="pinBoundary" :pin-selection-active="pinSelectionActive" :landmarks="landmarks" :selected-landmark-id="selectedLandmarkId"
       @landmark-selected="selectedLandmarkId = $event"
       @coordinate-selected="emit('coordinate-selected', $event)"
@@ -89,8 +89,8 @@ watch(() => props.landmarks, items => { if (!items.some(i => i.id === selectedLa
         <p class="text-sm font-semibold text-neutral-900">{{ selectedLandmark.name }} <span class="ml-1 text-xs font-normal text-neutral-500">{{ LANDMARK_CATEGORIES[selectedLandmark.category].label }}</span></p>
         <p v-if="selectedLandmark.connectionNote" class="text-xs leading-relaxed text-neutral-600">{{ selectedLandmark.connectionNote }}</p>
         <div class="flex flex-wrap gap-2">
-          <UButton size="sm" class="rounded-full" @click="emit('landmark-chosen', selectedLandmark.id, 'origin')">Plan from here</UButton>
-          <UButton size="sm" color="neutral" variant="soft" class="rounded-full" @click="emit('landmark-chosen', selectedLandmark.id, 'destination')">Plan to here</UButton>
+          <UButton data-pamana-feedback size="sm" class="rounded-full" @click="emit('landmark-chosen', selectedLandmark.id, 'origin')">Plan from here</UButton>
+          <UButton data-pamana-feedback size="sm" color="neutral" variant="soft" class="rounded-full" @click="emit('landmark-chosen', selectedLandmark.id, 'destination')">Plan to here</UButton>
         </div>
       </div>
     </section>

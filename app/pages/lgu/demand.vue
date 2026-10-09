@@ -30,7 +30,7 @@ const observations = [
     <p class="mb-5 text-xs text-amber-700">SIMULATED DEMO — stop names and demand observations on this screen are not verified operational data.</p>
 
     <div class="mb-5 grid gap-5 lg:grid-cols-3">
-      <UCard class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="font-display text-sm font-semibold text-neutral-900">
           Predicted vs. observed waiting passengers — today
         </h2>
@@ -51,7 +51,7 @@ const observations = [
         </div>
       </UCard>
 
-      <UCard class="glass glow-teal rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
+      <UCard v-pamana-reveal class="glass glow-teal rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
         <h2 class="font-display text-sm font-semibold text-neutral-900">Model confidence</h2>
         <p class="stat-num mt-3 text-3xl text-teal-700">87%</p>
         <p class="mt-1 text-xs leading-relaxed text-neutral-400">Prediction model v1.3 · updated 6 min ago</p>
@@ -60,7 +60,7 @@ const observations = [
       </UCard>
     </div>
 
-    <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+    <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
       <div class="overflow-x-auto">
         <table class="data-table">
           <thead><tr><th>Stop</th><th>Time slot</th><th>Waiting (observed)</th><th>Predicted</th><th>Source</th></tr></thead>

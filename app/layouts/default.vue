@@ -328,14 +328,14 @@ watch(
 <template>
   <div class="min-h-screen">
     <!-- Desktop sidebar -->
-    <aside
+    <aside v-pamana-reveal="{ preset: 'fade' }"
       class="glass-solid fixed inset-y-4 left-4 z-40 hidden w-64 overflow-hidden rounded-30 shadow-[0_28px_60px_-34px_rgba(0,0,0,0.32)] lg:flex lg:flex-col"
     >
       <!-- Desktop PAMANA logo -->
       <div
         class="glow-lime flex h-24 shrink-0 items-center border-b border-neutral-900/10 px-4 py-3"
       >
-        <NuxtLink
+        <NuxtLink data-pamana-feedback
           :to="workspaceHome"
           class="relative z-10 inline-flex w-full min-w-0 flex-col items-start"
         >
@@ -374,7 +374,7 @@ watch(
         class="flex-1 space-y-1 overflow-y-auto px-4 pb-4 pt-2"
         aria-label="Workspace navigation"
       >
-        <NuxtLink
+        <NuxtLink data-pamana-feedback
           v-for="item in navigationItems"
           :key="item.to"
           :to="item.to"
@@ -434,7 +434,7 @@ watch(
           </div>
         </div>
 
-        <UButton
+        <UButton data-pamana-feedback
           color="neutral"
           variant="soft"
           block
@@ -453,7 +453,7 @@ watch(
     <header
       class="glass-solid sticky top-0 z-30 flex h-16 items-center border-x-0 border-t-0 px-3 py-1.5 sm:px-4 lg:hidden"
     >
-      <button
+      <button data-pamana-feedback
         type="button"
         :aria-expanded="isSidebarOpen"
         aria-controls="mobile-workspace-navigation"
@@ -470,7 +470,7 @@ watch(
       <template #content>
         <div id="mobile-workspace-navigation" class="glass-solid flex h-full min-h-0 flex-col overflow-y-auto">
               <div class="flex min-h-16 items-center justify-between border-b border-neutral-900/10 px-4">
-                <NuxtLink
+                <NuxtLink data-pamana-feedback
                   :to="workspaceHome"
                   class="flex min-w-0 items-center"
                   @click="isSidebarOpen = false"
@@ -484,7 +484,7 @@ watch(
                   >
                 </NuxtLink>
 
-                <button
+                <button data-pamana-feedback
                   type="button"
                   aria-label="Close navigation"
                   class="flex size-11 shrink-0 items-center justify-center rounded-xl text-neutral-700 hover:bg-neutral-900/[0.06] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-lime-700"
@@ -505,7 +505,7 @@ watch(
                 class="flex-1 space-y-1 overflow-y-auto p-4"
                 aria-label="Mobile workspace navigation"
               >
-                <NuxtLink
+                <NuxtLink data-pamana-feedback
                   v-for="item in navigationItems"
                   :key="item.to"
                   :to="item.to"
@@ -546,7 +546,7 @@ watch(
                   </div>
                 </div>
 
-                <UButton
+                <UButton data-pamana-feedback
                   block
                   color="neutral"
                   variant="soft"

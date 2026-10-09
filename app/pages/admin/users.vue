@@ -73,7 +73,7 @@ function showAccountDetails(account: DirectoryUser) {
       subtitle="Review account roles and activity across the PAMANA platform."
     >
       <template #actions>
-        <UButton
+        <UButton data-pamana-feedback
           icon="i-lucide-user-plus"
           class="w-full justify-center rounded-full font-semibold text-neutral-950 sm:w-auto"
           @click="inviteDialogOpen = true"
@@ -88,7 +88,7 @@ function showAccountDetails(account: DirectoryUser) {
     </p>
 
     <section class="grid grid-cols-2 gap-3 sm:grid-cols-4" aria-label="User account summary">
-      <UCard
+      <UCard v-pamana-reveal
         v-for="stat in userCounts"
         :key="stat.label"
         class="glass min-w-0 rounded-2xl"
@@ -102,7 +102,7 @@ function showAccountDetails(account: DirectoryUser) {
       </UCard>
     </section>
 
-    <UCard class="glass min-w-0 rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'p-4 sm:p-6' }">
+    <UCard v-pamana-reveal class="glass min-w-0 rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'p-4 sm:p-6' }">
       <div class="mb-5 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div class="min-w-0">
           <h2 class="font-display text-lg font-semibold text-neutral-900">Application users</h2>
@@ -161,7 +161,7 @@ function showAccountDetails(account: DirectoryUser) {
               <td>{{ account.joined }}</td>
               <td><span class="pill normal-case bg-emerald-100 text-emerald-800">{{ account.status }}</span></td>
               <td class="text-right">
-                <UButton
+                <UButton data-pamana-feedback
                   color="neutral"
                   variant="soft"
                   size="sm"
@@ -196,7 +196,7 @@ function showAccountDetails(account: DirectoryUser) {
               <span class="pill normal-case" :class="roleClasses(account.role)">{{ account.role }}</span>
               <span class="text-xs text-neutral-600">{{ account.joined }}</span>
             </div>
-            <UButton
+            <UButton data-pamana-feedback
               color="neutral"
               variant="soft"
               size="sm"
@@ -231,7 +231,7 @@ function showAccountDetails(account: DirectoryUser) {
               </div>
             </div>
 
-            <UButton
+            <UButton data-pamana-feedback
               color="neutral"
               variant="ghost"
               icon="i-lucide-x"
@@ -293,7 +293,7 @@ function showAccountDetails(account: DirectoryUser) {
 
           <template #footer>
             <div class="flex justify-end">
-              <UButton color="neutral" variant="soft" class="rounded-full" @click="detailsDialogOpen = false">Close</UButton>
+              <UButton data-pamana-feedback color="neutral" variant="soft" class="rounded-full" @click="detailsDialogOpen = false">Close</UButton>
             </div>
           </template>
         </UCard>

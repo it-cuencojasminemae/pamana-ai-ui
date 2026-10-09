@@ -49,7 +49,7 @@ function setStatus(id: number, status: 'approved' | 'dismissed') {
     <PamanaPageHeader title="Recommendations" role="lgu" />
 
     <div class="grid gap-4 md:grid-cols-2">
-      <UCard
+      <UCard v-pamana-reveal
         v-for="item in recommendations"
         :key="item.id"
         class="glass glow-teal rounded-30"
@@ -67,8 +67,8 @@ function setStatus(id: number, status: 'approved' | 'dismissed') {
         <p class="mt-2 text-sm leading-relaxed text-neutral-500">{{ item.body }}</p>
 
         <div v-if="item.status === 'pending'" class="mt-5 flex flex-wrap gap-2">
-          <button type="button" class="btn-primary text-xs" @click="setStatus(item.id, 'approved')">Approve & Dispatch</button>
-          <button type="button" class="btn-soft text-xs" @click="setStatus(item.id, 'dismissed')">Dismiss</button>
+          <button data-pamana-feedback type="button" class="btn-primary text-xs" @click="setStatus(item.id, 'approved')">Approve & Dispatch</button>
+          <button data-pamana-feedback type="button" class="btn-soft text-xs" @click="setStatus(item.id, 'dismissed')">Dismiss</button>
         </div>
         <span
           v-else
@@ -79,7 +79,7 @@ function setStatus(id: number, status: 'approved' | 'dismissed') {
         </span>
       </UCard>
 
-      <UCard class="glass rounded-30 md:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30 md:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="font-display text-sm font-semibold text-neutral-900">Recently actioned</h2>
         <div class="mt-4 overflow-x-auto">
           <table class="data-table">

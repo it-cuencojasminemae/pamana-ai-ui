@@ -32,14 +32,14 @@ function saveSettings() {
   <div>
     <PamanaPageHeader title="Settings" role="admin">
       <template #actions>
-        <UButton icon="i-lucide-save" class="rounded-full font-semibold text-neutral-950" @click="saveSettings">
+        <UButton data-pamana-feedback icon="i-lucide-save" class="rounded-full font-semibold text-neutral-950" @click="saveSettings">
           Save Settings
         </UButton>
       </template>
     </PamanaPageHeader>
 
     <div class="grid gap-4 md:grid-cols-2">
-      <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="flex items-center gap-1.5 font-display text-sm font-semibold text-neutral-900">
           <UIcon name="i-lucide-sliders-horizontal" class="size-4 text-green-800" />
           AI prediction thresholds
@@ -61,7 +61,7 @@ function saveSettings() {
         </div>
       </UCard>
 
-      <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="flex items-center gap-1.5 font-display text-sm font-semibold text-neutral-900">
           <UIcon name="i-lucide-shield-check" class="size-4 text-green-800" />
           Roles & permissions
@@ -83,7 +83,7 @@ function saveSettings() {
         </div>
       </UCard>
 
-      <UCard class="glass rounded-30 md:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30 md:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="flex items-center gap-1.5 font-display text-sm font-semibold text-neutral-900">
           <UIcon name="i-lucide-database" class="size-4 text-green-800" />
           System & audit
@@ -95,7 +95,7 @@ function saveSettings() {
           <div class="rounded-xl bg-neutral-900/[0.035] p-3"><p class="text-neutral-400">Demo mode</p><p class="mt-1 font-semibold text-lime-700">On</p></div>
         </div>
 
-        <button type="button" class="btn-soft mt-4 text-xs">
+        <button data-pamana-feedback type="button" class="btn-soft mt-4 text-xs">
           <UIcon name="i-lucide-scroll-text" class="size-3.5" />
           View audit logs
         </button>

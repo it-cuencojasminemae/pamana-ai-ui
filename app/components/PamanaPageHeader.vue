@@ -32,7 +32,7 @@ const roleMeta = computed(() => ({
 </script>
 
 <template>
-  <div class="mb-6 rounded-[28px] border border-neutral-900/6 bg-white/70 p-4 shadow-[0_22px_50px_-28px_rgba(15,23,42,0.25)] backdrop-blur-xl sm:p-5">
+  <div v-pamana-reveal class="mb-6 rounded-[28px] border border-neutral-900/6 bg-white/70 p-4 shadow-[0_22px_50px_-28px_rgba(15,23,42,0.25)] backdrop-blur-xl sm:p-5">
     <div class="flex flex-wrap items-center gap-2 sm:gap-3">
       <span class="pill normal-case shadow-sm" :class="roleMeta.classes">
         <UIcon :name="roleMeta.icon" class="size-3.5" />

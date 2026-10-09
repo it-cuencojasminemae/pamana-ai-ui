@@ -197,7 +197,7 @@ async function initialize() {
     const initialCenter: [number, number] = props.passengerFocus ? SAN_JUAN_CENTER : userIsValid.value && props.userLocation ? [props.userLocation.lng, props.userLocation.lat]
       : validPosition(props.center) ? props.center : [120.70, 15.10]
     map = new lib.Map({ container: container.value, style: resolved.styleUrl, center: initialCenter,
-      zoom: props.passengerFocus ? PASSENGER_INITIAL_ZOOM : props.zoom, attributionControl: false, cooperativeGestures: true })
+      zoom: props.passengerFocus ? PASSENGER_INITIAL_ZOOM : props.zoom, attributionControl: false, cooperativeGestures: false })
     map.addControl(new lib.NavigationControl({ showCompass: false }), 'top-right')
     map.addControl(new lib.AttributionControl({ compact: true }), 'bottom-right')
     map.getCanvas().setAttribute('aria-label', 'PAMANA transport map. Use zoom controls or arrow keys to explore.')
@@ -296,11 +296,11 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
       <span class="pamana-libre__state-icon" aria-hidden="true">{{ status === 'INITIALIZING' ? '◌' : '!' }}</span>
       <strong>{{ labels[status] }}</strong>
       <span>Transport information remains available outside the map.</span>
-      <button v-if="status !== 'INITIALIZING'" type="button" class="pamana-libre__button" @click="initialize">Retry map</button>
+      <button data-pamana-feedback v-if="status !== 'INITIALIZING'" type="button" class="pamana-libre__button" @click="initialize">Retry map</button>
     </div>
     <template v-if="hasLoaded">
       <template v-if="choices.length">
-        <button
+        <button data-pamana-feedback
           type="button"
           class="pamana-libre__feature-toggle"
           :aria-expanded="isFeaturePanelOpen"
@@ -312,7 +312,7 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
           Map features
           <span class="pamana-libre__feature-count">{{ choices.length }}</span>
         </button>
-        <div v-if="isFeaturePanelOpen" :id="featurePanelId" class="pamana-libre__tools">
+        <div v-pamana-reveal="{ preset: 'panel' }" v-if="isFeaturePanelOpen" :id="featurePanelId" class="pamana-libre__tools">
           <span class="pamana-libre__eyebrow">PAMANA · EXPLORE</span>
           <label class="pamana-libre__picker">Select a feature
             <select :value="selection ?? ''" aria-label="Select a map feature" @change="select(($event.target as HTMLSelectElement).value)">
@@ -320,7 +320,7 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
               <option v-for="feature in choices" :key="String(feature.id)" :value="feature.id">{{ MAP_TOKENS[feature.properties.semantic].label }} · {{ feature.properties.label }}{{ feature.properties.dataMode === 'SIMULATED' ? ' (simulated)' : '' }}</option>
             </select>
           </label>
-        <div v-if="selected" class="pamana-libre__detail" role="status">
+        <div v-pamana-reveal="{ preset: 'panel' }" v-if="selected" class="pamana-libre__detail" role="status">
           <strong>{{ selected.properties.label }}</strong>
           <PamanaVehicleAvailability v-if="selected.properties.semantic === 'vehicle' && selected.properties.availability" :availability="selected.properties.availability" />
           <template v-if="selected.properties.temporaryRoadside === true">
@@ -339,8 +339,8 @@ onBeforeUnmount(() => { unmounted = true; generation++; cleanup() })
         </div>
       </template>
       <div class="pamana-libre__actions">
-        <button v-if="!compact || userIsValid" type="button" class="pamana-libre__button" :disabled="!userIsValid" aria-label="Recenter on your location" @click="recenter">◎ My location</button>
-        <button v-if="choices.length" type="button" class="pamana-libre__button" aria-label="Fit supplied transport features" @click="fitAll">Fit features</button>
+        <button data-pamana-feedback v-if="!compact || userIsValid" type="button" class="pamana-libre__button" :disabled="!userIsValid" aria-label="Recenter on your location" @click="recenter">◎ My location</button>
+        <button data-pamana-feedback v-if="choices.length" type="button" class="pamana-libre__button" aria-label="Fit supplied transport features" @click="fitAll">Fit features</button>
       </div>
       <div v-if="hasApproximateRoadPath" class="pamana-libre__route-notice" role="note">
         <i aria-hidden="true" />

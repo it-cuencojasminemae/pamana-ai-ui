@@ -195,7 +195,7 @@ onMounted(loadPage)
   <div>
     <PamanaPageHeader title="Disruptions" role="lgu" />
 
-    <UCard class="glass mb-5 rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+    <UCard v-pamana-reveal class="glass mb-5 rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 class="font-display text-base font-semibold text-neutral-900">Record a structured disruption</h2>
@@ -290,7 +290,7 @@ onMounted(loadPage)
         <div class="flex items-center justify-between gap-3 md:col-span-2 xl:col-span-3">
           <p v-if="!targetValid" class="text-xs text-red-600">Choose the explicit target required by this effect.</p>
           <span v-else />
-          <UButton type="submit" icon="i-lucide-plus" class="rounded-full" :loading="saving" :disabled="!canCreate">Record disruption</UButton>
+          <UButton data-pamana-feedback type="submit" icon="i-lucide-plus" class="rounded-full" :loading="saving" :disabled="!canCreate">Record disruption</UButton>
         </div>
       </form>
     </UCard>
@@ -298,10 +298,10 @@ onMounted(loadPage)
     <div class="grid gap-5 lg:grid-cols-3">
       <div class="space-y-3 lg:col-span-2">
         <UCard v-if="loading" class="glass rounded-30 animate-pulse" :ui="{ root: 'ring-0 rounded-30' }"><div class="h-16" /></UCard>
-        <UCard v-else-if="!disruptions.length" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+        <UCard v-pamana-reveal v-else-if="!disruptions.length" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
           <p class="py-5 text-center text-sm text-neutral-500">No disruptions have been recorded.</p>
         </UCard>
-        <UCard v-for="item in disruptions" :key="item.id" class="glass card-lift rounded-30" :class="item.tone === 'lime' ? 'opacity-65' : ''" :ui="{ root: 'ring-0 rounded-30' }">
+        <UCard v-pamana-reveal v-for="item in disruptions" :key="item.id" class="glass card-lift rounded-30" :class="item.tone === 'lime' ? 'opacity-65' : ''" :ui="{ root: 'ring-0 rounded-30' }">
           <div class="flex flex-col gap-3 sm:flex-row sm:items-start">
             <span class="flex size-10 shrink-0 items-center justify-center rounded-full" :class="{ 'bg-red-100 text-red-600': item.tone === 'red', 'bg-amber-100 text-amber-700': item.tone === 'amber', 'bg-lime-300/20 text-lime-700': item.tone === 'lime' }"><UIcon :name="item.icon" class="size-4" /></span>
             <div class="min-w-0 flex-1">
@@ -317,10 +317,10 @@ onMounted(loadPage)
               <p v-if="item.resolutionNotes" class="mt-2 rounded-xl bg-lime-50 px-3 py-2 text-xs text-lime-800">Resolution: {{ item.resolutionNotes }}</p>
               <div v-if="resolvingId === item.id" class="mt-3 grid gap-2">
                 <textarea v-model="resolutionNotes" rows="2" class="rounded-xl border border-neutral-200 bg-white px-3 py-2 text-sm" placeholder="Resolution details" />
-                <div class="flex gap-2"><UButton size="sm" color="success" @click="resolveDisruption(item.id)">Confirm resolution</UButton><UButton size="sm" color="neutral" variant="soft" @click="resolvingId = null">Cancel</UButton></div>
+                <div class="flex gap-2"><UButton data-pamana-feedback size="sm" color="success" @click="resolveDisruption(item.id)">Confirm resolution</UButton><UButton data-pamana-feedback size="sm" color="neutral" variant="soft" @click="resolvingId = null">Cancel</UButton></div>
               </div>
             </div>
-            <button v-if="item.tone !== 'lime' && resolvingId !== item.id" type="button" class="btn-soft shrink-0 text-xs" :disabled="item.acknowledged" @click="beginResolution(item.id)">Resolve</button>
+            <button data-pamana-feedback v-if="item.tone !== 'lime' && resolvingId !== item.id" type="button" class="btn-soft shrink-0 text-xs" :disabled="item.acknowledged" @click="beginResolution(item.id)">Resolve</button>
           </div>
         </UCard>
       </div>

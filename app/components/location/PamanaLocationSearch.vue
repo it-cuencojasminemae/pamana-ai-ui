@@ -164,7 +164,7 @@ onBeforeUnmount(() => {
         @blur="scheduleClose"
       >
       <span v-if="state.status === 'loading'" class="location-search__spinner" aria-label="Searching places" />
-      <button v-else-if="input" type="button" class="location-search__clear" aria-label="Clear selected location" @click="clearSelection">
+      <button data-pamana-feedback v-else-if="input" type="button" class="location-search__clear" aria-label="Clear selected location" @click="clearSelection">
         <UIcon name="i-lucide-x" />
       </button>
     </div>
@@ -174,8 +174,8 @@ onBeforeUnmount(() => {
       <span>{{ model.formattedAddress || (model.source === 'USER_GPS' ? 'GPS coordinates selected' : 'Coordinates resolved') }}</span>
     </div>
 
-    <div v-if="showPanel" :id="listId" class="location-search__panel" role="listbox" :aria-label="`${mode} place suggestions`">
-      <button
+    <div v-pamana-reveal="{ preset: 'panel' }" v-if="showPanel" :id="listId" class="location-search__panel" role="listbox" :aria-label="`${mode} place suggestions`">
+      <button data-pamana-feedback
         v-if="allowCurrentLocation"
         type="button"
         class="location-search__current"

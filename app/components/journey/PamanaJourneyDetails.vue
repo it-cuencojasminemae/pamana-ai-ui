@@ -7,7 +7,7 @@ const steps = computed(() => journeyNavigationSteps(props.journey))
 </script>
 
 <template>
-  <UCard class="min-w-0 rounded-3xl bg-white/90" :ui="{ root: 'ring-1 ring-neutral-200 rounded-3xl' }">
+  <UCard v-pamana-reveal class="min-w-0 rounded-3xl bg-white/90" :ui="{ root: 'ring-1 ring-neutral-200 rounded-3xl' }">
     <div class="flex items-center gap-2"><UIcon name="i-lucide-signpost" class="size-5 text-lime-700" /><h2 class="font-display text-base font-semibold text-neutral-900">Route details</h2></div>
     <p class="mt-3 text-xs font-semibold text-neutral-500">Pickup</p>
     <p class="mt-1 break-words text-sm text-neutral-900">{{ details.pickup }}</p>

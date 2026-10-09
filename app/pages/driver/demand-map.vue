@@ -23,7 +23,7 @@ useHead({
         tone="emerald"
       />
 
-      <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="font-display text-sm font-semibold text-neutral-900">Predicted waiting passengers</h2>
         <div class="mt-5 rounded-2xl border border-neutral-200/70 bg-white/60 px-5 py-8 text-center" role="status">
           <span class="mx-auto flex size-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">

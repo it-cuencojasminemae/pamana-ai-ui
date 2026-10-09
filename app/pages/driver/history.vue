@@ -60,7 +60,7 @@ onMounted(() => {
       <PamanaStatCard label="Passengers" value="36" icon="i-lucide-users" />
     </div>
 
-    <UCard class="glass rounded-30 overflow-hidden" :ui="{ root: 'ring-0 rounded-30', body: 'p-0 sm:p-0' }">
+    <UCard v-pamana-reveal class="glass rounded-30 overflow-hidden" :ui="{ root: 'ring-0 rounded-30', body: 'p-0 sm:p-0' }">
       <div class="overflow-x-auto p-4 sm:p-5">
         <table class="data-table">
           <thead>

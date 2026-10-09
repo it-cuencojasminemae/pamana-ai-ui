@@ -130,7 +130,7 @@ onMounted(loadReports)
     <UAlert color="neutral" variant="soft" icon="i-lucide-shield-check" title="Reports are evidence" description="Passenger observations are reviewed separately and never change verified routes, fares, occupancy, or disruptions automatically." class="mb-5 rounded-2xl" />
 
     <div class="grid gap-5 lg:grid-cols-5">
-      <UCard class="glass glow-lime h-fit rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
+      <UCard v-pamana-reveal class="glass glow-lime h-fit rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
         <h2 class="font-display text-base font-semibold text-neutral-900">Report a transport issue</h2>
         <p class="mt-1 text-xs text-neutral-500">Share what you observed. Avoid names, phone numbers, or other personal details.</p>
 
@@ -159,7 +159,7 @@ onMounted(loadReports)
           <fieldset>
             <legend class="text-xs font-semibold text-neutral-700">What did you observe?</legend>
             <div class="mt-2 grid grid-cols-2 gap-2">
-              <button v-for="category in categories" :key="category.value" type="button" class="flex min-h-16 sm:min-h-20 flex-col items-center justify-center rounded-xl border px-2 py-2 text-center text-xs font-semibold transition focus-visible:outline-3 focus-visible:outline-blue-600" :class="selectedCategory === category.value ? 'border-lime-500 bg-lime-50 text-lime-800' : 'border-neutral-200 bg-white/70 text-neutral-600 hover:border-lime-300'" @click="selectedCategory = category.value">
+              <button data-pamana-feedback v-for="category in categories" :key="category.value" type="button" class="flex min-h-16 sm:min-h-20 flex-col items-center justify-center rounded-xl border px-2 py-2 text-center text-xs font-semibold transition focus-visible:outline-3 focus-visible:outline-blue-600" :class="selectedCategory === category.value ? 'border-lime-500 bg-lime-50 text-lime-800' : 'border-neutral-200 bg-white/70 text-neutral-600 hover:border-lime-300'" @click="selectedCategory = category.value">
                 <UIcon :name="category.icon" class="mb-1 size-5" />{{ category.label }}
               </button>
             </div>
@@ -168,21 +168,21 @@ onMounted(loadReports)
           <div class="rounded-2xl border border-neutral-200 bg-white/70 p-3">
             <div class="flex items-center justify-between gap-3">
               <div><p class="text-xs font-semibold text-neutral-800">Optional current location</p><p class="mt-0.5 text-[11px] text-neutral-500">GPS is requested only when you press the button.</p></div>
-              <UButton v-if="!includeLocation" type="button" size="sm" color="neutral" variant="soft" icon="i-lucide-locate-fixed" :loading="geolocation.loading.value" @click="requestLocation">Use location</UButton>
-              <UButton v-else type="button" size="sm" color="neutral" variant="ghost" icon="i-lucide-x" @click="clearLocation">Remove</UButton>
+              <UButton data-pamana-feedback v-if="!includeLocation" type="button" size="sm" color="neutral" variant="soft" icon="i-lucide-locate-fixed" :loading="geolocation.loading.value" @click="requestLocation">Use location</UButton>
+              <UButton data-pamana-feedback v-else type="button" size="sm" color="neutral" variant="ghost" icon="i-lucide-x" @click="clearLocation">Remove</UButton>
             </div>
             <p v-if="includeLocation" class="mt-2 text-xs" :class="geolocation.error.value ? 'text-amber-700' : 'text-lime-700'">{{ geolocation.error.value ? 'Location unavailable. Remove it or retry.' : geolocation.location.value ? 'Location attached privately for reviewers.' : 'Requesting location…' }}</p>
           </div>
 
-          <UButton type="submit" block size="lg" icon="i-lucide-send" class="rounded-full font-semibold" :loading="submitting" :disabled="submitting || description.trim().length < 10">Submit report</UButton>
+          <UButton data-pamana-feedback type="submit" block size="lg" icon="i-lucide-send" class="rounded-full font-semibold" :loading="submitting" :disabled="submitting || description.trim().length < 10">Submit report</UButton>
         </form>
       </UCard>
 
       <section class="space-y-3 lg:col-span-3" aria-labelledby="report-history-title">
         <div class="flex items-center justify-between"><h2 id="report-history-title" class="font-display text-base font-semibold text-neutral-900">Your report history</h2><span class="pill bg-neutral-100 text-neutral-600">{{ reports.length }}</span></div>
         <UCard v-if="loading" class="glass rounded-30 animate-pulse" :ui="{ root: 'ring-0 rounded-30' }"><div class="h-20" /></UCard>
-        <UCard v-else-if="!reports.length" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }"><div class="py-8 text-center"><UIcon name="i-lucide-clipboard-list" class="mx-auto size-8 text-neutral-400" /><p class="mt-2 text-sm text-neutral-500">No reports yet.</p></div></UCard>
-        <UCard v-for="report in reports" :key="report.documentId || report.id" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+        <UCard v-pamana-reveal v-else-if="!reports.length" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }"><div class="py-8 text-center"><UIcon name="i-lucide-clipboard-list" class="mx-auto size-8 text-neutral-400" /><p class="mt-2 text-sm text-neutral-500">No reports yet.</p></div></UCard>
+        <UCard v-pamana-reveal v-for="report in reports" :key="report.documentId || report.id" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
           <div class="flex items-start gap-3">
             <span class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-lime-100 text-lime-700"><UIcon :name="categoryFor(report.report_type)?.icon || 'i-lucide-info'" class="size-5" /></span>
             <div class="min-w-0 flex-1">

@@ -99,24 +99,24 @@ const optionLabel = (record: WorkbenchRecord) => `${record.workbench.label}${rec
 
 <template>
   <section class="space-y-5">
-    <div class="surface-card p-4 sm:p-5">
+    <div v-pamana-reveal class="surface-card p-4 sm:p-5">
       <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
           <span class="pill bg-teal-100 text-teal-800"><UIcon name="i-lucide-shield-check" /> Controlled verification</span>
           <h2 class="mt-3 font-display text-xl font-bold text-neutral-900">Transport data workbench</h2>
           <p class="mt-1 max-w-3xl text-sm leading-6 text-neutral-500">Review real transport facts, evidence, and planning eligibility. Geographic search provides evidence only; a reviewer must explicitly confirm transport coordinates.</p>
         </div>
-        <button type="button" class="btn-primary" @click="openEditor()"><UIcon name="i-lucide-plus" /> Add record</button>
+        <button data-pamana-feedback type="button" class="btn-primary" @click="openEditor()"><UIcon name="i-lucide-plus" /> Add record</button>
       </div>
       <div class="mt-5 flex gap-2 overflow-x-auto pb-1" role="tablist" aria-label="Transport data type">
-        <button v-for="entity in WORKBENCH_ENTITIES" :key="entity.key" type="button" role="tab" :aria-selected="activeEntity === entity.key"
+        <button data-pamana-feedback v-for="entity in WORKBENCH_ENTITIES" :key="entity.key" type="button" role="tab" :aria-selected="activeEntity === entity.key"
           class="inline-flex shrink-0 items-center gap-2 rounded-xl border px-3 py-2 text-xs font-semibold transition"
           :class="activeEntity === entity.key ? 'border-green-700 bg-green-700 text-white' : 'border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50'"
           @click="activeEntity = entity.key"><UIcon :name="entity.icon" />{{ entity.label }}</button>
       </div>
     </div>
 
-    <div class="surface-card p-4">
+    <div v-pamana-reveal class="surface-card p-4">
       <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <select v-model="filters.verification" class="wb-input" aria-label="Filter verification"><option value="">All verification</option><option v-for="item in VERIFICATION_OPTIONS" :key="item">{{ item }}</option></select>
         <select v-model="filters.planning" class="wb-input" aria-label="Filter planning"><option value="">All planning states</option><option value="true">Planning enabled</option><option value="false">Planning disabled</option></select>
@@ -127,7 +127,7 @@ const optionLabel = (record: WorkbenchRecord) => `${record.workbench.label}${rec
     </div>
 
     <div v-if="workbench.error.value" class="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700" role="alert">{{ workbench.error.value }}</div>
-    <div class="surface-card overflow-hidden">
+    <div v-pamana-reveal="{ preset: 'fade' }" class="surface-card overflow-hidden">
       <div v-if="workbench.loading.value" class="p-8 text-center text-sm text-neutral-500" role="status">Loading transport records…</div>
       <div v-else-if="!workbench.records.value.length" class="p-8 text-center"><UIcon name="i-lucide-database-zap" class="mx-auto size-8 text-neutral-300" /><p class="mt-2 text-sm font-semibold text-neutral-700">No records match these filters.</p></div>
       <div v-else class="overflow-x-auto">
@@ -139,7 +139,7 @@ const optionLabel = (record: WorkbenchRecord) => `${record.workbench.label}${rec
               <td class="px-4 py-4"><span class="pill" :class="verificationTone(record.verification_status)">{{ labelFor(record.verification_status) }}</span><p class="mt-1 text-[11px] text-neutral-400">{{ record.data_mode || 'Structural record' }}</p></td>
               <td class="px-4 py-4"><span class="pill" :class="record.planning_enabled ? 'bg-blue-100 text-blue-800' : 'bg-neutral-100 text-neutral-500'">{{ activeEntity === 'route-variant-stops' ? 'STRUCTURAL RECORD' : record.planning_enabled ? 'ENABLED' : 'DISABLED' }}</span><p v-if="record.workbench.missingCriticalFields.length" class="mt-2 max-w-48 text-xs text-amber-700">Missing: {{ record.workbench.missingCriticalFields.join(', ') }}</p></td>
               <td class="max-w-xs px-4 py-4 text-xs leading-5 text-neutral-600">{{ record.workbench.evidence }}</td>
-              <td class="px-4 py-4"><button type="button" class="btn-soft !px-3 !py-2 text-xs" @click="openEditor(record)"><UIcon name="i-lucide-pencil" /> Review</button></td>
+              <td class="px-4 py-4"><button data-pamana-feedback type="button" class="btn-soft !px-3 !py-2 text-xs" @click="openEditor(record)"><UIcon name="i-lucide-pencil" /> Review</button></td>
             </tr>
           </tbody>
         </table>
@@ -157,7 +157,7 @@ const optionLabel = (record: WorkbenchRecord) => `${record.workbench.label}${rec
               <label class="wb-label sm:col-span-2">Node name<input v-model="form.name" class="wb-input"></label><label class="wb-label">Node code<input v-model="form.node_code" class="wb-input font-mono"></label>
               <label class="wb-label">Node type<select v-model="form.node_type" class="wb-input"><option v-for="item in NODE_TYPES" :key="item">{{ item }}</option></select></label>
               <label class="wb-label">Latitude<input v-model="form.latitude" inputmode="decimal" class="wb-input"></label><label class="wb-label">Longitude<input v-model="form.longitude" inputmode="decimal" class="wb-input"></label>
-              <div class="sm:col-span-2 rounded-2xl border border-teal-200 bg-teal-50 p-4"><p class="text-xs font-semibold uppercase tracking-wide text-teal-800">Map-assisted geographic evidence</p><p class="mt-1 text-xs leading-5 text-teal-700">A place result is not a transport stop. Select a candidate, inspect it, then explicitly confirm the transport-node coordinate.</p><div class="mt-3"><LocationPamanaLocationSearch v-model="candidateLocation" mode="destination" placeholder="Find a nearby geographic place…" /></div><button v-if="candidateLocation" type="button" class="btn-soft mt-3 text-xs" @click="useGeographicEvidence">Use as coordinate candidate</button></div>
+              <div class="sm:col-span-2 rounded-2xl border border-teal-200 bg-teal-50 p-4"><p class="text-xs font-semibold uppercase tracking-wide text-teal-800">Map-assisted geographic evidence</p><p class="mt-1 text-xs leading-5 text-teal-700">A place result is not a transport stop. Select a candidate, inspect it, then explicitly confirm the transport-node coordinate.</p><div class="mt-3"><LocationPamanaLocationSearch v-model="candidateLocation" mode="destination" placeholder="Find a nearby geographic place…" /></div><button data-pamana-feedback v-if="candidateLocation" type="button" class="btn-soft mt-3 text-xs" @click="useGeographicEvidence">Use as coordinate candidate</button></div>
               <div class="sm:col-span-2"><PamanaMapPanel provider="maplibre" label="Coordinate verification map" height="280px" :nodes="mapNodes" :fit-key="fitKey" /></div>
               <label class="sm:col-span-2 flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs leading-5 text-amber-800"><input v-model="confirmations.coordinate" type="checkbox" class="mt-1">I inspected the map and confirm these coordinates identify the actual transport pickup, stop, terminal, or drop-off point.</label>
             </div>
@@ -212,7 +212,7 @@ const optionLabel = (record: WorkbenchRecord) => `${record.workbench.label}${rec
               <p v-if="!isAdministrator" class="text-xs text-amber-700">LGU reviewers may maintain facts and evidence. Only an Administrator can elevate verification or enable planning.</p>
             </div>
           </div>
-          <footer class="flex items-center justify-end gap-3 border-t border-neutral-200 p-4"><button type="button" class="btn-soft" @click="editorOpen = false">Cancel</button><button type="submit" class="btn-primary" :disabled="workbench.saving.value"><UIcon :name="workbench.saving.value ? 'i-lucide-loader-circle' : 'i-lucide-save'" :class="{ 'animate-spin': workbench.saving.value }" />{{ workbench.saving.value ? 'Validating…' : 'Save reviewed record' }}</button></footer>
+          <footer class="flex items-center justify-end gap-3 border-t border-neutral-200 p-4"><button data-pamana-feedback type="button" class="btn-soft" @click="editorOpen = false">Cancel</button><button data-pamana-feedback type="submit" class="btn-primary" :disabled="workbench.saving.value"><UIcon :name="workbench.saving.value ? 'i-lucide-loader-circle' : 'i-lucide-save'" :class="{ 'animate-spin': workbench.saving.value }" />{{ workbench.saving.value ? 'Validating…' : 'Save reviewed record' }}</button></footer>
         </form>
       </template>
     </USlideover>

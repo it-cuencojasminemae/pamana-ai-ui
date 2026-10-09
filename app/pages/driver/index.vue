@@ -99,7 +99,7 @@ onMounted(async () => {
   <div>
     <PamanaPageHeader title="Dashboard" role="driver" />
 
-    <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+    <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
       <div class="grid min-w-0 gap-3 sm:grid-cols-[minmax(0,1fr)_13rem] sm:items-center">
         <div class="min-w-0">
           <h2 class="font-display text-xl font-bold capitalize text-neutral-900">Good morning, {{ firstName }}!</h2>
@@ -121,7 +121,7 @@ onMounted(async () => {
     </UCard>
 
     <div class="mt-5 grid gap-5 lg:grid-cols-3">
-      <UCard class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
         <div class="flex items-center justify-between gap-3">
           <h2 class="font-display text-sm font-semibold text-neutral-900">Current Trip</h2>
           <div class="flex items-center gap-2">
@@ -148,7 +148,7 @@ onMounted(async () => {
               <p v-if="activeTrip.route_variant?.signboard_text" class="mt-1 text-xs text-neutral-500">Signboard: {{ activeTrip.route_variant.signboard_text }}</p>
             </div>
           </div>
-          <NuxtLink to="/driver/current-trip" class="mt-5 flex items-center justify-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white">
+          <NuxtLink data-pamana-feedback to="/driver/current-trip" class="mt-5 flex items-center justify-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2.5 text-sm font-semibold text-white">
             <UIcon name="i-lucide-navigation" class="size-4" />
             Go to Current Trip
           </NuxtLink>
@@ -168,13 +168,13 @@ onMounted(async () => {
             <p v-if="selectedVariant.signboard" class="mt-1 text-xs">Verified signboard: {{ selectedVariant.signboard }}</p>
           </div>
           <p v-if="!loadingOptions && variantItems.length === 0" class="mt-3 text-xs text-amber-700">{{ emptyMessage }}</p>
-          <UButton block size="lg" icon="i-lucide-play" class="mt-3 rounded-full font-semibold" :loading="startingTrip" :disabled="startingTrip || !selectedVariantDocumentId" @click="startTrip">
+          <UButton data-pamana-feedback block size="lg" icon="i-lucide-play" class="mt-3 rounded-full font-semibold" :loading="startingTrip" :disabled="startingTrip || !selectedVariantDocumentId" @click="startTrip">
             Start Trip
           </UButton>
         </template>
       </UCard>
 
-      <UCard class="glass glow-lime rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
+      <UCard v-pamana-reveal class="glass glow-lime rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
         <div class="flex items-center justify-between gap-2">
           <h2 class="font-display text-sm font-semibold text-neutral-900">Vehicle Availability</h2>
         </div>
@@ -184,7 +184,7 @@ onMounted(async () => {
     </div>
 
     <div class="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-      <NuxtLink v-for="action in quickActions" :key="action.label" :to="action.to || '/driver'" class="glass card-lift flex min-h-[88px] flex-col items-center justify-center gap-1.5 rounded-2xl p-3 text-center text-xs font-semibold text-neutral-800 sm:p-4">
+      <NuxtLink data-pamana-feedback v-for="action in quickActions" :key="action.label" :to="action.to || '/driver'" class="glass card-lift flex min-h-[88px] flex-col items-center justify-center gap-1.5 rounded-2xl p-3 text-center text-xs font-semibold text-neutral-800 sm:p-4">
         <UIcon :name="action.icon" class="size-5" :class="action.classes" />
         <span class="leading-tight">{{ action.label }}</span>
       </NuxtLink>

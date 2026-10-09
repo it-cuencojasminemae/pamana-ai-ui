@@ -202,7 +202,7 @@ onMounted(() => {
     </div>
 
     <div class="mb-5 grid gap-5 lg:grid-cols-3">
-      <UCard class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal="{ preset: 'fade' }" class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <h2 class="font-display text-sm font-semibold text-neutral-900">Stop-by-Stop Supply Table</h2>
 
@@ -261,7 +261,7 @@ onMounted(() => {
       </UCard>
 
       <div class="space-y-4">
-        <UCard class="glass glow-teal rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
+        <UCard v-pamana-reveal class="glass glow-teal rounded-30" :ui="{ root: 'ring-0 rounded-30', body: 'relative z-10' }">
           <h2 class="flex items-center gap-1.5 font-display text-sm font-semibold text-neutral-900">
             <UIcon name="i-lucide-brain-circuit" class="size-4 text-teal-600" />
             PAMANA AI Insight
@@ -269,12 +269,12 @@ onMounted(() => {
           <p class="mt-3 text-xs leading-relaxed text-neutral-500">
             {{ aiInsight }}
           </p>
-          <UButton block class="mt-4 rounded-full text-xs font-semibold text-neutral-950" @click="dispatchAlert">
+          <UButton data-pamana-feedback block class="mt-4 rounded-full text-xs font-semibold text-neutral-950" @click="dispatchAlert">
             Dispatch Alert to Cooperative
           </UButton>
         </UCard>
 
-        <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+        <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
           <h2 class="font-display text-sm font-semibold text-neutral-900">Passenger reports</h2>
           <div class="mt-3 space-y-3 text-xs">
             <div class="flex items-center justify-between gap-3">
@@ -291,7 +291,7 @@ onMounted(() => {
     </div>
 
     <div class="grid gap-5 lg:grid-cols-3">
-      <UCard class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="font-display text-sm font-semibold text-neutral-900">Fleet & Driver Management</h2>
         <div class="mt-4 overflow-x-auto">
           <table class="data-table">
@@ -313,7 +313,7 @@ onMounted(() => {
         </div>
       </UCard>
 
-      <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="font-display text-sm font-semibold text-neutral-900">System Parameters</h2>
         <div class="mt-4 space-y-5 text-xs">
           <div>

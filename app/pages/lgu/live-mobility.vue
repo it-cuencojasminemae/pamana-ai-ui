@@ -106,7 +106,7 @@ onUnmounted(() => {
         </div>
       </PamanaMapPanel>
 
-      <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
         <div class="flex items-center justify-between">
           <h2 class="font-display text-sm font-semibold text-neutral-900">Vehicles on corridor</h2>
           <span class="pill bg-teal-100 text-teal-700">{{ vehicles.length }} live</span>

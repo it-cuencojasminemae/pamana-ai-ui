@@ -10,8 +10,8 @@ const advisories = computed(() => props.journey.warnings.filter(
 </script>
 
 <template>
-  <article class="min-w-0 overflow-hidden rounded-3xl border bg-white/90 transition" :class="selected ? 'border-lime-500 shadow-md shadow-lime-900/5 ring-2 ring-lime-400/25' : 'border-neutral-200 hover:border-lime-300'">
-    <button type="button" class="w-full min-w-0 p-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-lime-600 sm:p-5" :aria-pressed="selected" :aria-label="`Select ${card.option}: ${card.title}`" @click="$emit('select', journey.id)">
+  <article v-pamana-reveal="{ preset: 'rise', delay: (optionNumber - 1) * 40 }" class="min-w-0 overflow-hidden rounded-3xl border bg-white/90 transition" :class="selected ? 'border-lime-500 shadow-md shadow-lime-900/5 ring-2 ring-lime-400/25' : 'border-neutral-200 hover:border-lime-300'">
+    <button data-pamana-feedback type="button" class="w-full min-w-0 p-4 text-left outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-lime-600 sm:p-5" :aria-pressed="selected" :aria-label="`Select ${card.option}: ${card.title}`" @click="$emit('select', journey.id)">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <span class="text-[11px] font-bold tracking-[0.14em] text-neutral-500">{{ card.option }}</span>
         <span v-if="selected" class="inline-flex items-center gap-1 text-xs font-semibold text-lime-800"><UIcon name="i-lucide-circle-check" class="size-4" /> Selected</span>

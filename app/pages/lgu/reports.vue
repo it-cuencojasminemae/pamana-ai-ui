@@ -75,8 +75,8 @@ onMounted(loadReports)
     </div>
     <div class="grid gap-4 lg:grid-cols-2">
       <UCard v-if="loading" class="glass rounded-30 animate-pulse" :ui="{ root: 'ring-0 rounded-30' }"><div class="h-32" /></UCard>
-      <UCard v-else-if="!filteredReports.length" class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }"><p class="py-8 text-center text-sm text-neutral-500">No passenger reports match this filter.</p></UCard>
-      <UCard v-for="report in filteredReports" :key="report.documentId" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal v-else-if="!filteredReports.length" class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }"><p class="py-8 text-center text-sm text-neutral-500">No passenger reports match this filter.</p></UCard>
+      <UCard v-pamana-reveal v-for="report in filteredReports" :key="report.documentId" class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
         <div class="flex flex-wrap items-center gap-2"><h2 class="text-sm font-semibold text-neutral-900">{{ formatReportTitle(report.report_type) }}</h2><span class="pill bg-amber-100 text-amber-800">{{ label(report.review_status || 'PENDING') }}</span></div>
         <p class="mt-2 text-sm text-neutral-700">{{ report.description || report.location_note || 'Legacy passenger observation' }}</p>
         <p class="mt-2 text-xs text-neutral-500">{{ contextLabel(report) }}</p>
@@ -86,7 +86,7 @@ onMounted(loadReports)
           <select v-model="reviewStatus[report.documentId]" class="min-h-10 rounded-xl border border-neutral-200 bg-white px-3 text-sm" :aria-label="`Review status for ${label(report.report_type)}`"><option value="REVIEWED">Reviewed</option><option value="VERIFIED">Report verified</option><option value="DISMISSED">Dismissed</option></select>
           <input v-model="reviewNotes[report.documentId]" maxlength="1000" class="min-h-10 rounded-xl border border-neutral-200 bg-white px-3 text-sm" placeholder="Review notes">
         </div>
-        <div class="mt-3 flex justify-end"><UButton size="sm" icon="i-lucide-check" class="rounded-full" :loading="savingId === report.documentId" @click="saveReview(report)">Save review</UButton></div>
+        <div class="mt-3 flex justify-end"><UButton data-pamana-feedback size="sm" icon="i-lucide-check" class="rounded-full" :loading="savingId === report.documentId" @click="saveReview(report)">Save review</UButton></div>
       </UCard>
     </div>
   </div>

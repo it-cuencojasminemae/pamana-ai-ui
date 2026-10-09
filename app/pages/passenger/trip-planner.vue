@@ -313,7 +313,7 @@ onBeforeUnmount(() => {
     <PamanaPageHeader title="Trip Planner" role="passenger" />
     <div class="grid min-w-0 items-start gap-5 lg:grid-cols-5">
       <div class="min-w-0 space-y-5 lg:col-span-2">
-        <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+        <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
           <div class="flex items-center justify-between">
             <h2 class="font-display text-sm font-semibold text-neutral-900">Where to?</h2>
             <UIcon name="i-lucide-navigation" class="size-4 text-lime-600" />
@@ -322,7 +322,7 @@ onBeforeUnmount(() => {
           <form class="mt-4 space-y-3" @submit.prevent="findJourneys">
             <LocationPamanaLocationSearch v-model="originLocation" mode="origin" placeholder="Current location or search a place" :initial-query="form.origin" allow-current-location @text-updated="updateLocationText('origin', $event)" />
             <div class="flex items-center justify-center">
-              <button type="button" class="flex size-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-500 shadow-sm transition hover:border-lime-400 hover:bg-lime-50 hover:text-lime-700" aria-label="Swap origin and destination" @click="swapLocations">
+              <button data-pamana-feedback type="button" class="flex size-9 items-center justify-center rounded-full border border-neutral-200 bg-white text-neutral-500 shadow-sm transition hover:border-lime-400 hover:bg-lime-50 hover:text-lime-700" aria-label="Swap origin and destination" @click="swapLocations">
                 <UIcon name="i-lucide-arrow-down-up" class="size-4" />
               </button>
             </div>
@@ -331,14 +331,14 @@ onBeforeUnmount(() => {
             <div ref="preferenceMenuRoot" class="grid grid-cols-1 gap-3 sm:grid-cols-2" @keydown="handlePreferenceKeydown">
               <div class="relative grid min-w-0 gap-1.5">
                 <span class="text-xs font-semibold text-neutral-700">When do you want to leave?</span>
-                <button type="button" class="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-3 text-left text-sm font-medium text-neutral-800 shadow-sm outline-none transition hover:border-lime-400 hover:bg-lime-50/50 focus-visible:border-lime-500 focus-visible:ring-2 focus-visible:ring-lime-500/20 disabled:cursor-wait disabled:opacity-60" :aria-expanded="openPreference === 'departure'" aria-haspopup="listbox" aria-controls="departure-preference-options" aria-label="Departure preference" :disabled="tripPlan.loading.value" @click="togglePreference('departure')">
+                <button data-pamana-feedback type="button" class="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-3 text-left text-sm font-medium text-neutral-800 shadow-sm outline-none transition hover:border-lime-400 hover:bg-lime-50/50 focus-visible:border-lime-500 focus-visible:ring-2 focus-visible:ring-lime-500/20 disabled:cursor-wait disabled:opacity-60" :aria-expanded="openPreference === 'departure'" aria-haspopup="listbox" aria-controls="departure-preference-options" aria-label="Departure preference" :disabled="tripPlan.loading.value" @click="togglePreference('departure')">
                   <span class="flex min-w-0 items-center gap-2">
                     <UIcon name="i-lucide-clock-3" class="size-4 shrink-0 text-lime-700" />
                     <span class="truncate">{{ form.departure }}</span>
                   </span>
                   <UIcon name="i-lucide-chevron-down" class="size-4 shrink-0 text-neutral-500 transition-transform" :class="{ 'rotate-180': openPreference === 'departure' }" />
                 </button>
-                <div v-if="openPreference === 'departure'" id="departure-preference-options" class="absolute inset-x-0 top-full z-40 mt-2 rounded-2xl border border-lime-900/10 bg-white p-1.5 shadow-[0_16px_40px_-16px_rgba(22,48,30,0.35)] ring-1 ring-black/5" role="listbox" aria-label="Departure preference options">
+                <div v-pamana-reveal="{ preset: 'panel' }" v-if="openPreference === 'departure'" id="departure-preference-options" class="absolute inset-x-0 top-full z-40 mt-2 rounded-2xl border border-lime-900/10 bg-white p-1.5 shadow-[0_16px_40px_-16px_rgba(22,48,30,0.35)] ring-1 ring-black/5" role="listbox" aria-label="Departure preference options">
                   <button v-for="option in departureOptions" :key="option" type="button" role="option" class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition hover:bg-lime-50 focus-visible:bg-lime-50 focus-visible:outline-none" :class="form.departure === option ? 'bg-lime-50 font-semibold text-lime-900' : 'text-neutral-700'" :aria-selected="form.departure === option" @click="selectDeparturePreference(option)">
                     <span class="flex items-center gap-2.5">
                       <UIcon :name="option === 'Depart now' ? 'i-lucide-zap' : 'i-lucide-calendar-clock'" class="size-4 text-lime-700" />
@@ -350,14 +350,14 @@ onBeforeUnmount(() => {
               </div>
               <div class="relative grid min-w-0 gap-1.5">
                 <span class="text-xs font-semibold text-neutral-700">Passenger fare</span>
-                <button type="button" class="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-3 text-left text-sm font-medium text-neutral-800 shadow-sm outline-none transition hover:border-lime-400 hover:bg-lime-50/50 focus-visible:border-lime-500 focus-visible:ring-2 focus-visible:ring-lime-500/20 disabled:cursor-wait disabled:opacity-60" :aria-expanded="openPreference === 'fare'" aria-haspopup="listbox" aria-controls="passenger-category-options" aria-label="Passenger fare category" :disabled="tripPlan.loading.value" @click="togglePreference('fare')">
+                <button data-pamana-feedback type="button" class="flex min-h-11 w-full items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-white px-3 text-left text-sm font-medium text-neutral-800 shadow-sm outline-none transition hover:border-lime-400 hover:bg-lime-50/50 focus-visible:border-lime-500 focus-visible:ring-2 focus-visible:ring-lime-500/20 disabled:cursor-wait disabled:opacity-60" :aria-expanded="openPreference === 'fare'" aria-haspopup="listbox" aria-controls="passenger-category-options" aria-label="Passenger fare category" :disabled="tripPlan.loading.value" @click="togglePreference('fare')">
                   <span class="flex min-w-0 items-center gap-2">
                     <UIcon name="i-lucide-ticket-percent" class="size-4 shrink-0 text-lime-700" />
                     <span class="truncate">{{ form.passengerCategory }}</span>
                   </span>
                   <UIcon name="i-lucide-chevron-down" class="size-4 shrink-0 text-neutral-500 transition-transform" :class="{ 'rotate-180': openPreference === 'fare' }" />
                 </button>
-                <div v-if="openPreference === 'fare'" id="passenger-category-options" class="absolute inset-x-0 top-full z-40 mt-2 rounded-2xl border border-lime-900/10 bg-white p-1.5 shadow-[0_16px_40px_-16px_rgba(22,48,30,0.35)] ring-1 ring-black/5" role="listbox" aria-label="Passenger fare options">
+                <div v-pamana-reveal="{ preset: 'panel' }" v-if="openPreference === 'fare'" id="passenger-category-options" class="absolute inset-x-0 top-full z-40 mt-2 rounded-2xl border border-lime-900/10 bg-white p-1.5 shadow-[0_16px_40px_-16px_rgba(22,48,30,0.35)] ring-1 ring-black/5" role="listbox" aria-label="Passenger fare options">
                   <button v-for="option in passengerCategoryOptions" :key="option" type="button" role="option" class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-left text-sm transition hover:bg-lime-50 focus-visible:bg-lime-50 focus-visible:outline-none" :class="form.passengerCategory === option ? 'bg-lime-50 font-semibold text-lime-900' : 'text-neutral-700'" :aria-selected="form.passengerCategory === option" @click="selectFarePreference(option)">
                     <span class="flex items-center gap-2.5">
                       <UIcon :name="option === 'Regular fare' ? 'i-lucide-user-round' : option === 'Student' ? 'i-lucide-graduation-cap' : option === 'Senior citizen' ? 'i-lucide-accessibility' : 'i-lucide-heart-handshake'" class="size-4 text-lime-700" />
@@ -375,7 +375,7 @@ onBeforeUnmount(() => {
 
             <p class="text-xs leading-relaxed text-neutral-600">Preferences apply when you press Find Best Route.</p>
 
-            <UButton type="submit" block size="lg" icon="i-lucide-search" class="search-button rounded-full font-semibold" :loading="tripPlan.loading.value" :disabled="!canSearch">
+            <UButton data-pamana-feedback type="submit" block size="lg" icon="i-lucide-search" class="search-button rounded-full font-semibold" :loading="tripPlan.loading.value" :disabled="!canSearch">
               {{ tripPlan.loading.value ? 'Finding the best routes…' : 'Find Best Route' }}
             </UButton>
           </form>
@@ -388,7 +388,7 @@ onBeforeUnmount(() => {
           <p v-if="resultState.kind === 'results'" class="text-sm text-neutral-500">{{ resultState.description }}</p>
           <p v-if="tripPlan.response.value?.meta.pendingAccessConnections" class="rounded-xl bg-amber-50 p-3 text-xs text-amber-900" role="status">Some nearby access paths are still unresolved. Only journeys with established connections are shown. Retry to check the remaining candidates.</p>
           <div v-if="resultState.kind === 'results'" class="grid grid-cols-2 gap-2" aria-label="Route preferences">
-            <button v-for="category in categories" :key="category.key" type="button" class="min-h-12 min-w-0 rounded-2xl border px-3 py-2 text-left outline-none transition focus-visible:ring-2 focus-visible:ring-lime-600" :class="category.journeyId && tripPlan.selectedJourneyId.value === category.journeyId ? 'border-lime-300 bg-lime-50 text-lime-900' : 'border-neutral-200 bg-white/80 text-neutral-700'" :disabled="!category.journeyId" :aria-pressed="Boolean(category.journeyId && tripPlan.selectedJourneyId.value === category.journeyId)" @click="selectCategory(category.journeyId)">
+            <button data-pamana-feedback v-for="category in categories" :key="category.key" type="button" class="min-h-12 min-w-0 rounded-2xl border px-3 py-2 text-left outline-none transition focus-visible:ring-2 focus-visible:ring-lime-600" :class="category.journeyId && tripPlan.selectedJourneyId.value === category.journeyId ? 'border-lime-300 bg-lime-50 text-lime-900' : 'border-neutral-200 bg-white/80 text-neutral-700'" :disabled="!category.journeyId" :aria-pressed="Boolean(category.journeyId && tripPlan.selectedJourneyId.value === category.journeyId)" @click="selectCategory(category.journeyId)">
               <span class="block text-xs font-semibold">{{ category.label }}</span>
               <span v-if="!category.journeyId" class="mt-0.5 block text-[11px] leading-snug text-neutral-500">{{ category.unavailable }}</span>
             </button>
@@ -401,10 +401,10 @@ onBeforeUnmount(() => {
             <p class="text-sm text-neutral-500">{{ resultState.description }}</p>
           </div>
           <JourneyPamanaJourneyCard v-for="(journey, index) in tripPlan.journeys.value" v-else-if="resultState.kind === 'results'" :key="journey.id" :journey="journey" :research="planning.mode.value === 'RESEARCH_PREVIEW'" :option-number="index + 1" :badges="badgesFor(journey.id)" :selected="tripPlan.selectedJourneyId.value === journey.id" @select="tripPlan.selectedJourneyId.value = $event" />
-          <UCard v-else class="rounded-3xl bg-white/80" :ui="{ root: 'ring-1 ring-neutral-200 rounded-3xl' }">
+          <UCard v-pamana-reveal v-else class="rounded-3xl bg-white/80" :ui="{ root: 'ring-1 ring-neutral-200 rounded-3xl' }">
             <UIcon :name="resultState.kind === 'error' ? 'i-lucide-wifi-off' : 'i-lucide-route'" class="size-6 text-lime-700" />
             <p class="mt-2 text-sm leading-relaxed text-neutral-600">{{ resultState.description }}</p>
-            <UButton v-if="resultState.kind === 'error'" color="neutral" variant="soft" class="mt-3 rounded-full" :disabled="!canSearch" @click="findJourneys">Try again</UButton>
+            <UButton data-pamana-feedback v-if="resultState.kind === 'error'" color="neutral" variant="soft" class="mt-3 rounded-full" :disabled="!canSearch" @click="findJourneys">Try again</UButton>
           </UCard>
         </section>
       </div>
@@ -416,7 +416,7 @@ onBeforeUnmount(() => {
         </div>
         <JourneyPamanaJourneyDetails v-if="tripPlan.selectedJourney.value" :journey="tripPlan.selectedJourney.value" />
         <p v-if="journeyDetails.notice.value" class="text-xs text-neutral-500" role="status">{{ journeyDetails.notice.value }}</p>
-        <UButton v-if="reportJourneyLink" :to="reportJourneyLink" color="neutral" variant="soft" size="sm" icon="i-lucide-message-square-warning" class="rounded-full">Report an issue with this journey</UButton>
+        <UButton data-pamana-feedback v-if="reportJourneyLink" :to="reportJourneyLink" color="neutral" variant="soft" size="sm" icon="i-lucide-message-square-warning" class="rounded-full">Report an issue with this journey</UButton>
         <JourneyPamanaTripGuide v-if="tripPlan.selectedJourney.value" :research="planning.mode.value === 'RESEARCH_PREVIEW'" :loading="journeyExplanation.loading.value" :response="journeyExplanation.response.value" :fallback="fallbackGuide" @regenerate="explainSelectedJourney" />
         <JourneyPamanaTravelTime v-if="tripPlan.selectedJourney.value && pins.area.value?.travelTimeEnabled" :loading="travelTime.loading.value" :estimate="travelTime.response.value" />
       </div>

@@ -129,7 +129,7 @@ onBeforeUnmount(stopTracking)
       <UIcon name="i-lucide-route-off" class="mx-auto size-8 text-neutral-400" />
       <h2 class="mt-3 font-display text-lg font-semibold text-neutral-900">No active trip</h2>
       <p class="mt-1 text-sm text-neutral-500">Choose an eligible directional route variant from the Driver dashboard.</p>
-      <UButton to="/driver" class="mt-5 rounded-full" icon="i-lucide-arrow-left">Driver dashboard</UButton>
+      <UButton data-pamana-feedback to="/driver" class="mt-5 rounded-full" icon="i-lucide-arrow-left">Driver dashboard</UButton>
     </div>
 
     <div v-else class="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
@@ -152,7 +152,7 @@ onBeforeUnmount(stopTracking)
       </PamanaMapPanel>
 
       <div class="min-w-0 space-y-4">
-        <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+        <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h2 class="font-display text-sm font-semibold text-neutral-900">{{ activeTrip.route_variant?.display_name || 'Directional trip' }}</h2>
             <div class="flex items-center gap-2">
@@ -175,15 +175,15 @@ onBeforeUnmount(stopTracking)
 
         <DriverPamanaAvailabilityControls :key="activeTrip.documentId" :trip-id="activeTrip.documentId" :availability="activeTrip.availability" :disabled="ending" @updated="activeTrip.availability = $event" />
 
-        <UButton v-if="!confirmingEnd" block size="lg" color="error" icon="i-lucide-square" class="min-h-12 rounded-full font-semibold" @click="confirmingEnd = true">
+        <UButton data-pamana-feedback v-if="!confirmingEnd" block size="lg" color="error" icon="i-lucide-square" class="min-h-12 rounded-full font-semibold" @click="confirmingEnd = true">
           End Trip
         </UButton>
         <section v-else class="rounded-2xl border border-red-200 bg-red-50 p-4" aria-label="Confirm ending trip">
           <p class="text-sm font-semibold text-neutral-900">End this trip?</p>
           <p class="mt-1 text-xs text-neutral-600">GPS sharing for this trip will stop.</p>
           <div class="mt-3 flex gap-2">
-            <UButton class="min-h-12 flex-1 justify-center rounded-xl" color="neutral" variant="soft" :disabled="ending" @click="confirmingEnd = false">Keep trip</UButton>
-            <UButton class="min-h-12 flex-1 justify-center rounded-xl" color="error" :loading="ending" :disabled="ending" @click="endTrip">End Trip</UButton>
+            <UButton data-pamana-feedback class="min-h-12 flex-1 justify-center rounded-xl" color="neutral" variant="soft" :disabled="ending" @click="confirmingEnd = false">Keep trip</UButton>
+            <UButton data-pamana-feedback class="min-h-12 flex-1 justify-center rounded-xl" color="error" :loading="ending" :disabled="ending" @click="endTrip">End Trip</UButton>
           </div>
         </section>
       </div>

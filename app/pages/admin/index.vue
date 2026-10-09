@@ -67,7 +67,7 @@ onMounted(() => {
     <PamanaPageHeader title="Administrator Dashboard" role="admin" />
 
     <div class="mb-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
-      <UCard
+      <UCard v-pamana-reveal
         v-for="stat in stats"
         :key="stat.label"
         class="glass glow-lime card-lift rounded-30"
@@ -80,7 +80,7 @@ onMounted(() => {
     </div>
 
     <div class="grid gap-5 lg:grid-cols-3">
-      <UCard class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30 lg:col-span-2" :ui="{ root: 'ring-0 rounded-30' }">
         <div class="flex items-center justify-between gap-3">
           <h2 class="font-display text-sm font-semibold text-neutral-900">System account</h2>
           <span class="pill bg-green-100 text-green-800">Administrator</span>
@@ -102,10 +102,10 @@ onMounted(() => {
         </div>
       </UCard>
 
-      <UCard class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
+      <UCard v-pamana-reveal class="glass rounded-30" :ui="{ root: 'ring-0 rounded-30' }">
         <h2 class="font-display text-sm font-semibold text-neutral-900">Quick links</h2>
         <div class="mt-3 space-y-2">
-          <NuxtLink
+          <NuxtLink data-pamana-feedback
             v-for="link in quickLinks"
             :key="link.to"
             :to="link.to"

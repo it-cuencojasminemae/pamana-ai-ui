@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
   <main v-if="sessionReady" class="landing-page">
     <section class="landing-hero">
-      <header class="landing-header">
+      <header v-pamana-reveal class="landing-header">
         <NuxtLink to="/" class="landing-brand" aria-label="PAMANA home">
           <img src="/pamana-logo.png" alt="PAMANA" class="landing-logo">
           <span class="landing-brand-copy">Mobility for Pampanga</span>
@@ -27,13 +27,13 @@ onMounted(async () => {
 
         <nav class="landing-nav" aria-label="Main navigation">
           <a href="#how-it-helps">How it helps</a>
-          <NuxtLink to="/login" class="landing-login">Sign in</NuxtLink>
-          <NuxtLink to="/register" class="landing-nav-cta">Create account</NuxtLink>
+          <NuxtLink data-pamana-feedback to="/login" class="landing-login">Sign in</NuxtLink>
+          <NuxtLink data-pamana-feedback to="/register" class="landing-nav-cta">Create account</NuxtLink>
         </nav>
       </header>
 
       <div class="landing-hero-content">
-        <div class="landing-copy">
+        <PamanaMotionSection class="landing-copy">
           <span class="landing-eyebrow">
             <span class="landing-eyebrow-dot" />
             Pampanga mobility, made clearer
@@ -46,11 +46,11 @@ onMounted(async () => {
           </p>
 
           <div class="landing-actions">
-            <NuxtLink to="/register" class="landing-primary">
+            <NuxtLink data-pamana-feedback to="/register" class="landing-primary">
               Get started
               <UIcon name="i-lucide-arrow-up-right" class="size-4" />
             </NuxtLink>
-            <NuxtLink to="/login" class="landing-secondary">
+            <NuxtLink data-pamana-feedback to="/login" class="landing-secondary">
               Sign in to PAMANA
               <UIcon name="i-lucide-arrow-right" class="size-4" />
             </NuxtLink>
@@ -62,9 +62,9 @@ onMounted(async () => {
             </span>
             <span>Built around the places and journeys of Pampanga</span>
           </div>
-        </div>
+        </PamanaMotionSection>
 
-        <aside class="landing-highlight" aria-label="About PAMANA">
+        <aside v-pamana-reveal class="landing-highlight" aria-label="About PAMANA">
           <div class="highlight-topline">
             <span class="highlight-mark"><UIcon name="i-lucide-navigation" class="size-5" /></span>
             <span class="highlight-caption">YOUR MOBILITY COMPANION</span>
@@ -97,7 +97,7 @@ onMounted(async () => {
     </section>
 
     <section id="how-it-helps" class="landing-features">
-      <div class="features-heading">
+      <PamanaMotionSection class="features-heading">
         <div>
           <span class="section-eyebrow">A clearer way to move</span>
           <h2>Made for real-world journeys.</h2>
@@ -105,24 +105,24 @@ onMounted(async () => {
         <p>
           PAMANA brings useful mobility tools together in one welcoming place, with Pampanga and its communities at the heart of the experience.
         </p>
-      </div>
+      </PamanaMotionSection>
 
       <div class="feature-grid">
-        <article class="feature-card">
+        <article v-pamana-reveal class="feature-card">
           <span class="feature-icon feature-icon--lime"><UIcon name="i-lucide-route" class="size-5" /></span>
           <span class="feature-number">01 / PLAN</span>
           <h3>Explore trip options</h3>
           <p>Set your pickup point and destination to see supported journey options in one place.</p>
         </article>
 
-        <article class="feature-card">
+        <article v-pamana-reveal class="feature-card">
           <span class="feature-icon feature-icon--teal"><UIcon name="i-lucide-map" class="size-5" /></span>
           <span class="feature-number">02 / NAVIGATE</span>
           <h3>See the bigger picture</h3>
           <p>Use maps and transport details to better understand where your trip can take you.</p>
         </article>
 
-        <article class="feature-card">
+        <article v-pamana-reveal class="feature-card">
           <span class="feature-icon feature-icon--gold"><UIcon name="i-lucide-accessibility" class="size-5" /></span>
           <span class="feature-number">03 / ACCESS</span>
           <h3>Designed for different needs</h3>
@@ -130,7 +130,7 @@ onMounted(async () => {
         </article>
       </div>
 
-      <footer class="landing-footer">
+      <footer v-pamana-reveal class="landing-footer">
         <NuxtLink to="/" class="footer-brand">
           <img src="/pamana-logo.png" alt="" class="footer-logo">
           <span>Pampanga AI-powered Mobility Access and Navigation Assistant</span>
@@ -345,7 +345,6 @@ onMounted(async () => {
 }
 
 .landing-primary:hover {
-  transform: translateY(-2px);
   background: #d4f1a3;
 }
 

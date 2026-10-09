@@ -5,7 +5,7 @@ defineProps<{ loading: boolean; estimate: TravelTimeEstimate | null }>()
 </script>
 
 <template>
-  <section class="space-y-2 rounded-2xl border border-neutral-200 bg-white/90 p-4" aria-label="Approximate travel time" aria-live="polite" :aria-busy="loading">
+  <section v-pamana-reveal class="space-y-2 rounded-2xl border border-neutral-200 bg-white/90 p-4" aria-label="Approximate travel time" aria-live="polite" :aria-busy="loading">
     <h3 class="text-sm font-semibold text-neutral-900">Approximate travel time</h3>
     <p v-if="loading" class="text-sm text-neutral-600" role="status">Estimating road travel time…</p>
     <template v-else-if="estimate && ['COMPLETE', 'PARTIAL'].includes(estimate.status)">
